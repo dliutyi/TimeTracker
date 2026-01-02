@@ -31,21 +31,24 @@ class MainNavigationScreenState
     extends ConsumerState<MainNavigationScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  int _currentIndex = MainTab.listOfTasks.index;
 
   @override
   void initState() {
     super.initState();
-    final initialIndex = MainTab.listOfTasks.index;
     _tabController = TabController(
       length: 5,
       vsync: this,
-      initialIndex: initialIndex,
+      initialIndex: _currentIndex,
     );
     _tabController.addListener(_onTabChanged);
     _determineInitialTab();
   }
 
   Future<void> _determineInitialTab() async {
+    // Wait a bit for active session to load
+    await Future.delayed(const Duration(milliseconds: 100));
+    
     // Check if there's an active session
     final activeSession = ref.read(activeSessionProvider);
     
@@ -54,16 +57,22 @@ class MainNavigationScreenState
           ? MainTab.activeTask.tabIndex
           : MainTab.listOfTasks.tabIndex;
       
-      if (_tabController.index != targetIndex) {
-        _tabController.index = targetIndex;
-      }
+      setState(() {
+        _currentIndex = targetIndex;
+        if (_tabController.index != targetIndex) {
+          _tabController.index = targetIndex;
+        }
+      });
     }
   }
 
   /// Switch to a specific tab programmatically
   void switchToTab(int index) {
-    if (mounted && _tabController.index != index) {
-      _tabController.animateTo(index);
+    if (mounted && _currentIndex != index) {
+      setState(() {
+        _currentIndex = index;
+        _tabController.animateTo(index);
+      });
     }
   }
 
@@ -73,12 +82,10 @@ class MainNavigationScreenState
   }
 
   void _onTabChanged() {
-    // Always update state when tab controller index changes
-    // This ensures TabBarView rebuilds with correct content
-    if (mounted) {
+    // Update current index when tab controller changes
+    if (mounted && _tabController.index != _currentIndex) {
       setState(() {
-        // Force rebuild to sync with TabController
-        // The TabBarView will rebuild with new keys to show correct content
+        _currentIndex = _tabController.index;
       });
     }
   }
@@ -100,9 +107,12 @@ class MainNavigationScreenState
       }
     }
     
-    // Use TabController as source of truth
-    if (_tabController.index != index) {
-      _tabController.animateTo(index);
+    // Update both state and controller
+    if (_currentIndex != index) {
+      setState(() {
+        _currentIndex = index;
+        _tabController.animateTo(index);
+      });
     }
   }
 
@@ -111,15 +121,10 @@ class MainNavigationScreenState
     final l10n = AppLocalizations.of(context)!;
     final activeSession = ref.watch(activeSessionProvider);
 
-    // Update tab if active session changes
-    if (activeSession != null && _tabController.index != MainTab.activeTask.tabIndex) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) {
-          switchToTab(MainTab.activeTask.tabIndex);
-        }
-      });
-    } else if (activeSession == null && _tabController.index == MainTab.activeTask.tabIndex) {
-      // If active session ends while on active task tab, switch to list
+    // Only auto-switch to Active Task tab when session first becomes active
+    // Don't force switch if user manually navigated away
+    // If active session ends while on active task tab, switch to list
+    if (activeSession == null && _currentIndex == MainTab.activeTask.tabIndex) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) {
           switchToTab(MainTab.listOfTasks.tabIndex);
@@ -158,7 +163,7 @@ class MainNavigationScreenState
 
     return Scaffold(
       body: IndexedStack(
-        index: _tabController.index,
+        index: _currentIndex,
         children: [
           const ActiveTaskScreen(),
           const ListTasksScreen(),
@@ -169,7 +174,7 @@ class MainNavigationScreenState
       ),
       bottomNavigationBar: LiquidGlassTabBar(
         items: tabItems,
-        currentIndex: _tabController.index,
+        currentIndex: _currentIndex,
         onTap: _onTabTapped,
         disabledIndices: activeSession == null
             ? {MainTab.activeTask.tabIndex}

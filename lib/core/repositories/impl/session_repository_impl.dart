@@ -131,17 +131,19 @@ class SessionRepositoryImpl implements SessionRepository {
   Future<Session?> getActiveSession() async {
     // An active session is one where endDateTime equals startDateTime
     // (meaning it hasn't been stopped yet)
-    final rows = await (_database.select(_database.sessions)
-          ..where((s) => s.endDateTime.equalsExp(s.startDateTime))
-          ..orderBy([(s) => OrderingTerm.desc(s.startDateTime)])
-          ..limit(1))
-        .get();
-
-    if (rows.isEmpty) return null;
-
-    final row = rows.first;
-    final ratings = await _loadRatings(row.id);
-    return _rowToSession(row, ratings);
+    // Use a small tolerance (1 second) to account for any precision issues
+    final allSessions = await getAllSessions();
+    
+    // Find the most recent session where endDateTime equals startDateTime
+    for (final session in allSessions) {
+      final diff = session.endDateTime.difference(session.startDateTime).abs();
+      // Consider it active if the difference is less than 1 second
+      if (diff.inSeconds < 1) {
+        return session;
+      }
+    }
+    
+    return null;
   }
 
   @override
