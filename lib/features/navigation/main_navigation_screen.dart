@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../app/theme/liquid_glass_tab_bar.dart';
-import '../../core/repositories/repository_providers.dart';
+import '../../core/services/session_service.dart';
 import '../tasks/list_tasks_screen.dart';
+import '../sessions/active_task_screen.dart';
 
 /// Tab indices
 enum MainTab {
@@ -45,13 +46,12 @@ class _MainNavigationScreenState
   }
 
   Future<void> _determineInitialTab() async {
-    // Check if there's an active task
-    final taskRepository = ref.read(taskRepositoryProvider);
-    final activeTask = await taskRepository.getActiveTask();
+    // Check if there's an active session
+    final activeSession = ref.read(activeSessionProvider);
     
     if (mounted) {
       setState(() {
-        if (activeTask != null) {
+        if (activeSession != null) {
           _currentIndex = MainTab.activeTask.tabIndex;
         } else {
           _currentIndex = MainTab.listOfTasks.tabIndex;
@@ -60,6 +60,17 @@ class _MainNavigationScreenState
       });
     }
   }
+
+  /// Switch to a specific tab programmatically
+  void switchToTab(int index) {
+    if (mounted) {
+      setState(() {
+        _currentIndex = index;
+        _tabController.animateTo(index);
+      });
+    }
+  }
+
 
   void _onTabChanged() {
     if (_tabController.indexIsChanging) {
@@ -121,7 +132,7 @@ class _MainNavigationScreenState
         controller: _tabController,
         physics: const NeverScrollableScrollPhysics(), // Disable swipe
         children: [
-          _buildPlaceholderScreen(l10n.activeTask),
+          const ActiveTaskScreen(),
           const ListTasksScreen(),
           _buildPlaceholderScreen(l10n.statistics),
           _buildPlaceholderScreen(l10n.listOfCriteria),

@@ -8,6 +8,7 @@ import '../../core/repositories/settings_repository.dart';
 import '../../core/models/task.dart';
 import '../../core/services/frequency_service.dart';
 import 'widgets/task_item.dart';
+import 'widgets/add_edit_task_widget.dart';
 
 /// Provider for general motto
 final generalMottoProvider =
@@ -81,7 +82,7 @@ class _ListTasksScreenState extends ConsumerState<ListTasksScreen> {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
     final motto = ref.watch(generalMottoProvider);
-    final tasksAsync = ref.watch(_tasksProvider);
+    final tasksAsync = ref.watch(tasksProvider);
 
     return Scaffold(
       body: SafeArea(
@@ -159,8 +160,12 @@ class _ListTasksScreenState extends ConsumerState<ListTasksScreen> {
           Align(
             alignment: Alignment.centerRight,
             child: IconButton(
-              onPressed: () {
-                // TODO: Open add task widget (TASK-020)
+              onPressed: () async {
+                final result = await AddEditTaskWidget.show(context);
+                if (result != null && mounted) {
+                  // Refresh tasks list
+                  ref.invalidate(tasksProvider);
+                }
               },
               icon: const Icon(Icons.add_circle_outline),
               iconSize: 32,
@@ -254,7 +259,7 @@ class _ListTasksScreenState extends ConsumerState<ListTasksScreen> {
 }
 
 /// Provider for tasks list with frequency sorting
-final _tasksProvider = FutureProvider<List<Task>>((ref) async {
+final tasksProvider = FutureProvider<List<Task>>((ref) async {
   final taskRepository = ref.watch(taskRepositoryProvider);
   final sessionRepository = ref.watch(sessionRepositoryProvider);
   final frequencyService = FrequencyService(sessionRepository);
