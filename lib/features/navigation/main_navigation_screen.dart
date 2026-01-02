@@ -31,15 +31,15 @@ class MainNavigationScreenState
     extends ConsumerState<MainNavigationScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  int _currentIndex = MainTab.listOfTasks.index;
 
   @override
   void initState() {
     super.initState();
+    final initialIndex = MainTab.listOfTasks.index;
     _tabController = TabController(
       length: 5,
       vsync: this,
-      initialIndex: _currentIndex,
+      initialIndex: initialIndex,
     );
     _tabController.addListener(_onTabChanged);
     _determineInitialTab();
@@ -50,24 +50,20 @@ class MainNavigationScreenState
     final activeSession = ref.read(activeSessionProvider);
     
     if (mounted) {
-      setState(() {
-        if (activeSession != null) {
-          _currentIndex = MainTab.activeTask.tabIndex;
-        } else {
-          _currentIndex = MainTab.listOfTasks.tabIndex;
-        }
-        _tabController.index = _currentIndex;
-      });
+      final targetIndex = activeSession != null
+          ? MainTab.activeTask.tabIndex
+          : MainTab.listOfTasks.tabIndex;
+      
+      if (_tabController.index != targetIndex) {
+        _tabController.index = targetIndex;
+      }
     }
   }
 
   /// Switch to a specific tab programmatically
   void switchToTab(int index) {
-    if (mounted) {
-      setState(() {
-        _currentIndex = index;
-        _tabController.animateTo(index);
-      });
+    if (mounted && _tabController.index != index) {
+      _tabController.animateTo(index);
     }
   }
 
@@ -76,11 +72,11 @@ class MainNavigationScreenState
     return context.findAncestorStateOfType<MainNavigationScreenState>();
   }
 
-
   void _onTabChanged() {
-    if (_tabController.indexIsChanging) {
+    // Always update state when tab controller index changes
+    if (mounted) {
       setState(() {
-        _currentIndex = _tabController.index;
+        // Force rebuild to sync with TabController
       });
     }
   }
@@ -102,10 +98,10 @@ class MainNavigationScreenState
       }
     }
     
-    setState(() {
-      _currentIndex = index;
+    // Use TabController as source of truth
+    if (_tabController.index != index) {
       _tabController.animateTo(index);
-    });
+    }
   }
 
   @override
@@ -114,13 +110,13 @@ class MainNavigationScreenState
     final activeSession = ref.watch(activeSessionProvider);
 
     // Update tab if active session changes
-    if (activeSession != null && _currentIndex != MainTab.activeTask.tabIndex) {
+    if (activeSession != null && _tabController.index != MainTab.activeTask.tabIndex) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) {
           switchToTab(MainTab.activeTask.tabIndex);
         }
       });
-    } else if (activeSession == null && _currentIndex == MainTab.activeTask.tabIndex) {
+    } else if (activeSession == null && _tabController.index == MainTab.activeTask.tabIndex) {
       // If active session ends while on active task tab, switch to list
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) {
@@ -172,7 +168,7 @@ class MainNavigationScreenState
       ),
       bottomNavigationBar: LiquidGlassTabBar(
         items: tabItems,
-        currentIndex: _currentIndex,
+        currentIndex: _tabController.index,
         onTap: _onTabTapped,
         disabledIndices: activeSession == null
             ? {MainTab.activeTask.tabIndex}
