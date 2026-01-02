@@ -184,7 +184,16 @@ class _SpeechTextFieldState extends ConsumerState<SpeechTextField>
 
   void _handleMicrophoneRelease() async {
     final speechService = ref.read(speechServiceProvider);
+    
+    // Wait a bit to allow any final text to come through the stream
+    await Future.delayed(const Duration(milliseconds: 300));
+    
     await speechService.stopListening();
+    
+    // Wait a bit more after stopping to catch any final recognized text
+    await Future.delayed(const Duration(milliseconds: 200));
+    
+    // Cancel subscription after we've given time for final text
     _speechSubscription?.cancel();
     _speechSubscription = null;
 
@@ -195,12 +204,18 @@ class _SpeechTextFieldState extends ConsumerState<SpeechTextField>
       _animationController.stop();
       _animationController.reset();
       
-      // Restore original text and insert accumulated text at the end
+      // Process accumulated text
       if (_originalText != null) {
         final originalText = _originalText!;
         if (_accumulatedText.isNotEmpty) {
-          // Insert accumulated text at the end of original text
-          _controller.text = originalText + _accumulatedText;
+          // Capitalize first letter
+          String finalText = _accumulatedText.trim();
+          if (finalText.isNotEmpty) {
+            finalText = finalText[0].toUpperCase() + finalText.substring(1);
+          }
+          
+          // Replace existing text (don't append)
+          _controller.text = finalText;
           _controller.selection = TextSelection.collapsed(
             offset: _controller.text.length,
           );
