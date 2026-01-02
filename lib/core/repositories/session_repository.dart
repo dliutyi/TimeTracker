@@ -26,6 +26,10 @@ abstract class SessionRepository {
   /// Gets all sessions.
   Future<List<Session>> getAllSessions();
 
+  /// Gets the active session (where endDateTime equals startDateTime).
+  /// Returns null if no active session exists.
+  Future<Session?> getActiveSession();
+
   /// Saves ratings for a session.
   Future<void> saveRatings(String sessionId, Map<String, RatingValue> ratings);
 }

@@ -16,8 +16,27 @@ final activeSessionProvider = StateNotifierProvider<ActiveSessionNotifier, Sessi
 class ActiveSessionNotifier extends StateNotifier<Session?> {
   final SessionRepository _sessionRepository;
   final TaskRepository _taskRepository;
+  bool _isInitialized = false;
 
-  ActiveSessionNotifier(this._sessionRepository, this._taskRepository) : super(null);
+  ActiveSessionNotifier(this._sessionRepository, this._taskRepository) : super(null) {
+    _loadActiveSession();
+  }
+
+  /// Load active session from database on initialization
+  Future<void> _loadActiveSession() async {
+    if (_isInitialized) return;
+    _isInitialized = true;
+    
+    try {
+      final activeSession = await _sessionRepository.getActiveSession();
+      if (activeSession != null) {
+        state = activeSession;
+      }
+    } catch (e) {
+      // If loading fails, just continue without active session
+      state = null;
+    }
+  }
 
   /// Start a new session for a task
   Future<Session> startSession(Task task) async {

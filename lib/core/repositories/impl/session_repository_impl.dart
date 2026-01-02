@@ -128,6 +128,23 @@ class SessionRepositoryImpl implements SessionRepository {
   }
 
   @override
+  Future<Session?> getActiveSession() async {
+    // An active session is one where endDateTime equals startDateTime
+    // (meaning it hasn't been stopped yet)
+    final rows = await (_database.select(_database.sessions)
+          ..where((s) => s.endDateTime.equalsExp(s.startDateTime))
+          ..orderBy([(s) => OrderingTerm.desc(s.startDateTime)])
+          ..limit(1))
+        .get();
+
+    if (rows.isEmpty) return null;
+
+    final row = rows.first;
+    final ratings = await _loadRatings(row.id);
+    return _rowToSession(row, ratings);
+  }
+
+  @override
   Future<void> saveRatings(String sessionId, Map<String, RatingValue> ratings) async {
     // Delete existing ratings for this session
     await (_database.delete(_database.ratings)

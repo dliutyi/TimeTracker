@@ -74,9 +74,11 @@ class MainNavigationScreenState
 
   void _onTabChanged() {
     // Always update state when tab controller index changes
+    // This ensures TabBarView rebuilds with correct content
     if (mounted) {
       setState(() {
         // Force rebuild to sync with TabController
+        // The TabBarView will rebuild with new keys to show correct content
       });
     }
   }
@@ -155,9 +157,8 @@ class MainNavigationScreenState
     ];
 
     return Scaffold(
-      body: TabBarView(
-        controller: _tabController,
-        physics: const NeverScrollableScrollPhysics(), // Disable swipe
+      body: IndexedStack(
+        index: _tabController.index,
         children: [
           const ActiveTaskScreen(),
           const ListTasksScreen(),
