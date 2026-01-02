@@ -182,7 +182,8 @@ class _SwipeableItemState extends State<SwipeableItem>
           if (actions != null && actions.isNotEmpty)
             Positioned.fill(
               child: IgnorePointer(
-                ignoring: _isDragging || _dragOffset.abs() < 0.1,
+                // Ignore pointer events only when actions are not revealed
+                ignoring: _dragOffset.abs() < 0.1,
                 child: Row(
                   mainAxisAlignment: _dragOffset > 0
                       ? MainAxisAlignment.start
