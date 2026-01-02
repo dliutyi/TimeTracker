@@ -83,6 +83,70 @@
   "step": "step",
   "@step": {
     "description": "Step label for continuous criteria"
+  },
+  "criterionName": "Criterion Name",
+  "@criterionName": {
+    "description": "Criterion name field label"
+  },
+  "criterionType": "Criterion Type",
+  "@criterionType": {
+    "description": "Criterion type field label"
+  },
+  "addValue": "Add Value",
+  "@addValue": {
+    "description": "Add value button for discrete criteria"
+  },
+  "selectionLimit": "Selection Limit",
+  "@selectionLimit": {
+    "description": "Selection limit field label"
+  },
+  "minValue": "Min Value",
+  "@minValue": {
+    "description": "Minimum value field label"
+  },
+  "maxValue": "Max Value",
+  "@maxValue": {
+    "description": "Maximum value field label"
+  },
+  "stepValue": "Step Value",
+  "@stepValue": {
+    "description": "Step value field label"
+  },
+  "value": "Value",
+  "@value": {
+    "description": "Value field label"
+  },
+  "addCriterion": "Add Criterion",
+  "@addCriterion": {
+    "description": "Add criterion button label"
+  },
+  "updateCriterion": "Update Criterion",
+  "@updateCriterion": {
+    "description": "Update criterion button label"
+  },
+  "discard": "Discard",
+  "@discard": {
+    "description": "Discard button label"
+  },
+  "nameRequired": "Name is required",
+  "@nameRequired": {
+    "description": "Validation error for required name"
+  },
+  "atLeastOneValue": "At least one value is required",
+  "@atLeastOneValue": {
+    "description": "Validation error for discrete criteria"
+  },
+  "selectionLimitRequired": "Selection limit must be greater than 0",
+  "@selectionLimitRequired": {
+    "description": "Validation error for selection limit"
+  },
+  "minMustBeLessThanMax": "Min value must be less than max value",
+  "@minMustBeLessThanMax": {
+    "description": "Validation error for continuous criteria"
+  },
+  "stepMustBeGreaterThanZero": "Step value must be greater than 0",
+  "@stepMustBeGreaterThanZero": {
+    "description": "Validation error for step value"
   }
 }
 

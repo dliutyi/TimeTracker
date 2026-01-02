@@ -5,6 +5,7 @@ import '../../app/theme/app_theme.dart';
 import '../../core/repositories/repository_providers.dart';
 import '../../core/models/criterion.dart';
 import 'widgets/criterion_item.dart';
+import 'widgets/add_edit_criterion_widget.dart';
 
 /// Provider for criteria sorted by usage frequency
 final criteriaProvider = FutureProvider<List<Criterion>>((ref) async {
@@ -27,8 +28,10 @@ class ListCriteriaScreen extends ConsumerWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.add),
-            onPressed: () {
-              // TODO: Open Add/Edit Criterion widget (TASK-026)
+            onPressed: () async {
+              await AddEditCriterionWidget.show(context);
+              // Refresh criteria list
+              ref.invalidate(criteriaProvider);
             },
             tooltip: l10n.addCriterion,
           ),
