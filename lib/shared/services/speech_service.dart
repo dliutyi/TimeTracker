@@ -77,21 +77,32 @@ class SpeechService {
     if (!_isInitialized) {
       final initialized = await initialize();
       if (!initialized) {
+        debugPrint('Speech recognition not initialized');
         return false;
       }
     }
 
     if (_isListening) {
+      debugPrint('Already listening');
       return true;
     }
 
     final hasPermission = await checkPermission();
     if (!hasPermission) {
+      debugPrint('Microphone permission denied');
       _textController.addError('Microphone permission denied');
       return false;
     }
 
     try {
+      // Check if speech recognition is available
+      final available = await _speech.initialize();
+      if (!available) {
+        debugPrint('Speech recognition not available');
+        _textController.addError('Speech recognition not available');
+        return false;
+      }
+
       final options = stt.SpeechListenOptions(
         listenMode: listenMode,
         partialResults: partialResults,
@@ -99,8 +110,10 @@ class SpeechService {
         cancelOnError: false,
       );
 
+      debugPrint('Starting speech recognition...');
       final result = await _speech.listen(
         onResult: (result) {
+          debugPrint('Speech result: ${result.recognizedWords} (final: ${result.finalResult})');
           if (result.finalResult) {
             _textController.add(result.recognizedWords);
           } else if (partialResults) {
@@ -112,11 +125,14 @@ class SpeechService {
         listenFor: const Duration(seconds: 30),
       );
 
+      debugPrint('Speech listen result: $result');
       _isListening = result;
       return result;
-    } catch (e) {
+    } catch (e, stackTrace) {
       debugPrint('Failed to start listening: $e');
+      debugPrint('Stack trace: $stackTrace');
       _textController.addError(e.toString());
+      _isListening = false;
       return false;
     }
   }

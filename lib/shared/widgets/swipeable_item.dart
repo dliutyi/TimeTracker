@@ -123,16 +123,27 @@ class _SwipeableItemState extends State<SwipeableItem>
         : (_dragOffset > 0 && widget.onSwipeRight != null ? 100.0 : 0.0);
     final threshold = maxDrag * widget.threshold;
 
+    setState(() {
+      _isDragging = false;
+    });
+
     if (_dragOffset.abs() > threshold) {
       // Swipe was significant enough
       if (_dragOffset > 0 && widget.onSwipeRight != null && (widget.leftActions == null || widget.leftActions!.isEmpty)) {
         // Right swipe for activation (only if no left actions)
         widget.onSwipeRight!();
         _resetPosition();
-      } else if (_dragOffset.abs() >= maxDrag * 0.8 && actions != null) {
-        // Keep actions revealed - animate to final position
+      } else if (_dragOffset < 0 && actions != null) {
+        // Left swipe revealed actions - keep them revealed
+        // Don't reset, keep the offset so actions stay visible
         final targetValue = _dragOffset.abs() / maxDrag;
-        _controller.value = targetValue;
+        _controller.animateTo(targetValue);
+        // Keep _dragOffset at its current value so actions stay visible
+      } else if (_dragOffset > 0 && actions != null) {
+        // Right swipe revealed left actions - keep them revealed
+        final targetValue = _dragOffset / maxDrag;
+        _controller.animateTo(targetValue);
+        // Keep _dragOffset at its current value so actions stay visible
       } else {
         // Snap back
         _resetPosition();
@@ -141,10 +152,6 @@ class _SwipeableItemState extends State<SwipeableItem>
       // Snap back
       _resetPosition();
     }
-
-    setState(() {
-      _isDragging = false;
-    });
   }
 
   void _resetPosition() {
@@ -169,46 +176,45 @@ class _SwipeableItemState extends State<SwipeableItem>
     final actions = _getActiveActions();
     final hasRightSwipe = widget.onSwipeRight != null && _dragOffset > 0;
 
-    return GestureDetector(
-      onHorizontalDragStart: _handleDragStart,
-      onHorizontalDragUpdate: _handleDragUpdate,
-      onHorizontalDragEnd: _handleDragEnd,
-      child: Stack(
+    return Stack(
         children: [
           // Action buttons (behind)
           if (actions != null && actions.isNotEmpty)
             Positioned.fill(
-              child: Row(
-                mainAxisAlignment: _dragOffset > 0
-                    ? MainAxisAlignment.start
-                    : MainAxisAlignment.end,
-                children: actions.map((action) {
-                  return Container(
-                    width: 80,
-                    color: action.color,
-                    child: Material(
-                      color: Colors.transparent,
-                      child: InkWell(
-                        onTap: () => _handleActionTap(action),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(action.icon, color: Colors.white),
-                            const SizedBox(height: 4),
-                            Text(
-                              action.label,
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 12,
+              child: IgnorePointer(
+                ignoring: _isDragging || _dragOffset.abs() < 0.1,
+                child: Row(
+                  mainAxisAlignment: _dragOffset > 0
+                      ? MainAxisAlignment.start
+                      : MainAxisAlignment.end,
+                  children: actions.map((action) {
+                    return Container(
+                      width: 80,
+                      color: action.color,
+                      child: Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          onTap: () => _handleActionTap(action),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(action.icon, color: Colors.white),
+                              const SizedBox(height: 4),
+                              Text(
+                                action.label,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 12,
+                                ),
+                                textAlign: TextAlign.center,
                               ),
-                              textAlign: TextAlign.center,
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                  );
-                }).toList(),
+                    );
+                  }).toList(),
+                ),
               ),
             ),
           // Main content (on top)
@@ -220,19 +226,37 @@ class _SwipeableItemState extends State<SwipeableItem>
                 // Use actual drag offset during dragging
                 offset = _dragOffset;
               } else {
-                // Use animation value when not dragging
-                final actions = _getActiveActions();
-                final maxDrag = actions != null && actions.isNotEmpty
-                    ? actions.length * 80.0
-                    : 0.0;
-                offset = _animation.value * maxDrag * (_dragOffset < 0 ? -1 : 1);
+                // When not dragging, use the drag offset if actions are revealed,
+                // otherwise use animation for smooth transitions
+                if (_dragOffset.abs() > 0.1) {
+                  // Actions are revealed, keep the offset
+                  offset = _dragOffset;
+                } else {
+                  // Use animation for snap back
+                  final actions = _getActiveActions();
+                  final maxDrag = actions != null && actions.isNotEmpty
+                      ? actions.length * 80.0
+                      : 0.0;
+                  offset = _animation.value * maxDrag * (_dragOffset < 0 ? -1 : 1);
+                }
               }
 
               return Transform.translate(
                 offset: Offset(offset, 0),
-                child: Container(
-                  color: Theme.of(context).scaffoldBackgroundColor,
-                  child: widget.child,
+                child: GestureDetector(
+                  onTap: () {
+                    // Tap on main content to close revealed actions
+                    if (_dragOffset.abs() > 0.1) {
+                      _resetPosition();
+                    }
+                  },
+                  onHorizontalDragStart: _handleDragStart,
+                  onHorizontalDragUpdate: _handleDragUpdate,
+                  onHorizontalDragEnd: _handleDragEnd,
+                  child: Container(
+                    color: Theme.of(context).scaffoldBackgroundColor,
+                    child: widget.child,
+                  ),
                 ),
               );
             },
@@ -256,7 +280,6 @@ class _SwipeableItemState extends State<SwipeableItem>
               ),
             ),
         ],
-      ),
     );
   }
 }

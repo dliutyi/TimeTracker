@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../services/speech_service.dart';
@@ -95,14 +96,26 @@ class _SpeechTextFieldState extends ConsumerState<SpeechTextField>
   Future<void> _handleMicrophonePress() async {
     final speechService = ref.read(speechServiceProvider);
     
+    // Set recording state immediately for UI feedback
+    setState(() {
+      _isRecording = true;
+    });
+    _animationController.repeat(reverse: true);
+
     // Initialize if needed
     if (!speechService.isInitialized) {
       final initialized = await speechService.initialize();
       if (!initialized) {
         if (mounted) {
+          setState(() {
+            _isRecording = false;
+          });
+          _animationController.stop();
+          _animationController.reset();
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text('Speech recognition is not available'),
+              duration: Duration(seconds: 2),
             ),
           );
         }
@@ -110,64 +123,75 @@ class _SpeechTextFieldState extends ConsumerState<SpeechTextField>
       }
     }
 
+    // Listen to text stream BEFORE starting (to catch any errors)
+    _speechSubscription?.cancel();
+    _speechSubscription = speechService.textStream.listen(
+      (text) {
+        if (mounted && text.isNotEmpty) {
+          final currentText = _controller.text;
+          final selection = _controller.selection;
+          
+          // Insert text at cursor position or append
+          if (selection.isValid && selection.start >= 0) {
+            final newText = currentText.replaceRange(
+              selection.start,
+              selection.end,
+              text,
+            );
+            _controller.value = TextEditingValue(
+              text: newText,
+              selection: TextSelection.collapsed(offset: selection.start + text.length.toInt()),
+            );
+          } else {
+            _controller.text = currentText + text;
+            _controller.selection = TextSelection.collapsed(
+              offset: _controller.text.length,
+            );
+          }
+
+          widget.onChanged?.call(_controller.text);
+        }
+      },
+      onError: (error) {
+        debugPrint('Speech stream error: $error');
+        if (mounted) {
+          setState(() {
+            _isRecording = false;
+          });
+          _animationController.stop();
+          _animationController.reset();
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Speech recognition error: $error'),
+              duration: const Duration(seconds: 2),
+            ),
+          );
+        }
+      },
+    );
+
     // Start listening
     final started = await speechService.startListening();
     if (!started) {
       if (mounted) {
+        setState(() {
+          _isRecording = false;
+        });
+        _animationController.stop();
+        _animationController.reset();
+        _speechSubscription?.cancel();
+        _speechSubscription = null;
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Failed to start speech recognition'),
+            content: Text('Failed to start speech recognition. Please check microphone permissions.'),
+            duration: Duration(seconds: 3),
           ),
         );
       }
       return;
     }
 
-    setState(() {
-      _isRecording = true;
-    });
-    _animationController.repeat(reverse: true);
-
-    // Listen to text stream
-    _speechSubscription = speechService.textStream.listen((text) {
-      if (mounted) {
-        final currentText = _controller.text;
-        final selection = _controller.selection;
-        
-        // Insert text at cursor position or append
-        if (selection.isValid && selection.start >= 0) {
-          final newText = currentText.replaceRange(
-            selection.start,
-            selection.end,
-            text,
-          );
-          _controller.value = TextEditingValue(
-            text: newText,
-            selection: TextSelection.collapsed(offset: selection.start + text.length.toInt()),
-          );
-        } else {
-          _controller.text = currentText + text;
-          _controller.selection = TextSelection.collapsed(
-            offset: _controller.text.length,
-          );
-        }
-
-        widget.onChanged?.call(_controller.text);
-      }
-    }, onError: (error) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Speech recognition error: $error'),
-          ),
-        );
-        setState(() {
-          _isRecording = false;
-        });
-        _animationController.stop();
-        _animationController.reset();
-      }
-    });
+    // Successfully started - UI feedback is already set above
   }
 
   void _handleMicrophoneRelease() async {
