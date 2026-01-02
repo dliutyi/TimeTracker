@@ -1,0 +1,17 @@
+{
+  "@@locale": "jv",
+  "appName": "YuDi Time Tracker",
+  "welcomeTitle": "Sugeng rawuh ing YuDi Time Tracker",
+  "welcomeDescription": "Lacak wektu sampeyan, ngatur tugas, lan nganalisis produktivitas sampeyan kanthi gampang.",
+  "continueButton": "Lanjutake",
+  "activeTask": "Tugas Aktif",
+  "listOfTasks": "Daftar Tugas",
+  "statistics": "Statistik",
+  "listOfCriteria": "Daftar Kriteria",
+  "settings": "Setelan",
+  "addTask": "Tambah Tugas",
+  "generalMotto": "Motto Umum",
+  "noTasks": "Durung ana tugas",
+  "createFirstTask": "Gawe tugas pisanan sampeyan kanggo miwiti"
+}
+

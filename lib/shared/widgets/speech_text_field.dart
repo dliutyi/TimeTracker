@@ -83,8 +83,15 @@ class _SpeechTextFieldState extends ConsumerState<SpeechTextField>
   @override
   void dispose() {
     _speechSubscription?.cancel();
-    final speechService = ref.read(speechServiceProvider);
-    speechService.stopListening();
+    // Stop listening if widget is still mounted
+    if (mounted) {
+      try {
+        final speechService = ref.read(speechServiceProvider);
+        speechService.stopListening();
+      } catch (e) {
+        // Ignore errors during disposal
+      }
+    }
     if (!_isControllerExternal) {
       _controller.dispose();
     }

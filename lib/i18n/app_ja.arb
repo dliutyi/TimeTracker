@@ -1,0 +1,17 @@
+{
+  "@@locale": "ja",
+  "appName": "YuDi Time Tracker",
+  "welcomeTitle": "YuDi Time Trackerへようこそ",
+  "welcomeDescription": "時間を追跡し、タスクを管理し、生産性を簡単に分析できます。",
+  "continueButton": "続ける",
+  "activeTask": "アクティブなタスク",
+  "listOfTasks": "タスク一覧",
+  "statistics": "統計",
+  "listOfCriteria": "基準一覧",
+  "settings": "設定",
+  "addTask": "タスクを追加",
+  "generalMotto": "一般的なモットー",
+  "noTasks": "まだタスクがありません",
+  "createFirstTask": "始めるには最初のタスクを作成してください"
+}
+

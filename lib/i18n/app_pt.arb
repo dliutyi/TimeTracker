@@ -1,0 +1,17 @@
+{
+  "@@locale": "pt",
+  "appName": "YuDi Time Tracker",
+  "welcomeTitle": "Bem-vindo ao YuDi Time Tracker",
+  "welcomeDescription": "Rastreie seu tempo, gerencie tarefas e analise sua produtividade com facilidade.",
+  "continueButton": "Continuar",
+  "activeTask": "Tarefa Ativa",
+  "listOfTasks": "Lista de Tarefas",
+  "statistics": "Estatísticas",
+  "listOfCriteria": "Lista de Critérios",
+  "settings": "Configurações",
+  "addTask": "Adicionar Tarefa",
+  "generalMotto": "Lema Geral",
+  "noTasks": "Ainda não há tarefas",
+  "createFirstTask": "Crie sua primeira tarefa para começar"
+}
+

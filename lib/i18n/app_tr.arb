@@ -1,0 +1,17 @@
+{
+  "@@locale": "tr",
+  "appName": "YuDi Time Tracker",
+  "welcomeTitle": "YuDi Time Tracker'a Hoş Geldiniz",
+  "welcomeDescription": "Zamanınızı takip edin, görevleri yönetin ve verimliliğinizi kolayca analiz edin.",
+  "continueButton": "Devam Et",
+  "activeTask": "Aktif Görev",
+  "listOfTasks": "Görev Listesi",
+  "statistics": "İstatistikler",
+  "listOfCriteria": "Kriter Listesi",
+  "settings": "Ayarlar",
+  "addTask": "Görev Ekle",
+  "generalMotto": "Genel Slogan",
+  "noTasks": "Henüz görev yok",
+  "createFirstTask": "Başlamak için ilk görevinizi oluşturun"
+}
+

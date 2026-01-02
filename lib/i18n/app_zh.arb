@@ -1,0 +1,17 @@
+{
+  "@@locale": "zh",
+  "appName": "YuDi Time Tracker",
+  "welcomeTitle": "欢迎使用 YuDi Time Tracker",
+  "welcomeDescription": "轻松跟踪您的时间、管理任务并分析您的生产力。",
+  "continueButton": "继续",
+  "activeTask": "活动任务",
+  "listOfTasks": "任务列表",
+  "statistics": "统计",
+  "listOfCriteria": "标准列表",
+  "settings": "设置",
+  "addTask": "添加任务",
+  "generalMotto": "一般座右铭",
+  "noTasks": "还没有任务",
+  "createFirstTask": "创建您的第一个任务以开始"
+}
+

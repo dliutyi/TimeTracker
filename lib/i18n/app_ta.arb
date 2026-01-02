@@ -1,0 +1,17 @@
+{
+  "@@locale": "ta",
+  "appName": "YuDi Time Tracker",
+  "welcomeTitle": "YuDi Time Tracker-க்கு வரவேற்கிறோம்",
+  "welcomeDescription": "உங்கள் நேரத்தை கண்காணிக்கவும், பணிகளை நிர்வகிக்கவும் மற்றும் உங்கள் உற்பத்தித்திறனை எளிதாக பகுப்பாய்வு செய்யவும்।",
+  "continueButton": "தொடரவும்",
+  "activeTask": "செயலில் உள்ள பணி",
+  "listOfTasks": "பணிகளின் பட்டியல்",
+  "statistics": "புள்ளிவிவரங்கள்",
+  "listOfCriteria": "அளவுகோல்களின் பட்டியல்",
+  "settings": "அமைப்புகள்",
+  "addTask": "பணியைச் சேர்",
+  "generalMotto": "பொதுவான குறிக்கோள்",
+  "noTasks": "இன்னும் பணிகள் இல்லை",
+  "createFirstTask": "தொடங்க உங்கள் முதல் பணியை உருவாக்கவும்"
+}
+

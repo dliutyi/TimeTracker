@@ -1,0 +1,56 @@
+{
+  "@@locale": "en",
+  "appName": "YuDi Time Tracker",
+  "@appName": {
+    "description": "The application name"
+  },
+  "welcomeTitle": "Welcome to YuDi Time Tracker",
+  "@welcomeTitle": {
+    "description": "Welcome screen title"
+  },
+  "welcomeDescription": "Track your time, manage tasks, and analyze your productivity with ease.",
+  "@welcomeDescription": {
+    "description": "Welcome screen description"
+  },
+  "continueButton": "Continue",
+  "@continueButton": {
+    "description": "Continue button text"
+  },
+  "activeTask": "Active Task",
+  "@activeTask": {
+    "description": "Active Task tab label"
+  },
+  "listOfTasks": "List of Tasks",
+  "@listOfTasks": {
+    "description": "List of Tasks tab label"
+  },
+  "statistics": "Statistics",
+  "@statistics": {
+    "description": "Statistics tab label"
+  },
+  "listOfCriteria": "List of Criteria",
+  "@listOfCriteria": {
+    "description": "List of Criteria tab label"
+  },
+  "settings": "Settings",
+  "@settings": {
+    "description": "Settings tab label"
+  },
+  "addTask": "Add Task",
+  "@addTask": {
+    "description": "Add task button label"
+  },
+  "generalMotto": "General Motto",
+  "@generalMotto": {
+    "description": "General motto field label"
+  },
+  "noTasks": "No tasks yet",
+  "@noTasks": {
+    "description": "Empty state message when no tasks exist"
+  },
+  "createFirstTask": "Create your first task to get started",
+  "@createFirstTask": {
+    "description": "Empty state helper text"
+  }
+}
+

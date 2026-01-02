@@ -1,0 +1,17 @@
+{
+  "@@locale": "te",
+  "appName": "YuDi Time Tracker",
+  "welcomeTitle": "YuDi Time Tracker కు స్వాగతం",
+  "welcomeDescription": "మీ సమయాన్ని ట్రాక్ చేయండి, పనులను నిర్వహించండి మరియు మీ ఉత్పాదకతను సులభంగా విశ్లేషించండి।",
+  "continueButton": "కొనసాగించు",
+  "activeTask": "సక్రియ పని",
+  "listOfTasks": "పనుల జాబితా",
+  "statistics": "గణాంకాలు",
+  "listOfCriteria": "మాపకాల జాబితా",
+  "settings": "సెట్టింగ్‌లు",
+  "addTask": "పనిని జోడించు",
+  "generalMotto": "సాధారణ మాట్టో",
+  "noTasks": "ఇంకా పనులు లేవు",
+  "createFirstTask": "ప్రారంభించడానికి మీ మొదటి పనిని సృష్టించండి"
+}
+

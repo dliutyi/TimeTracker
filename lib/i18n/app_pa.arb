@@ -1,0 +1,17 @@
+{
+  "@@locale": "pa",
+  "appName": "YuDi Time Tracker",
+  "welcomeTitle": "YuDi Time Tracker ਵਿੱਚ ਜੀ ਆਇਆਂ ਨੂੰ",
+  "welcomeDescription": "ਆਪਣਾ ਸਮਾਂ ਟਰੈਕ ਕਰੋ, ਕੰਮਾਂ ਦਾ ਪ੍ਰਬੰਧਨ ਕਰੋ ਅਤੇ ਆਸਾਨੀ ਨਾਲ ਆਪਣੀ ਉਤਪਾਦਕਤਾ ਦਾ ਵਿਸ਼ਲੇਸ਼ਣ ਕਰੋ।",
+  "continueButton": "ਜਾਰੀ ਰੱਖੋ",
+  "activeTask": "ਸਰਗਰਮ ਕੰਮ",
+  "listOfTasks": "ਕੰਮਾਂ ਦੀ ਸੂਚੀ",
+  "statistics": "ਆਂਕੜੇ",
+  "listOfCriteria": "ਮਾਪਦੰਡਾਂ ਦੀ ਸੂਚੀ",
+  "settings": "ਸੈਟਿੰਗਾਂ",
+  "addTask": "ਕੰਮ ਜੋੜੋ",
+  "generalMotto": "ਸਾਮਾਨਿਕ ਆਦਰਸ਼ ਵਾਕ",
+  "noTasks": "ਅਜੇ ਤੱਕ ਕੋਈ ਕੰਮ ਨਹੀਂ",
+  "createFirstTask": "ਸ਼ੁਰੂ ਕਰਨ ਲਈ ਆਪਣਾ ਪਹਿਲਾ ਕੰਮ ਬਣਾਓ"
+}
+

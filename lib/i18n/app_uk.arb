@@ -1,0 +1,17 @@
+{
+  "@@locale": "uk",
+  "appName": "YuDi Time Tracker",
+  "welcomeTitle": "Ласкаво просимо до YuDi Time Tracker",
+  "welcomeDescription": "Відстежуйте свій час, керуйте завданнями та аналізуйте свою продуктивність з легкістю.",
+  "continueButton": "Продовжити",
+  "activeTask": "Активне завдання",
+  "listOfTasks": "Список завдань",
+  "statistics": "Статистика",
+  "listOfCriteria": "Список критеріїв",
+  "settings": "Налаштування",
+  "addTask": "Додати завдання",
+  "generalMotto": "Загальний девіз",
+  "noTasks": "Поки що немає завдань",
+  "createFirstTask": "Створіть своє перше завдання, щоб почати"
+}
+
