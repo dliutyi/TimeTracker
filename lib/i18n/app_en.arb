@@ -51,6 +51,38 @@
   "createFirstTask": "Create your first task to get started",
   "@createFirstTask": {
     "description": "Empty state helper text"
+  },
+  "addCriterion": "Add Criterion",
+  "@addCriterion": {
+    "description": "Add criterion button label"
+  },
+  "noCriteria": "No criteria yet",
+  "@noCriteria": {
+    "description": "Empty state message when no criteria exist"
+  },
+  "createFirstCriterion": "Create your first criterion to get started",
+  "@createFirstCriterion": {
+    "description": "Empty state helper text"
+  },
+  "discrete": "Discrete",
+  "@discrete": {
+    "description": "Discrete criterion type label"
+  },
+  "continuous": "Continuous",
+  "@continuous": {
+    "description": "Continuous criterion type label"
+  },
+  "selections": "selections",
+  "@selections": {
+    "description": "Selections label for discrete criteria"
+  },
+  "values": "values",
+  "@values": {
+    "description": "Values label for discrete criteria"
+  },
+  "step": "step",
+  "@step": {
+    "description": "Step label for continuous criteria"
   }
 }
 

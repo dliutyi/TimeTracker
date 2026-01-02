@@ -5,6 +5,7 @@ import '../../app/theme/liquid_glass_tab_bar.dart';
 import '../../core/services/session_service.dart';
 import '../tasks/list_tasks_screen.dart';
 import '../sessions/active_task_screen.dart';
+import '../criteria/list_criteria_screen.dart';
 
 /// Tab indices
 enum MainTab {
@@ -142,7 +143,7 @@ class MainNavigationScreenState extends ConsumerState<MainNavigationScreen> {
           const ActiveTaskScreen(),
           const ListTasksScreen(),
           _buildPlaceholderScreen(l10n.statistics),
-          _buildPlaceholderScreen(l10n.listOfCriteria),
+          const ListCriteriaScreen(),
           _buildPlaceholderScreen(l10n.settings),
         ],
       ),
