@@ -6,6 +6,7 @@ import '../../shared/widgets/speech_text_field.dart';
 import '../../core/repositories/repository_providers.dart';
 import '../../core/repositories/settings_repository.dart';
 import '../../core/models/task.dart';
+import '../../core/services/frequency_service.dart';
 import 'widgets/task_item.dart';
 
 /// Provider for general motto
@@ -252,11 +253,16 @@ class _ListTasksScreenState extends ConsumerState<ListTasksScreen> {
   }
 }
 
-/// Provider for tasks list (will be enhanced with sorting in TASK-019)
+/// Provider for tasks list with frequency sorting
 final _tasksProvider = FutureProvider<List<Task>>((ref) async {
   final taskRepository = ref.watch(taskRepositoryProvider);
-  // For now, just get all active tasks
-  // In TASK-019, this will use the frequency sorting
-  return await taskRepository.getActiveTasks();
+  final sessionRepository = ref.watch(sessionRepositoryProvider);
+  final frequencyService = FrequencyService(sessionRepository);
+  
+  // Get all tasks (including disabled)
+  final allTasks = await taskRepository.getAllTasks();
+  
+  // Sort by frequency
+  return await frequencyService.sortTasksByFrequency(allTasks);
 });
 
