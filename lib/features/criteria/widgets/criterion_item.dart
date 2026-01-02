@@ -3,8 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../app/theme/app_theme.dart';
 import '../../../core/models/criterion.dart';
-import '../../../core/models/criterion_config.dart';
-import '../../../core/models/criterion_type.dart';
 import '../../../core/constants/icons.dart';
 
 /// Widget to display a criterion item in the list

@@ -4,7 +4,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../app/theme/app_theme.dart';
 import '../../core/repositories/repository_providers.dart';
 import '../../core/models/criterion.dart';
-import '../../core/services/frequency_service.dart';
 import 'widgets/criterion_item.dart';
 
 /// Provider for criteria sorted by usage frequency
