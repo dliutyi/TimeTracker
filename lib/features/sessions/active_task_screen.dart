@@ -5,6 +5,7 @@ import '../../app/theme/app_theme.dart';
 import '../../core/models/session.dart';
 import '../../core/models/task.dart';
 import '../../core/services/session_service.dart';
+import '../../core/repositories/repository_providers.dart';
 import '../../core/constants/icons.dart';
 import '../../features/navigation/main_navigation_screen.dart';
 import 'widgets/rate_task_widget.dart';
