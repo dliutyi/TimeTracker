@@ -45,6 +45,8 @@ class _SwipeableItemState extends State<SwipeableItem>
   late Animation<double> _animation;
   double _dragOffset = 0.0;
   bool _isDragging = false;
+  bool _actionsRevealed = false;
+  static const double _activationThreshold = 80.0; // Pixels to pull for activation
 
   @override
   void initState() {
@@ -70,15 +72,6 @@ class _SwipeableItemState extends State<SwipeableItem>
     return actions.length * 80.0; // 80px per action button
   }
 
-  List<SwipeAction>? _getActiveActions() {
-    if (_dragOffset > 0) {
-      return widget.leftActions;
-    } else if (_dragOffset < 0) {
-      return widget.rightActions;
-    }
-    return null;
-  }
-
   void _handleDragStart(DragStartDetails details) {
     setState(() {
       _isDragging = true;
@@ -90,15 +83,11 @@ class _SwipeableItemState extends State<SwipeableItem>
     final newOffset = _dragOffset + delta;
 
     setState(() {
-      // Determine swipe direction based on current offset and delta
       if (newOffset > 0) {
-        // Swiping right (left to right) - reveal left actions or activate
-        if (widget.leftActions != null && widget.leftActions!.isNotEmpty) {
-          final maxDrag = _getMaxDrag(true);
-          _dragOffset = newOffset.clamp(0.0, maxDrag);
-        } else if (widget.onSwipeRight != null) {
-          // Allow right swipe for activation if no left actions
-          _dragOffset = newOffset.clamp(0.0, 100.0);
+        // Swiping right (left to right) - only for activation
+        if (widget.onSwipeRight != null) {
+          // Allow right swipe for activation only
+          _dragOffset = newOffset.clamp(0.0, _activationThreshold);
         } else {
           _dragOffset = 0.0;
         }
@@ -117,35 +106,33 @@ class _SwipeableItemState extends State<SwipeableItem>
   }
 
   void _handleDragEnd(DragEndDetails details) {
-    final actions = _getActiveActions();
-    final maxDrag = actions != null && actions.isNotEmpty
-        ? actions.length * 80.0
-        : (_dragOffset > 0 && widget.onSwipeRight != null ? 100.0 : 0.0);
-    final threshold = maxDrag * widget.threshold;
-
     setState(() {
       _isDragging = false;
     });
 
-    if (_dragOffset.abs() > threshold) {
-      // Swipe was significant enough
-      if (_dragOffset > 0 && widget.onSwipeRight != null && (widget.leftActions == null || widget.leftActions!.isEmpty)) {
-        // Right swipe for activation (only if no left actions)
+    if (_dragOffset > 0 && widget.onSwipeRight != null) {
+      // Right swipe for activation
+      if (_dragOffset >= _activationThreshold * 0.8) {
+        // Pulled far enough - activate
         widget.onSwipeRight!();
         _resetPosition();
-      } else if (_dragOffset < 0 && actions != null) {
-        // Left swipe revealed actions - keep them revealed
-        // Don't reset, keep the offset so actions stay visible
-        final targetValue = _dragOffset.abs() / maxDrag;
-        _controller.animateTo(targetValue);
-        // Keep _dragOffset at its current value so actions stay visible
-      } else if (_dragOffset > 0 && actions != null) {
-        // Right swipe revealed left actions - keep them revealed
-        final targetValue = _dragOffset / maxDrag;
-        _controller.animateTo(targetValue);
-        // Keep _dragOffset at its current value so actions stay visible
       } else {
-        // Snap back
+        // Not far enough - snap back
+        _resetPosition();
+      }
+    } else if (_dragOffset < 0 && widget.rightActions != null && widget.rightActions!.isNotEmpty) {
+      // Left swipe to reveal actions
+      final maxDrag = _getMaxDrag(false);
+      final threshold = maxDrag * widget.threshold;
+      
+      if (_dragOffset.abs() > threshold) {
+        // Swipe was significant enough - snap to fully revealed
+        _actionsRevealed = true;
+        _dragOffset = -maxDrag;
+        _controller.animateTo(1.0);
+      } else {
+        // Not far enough - snap back to default
+        _actionsRevealed = false;
         _resetPosition();
       }
     } else {
@@ -155,6 +142,7 @@ class _SwipeableItemState extends State<SwipeableItem>
   }
 
   void _resetPosition() {
+    _actionsRevealed = false;
     _controller.animateTo(0.0).then((_) {
       if (mounted) {
         setState(() {
@@ -173,22 +161,24 @@ class _SwipeableItemState extends State<SwipeableItem>
 
   @override
   Widget build(BuildContext context) {
-    final actions = _getActiveActions();
+    final rightActions = widget.rightActions;
     final hasRightSwipe = widget.onSwipeRight != null && _dragOffset > 0;
+    final isActivating = _dragOffset >= _activationThreshold * 0.8;
+    final maxRightDrag = rightActions != null && rightActions.isNotEmpty
+        ? rightActions.length * 80.0
+        : 0.0;
 
     return Stack(
         children: [
-          // Action buttons (behind)
-          if (actions != null && actions.isNotEmpty)
+          // Right action buttons (behind, revealed on left swipe)
+          if (rightActions != null && rightActions.isNotEmpty)
             Positioned.fill(
               child: IgnorePointer(
                 // Ignore pointer events only when actions are not revealed
-                ignoring: _dragOffset.abs() < 0.1,
+                ignoring: !_actionsRevealed,
                 child: Row(
-                  mainAxisAlignment: _dragOffset > 0
-                      ? MainAxisAlignment.start
-                      : MainAxisAlignment.end,
-                  children: actions.map((action) {
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: rightActions.map((action) {
                     return Container(
                       width: 80,
                       color: action.color,
@@ -227,18 +217,13 @@ class _SwipeableItemState extends State<SwipeableItem>
                 // Use actual drag offset during dragging
                 offset = _dragOffset;
               } else {
-                // When not dragging, use the drag offset if actions are revealed,
-                // otherwise use animation for smooth transitions
-                if (_dragOffset.abs() > 0.1) {
-                  // Actions are revealed, keep the offset
-                  offset = _dragOffset;
+                // When not dragging, use animation for smooth transitions
+                if (_actionsRevealed) {
+                  // Actions are revealed - use animation to maintain position
+                  offset = -(_animation.value * maxRightDrag);
                 } else {
                   // Use animation for snap back
-                  final actions = _getActiveActions();
-                  final maxDrag = actions != null && actions.isNotEmpty
-                      ? actions.length * 80.0
-                      : 0.0;
-                  offset = _animation.value * maxDrag * (_dragOffset < 0 ? -1 : 1);
+                  offset = _animation.value * _dragOffset;
                 }
               }
 
@@ -247,7 +232,7 @@ class _SwipeableItemState extends State<SwipeableItem>
                 child: GestureDetector(
                   onTap: () {
                     // Tap on main content to close revealed actions
-                    if (_dragOffset.abs() > 0.1) {
+                    if (_actionsRevealed) {
                       _resetPosition();
                     }
                   },
@@ -255,7 +240,9 @@ class _SwipeableItemState extends State<SwipeableItem>
                   onHorizontalDragUpdate: _handleDragUpdate,
                   onHorizontalDragEnd: _handleDragEnd,
                   child: Container(
-                    color: Theme.of(context).scaffoldBackgroundColor,
+                    color: isActivating
+                        ? Theme.of(context).colorScheme.primary.withOpacity(0.1)
+                        : Theme.of(context).scaffoldBackgroundColor,
                     child: widget.child,
                   ),
                 ),
@@ -263,19 +250,21 @@ class _SwipeableItemState extends State<SwipeableItem>
             },
           ),
           // Right swipe indicator (for activation)
-          if (hasRightSwipe && _dragOffset > 50)
+          if (hasRightSwipe && _dragOffset > 10)
             Positioned(
               left: 0,
               top: 0,
               bottom: 0,
               child: Container(
-                width: _dragOffset.clamp(0.0, 100.0),
-                color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
+                width: _dragOffset.clamp(0.0, _activationThreshold),
+                color: isActivating
+                    ? Theme.of(context).colorScheme.primary.withOpacity(0.5)
+                    : Theme.of(context).colorScheme.primary.withOpacity(0.2),
                 child: Center(
                   child: Icon(
                     Icons.play_arrow,
                     color: Theme.of(context).colorScheme.primary,
-                    size: 32,
+                    size: isActivating ? 40 : 32,
                   ),
                 ),
               ),

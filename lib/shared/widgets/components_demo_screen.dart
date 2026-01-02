@@ -358,7 +358,7 @@ class _ComponentsDemoScreenState extends ConsumerState<ComponentsDemoScreen> {
                         ),
                         const SizedBox(height: AppTheme.spacingM),
                         SwipeableItem(
-                          leftActions: [
+                          rightActions: [
                             SwipeAction(
                               label: 'Edit',
                               icon: Icons.edit,
@@ -379,8 +379,6 @@ class _ComponentsDemoScreenState extends ConsumerState<ComponentsDemoScreen> {
                                 );
                               },
                             ),
-                          ],
-                          rightActions: [
                             SwipeAction(
                               label: 'Disable',
                               icon: Icons.block,

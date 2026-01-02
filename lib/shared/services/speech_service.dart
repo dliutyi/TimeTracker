@@ -126,6 +126,14 @@ class SpeechService {
       );
 
       debugPrint('Speech listen result: $result');
+      // Handle null result - if null, check if actually listening
+      if (result == null) {
+        // Wait a bit and check status
+        await Future.delayed(const Duration(milliseconds: 100));
+        _isListening = _speech.isListening;
+        debugPrint('Speech isListening after null result: $_isListening');
+        return _isListening;
+      }
       _isListening = result;
       return result;
     } catch (e, stackTrace) {
