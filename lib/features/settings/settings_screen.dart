@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../app/theme/app_theme.dart';
+import '../../app/theme/theme_mode_provider.dart';
 
 /// App version constant
 const String appVersion = '0.1.0';
@@ -114,34 +115,40 @@ class SettingsScreen extends ConsumerWidget {
 
   Widget _buildDarkModeSelector(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    // TODO: Connect to theme mode provider (TASK-029)
-    final selectedMode = ThemeMode.system; // Placeholder
+    final appThemeMode = ref.watch(themeModeProvider);
+    final themeModeNotifier = ref.read(themeModeProvider.notifier);
 
     return Column(
       children: [
-        RadioListTile<ThemeMode>(
+        RadioListTile<AppThemeMode>(
           title: const Text('Light'),
-          value: ThemeMode.light,
-          groupValue: selectedMode,
+          value: AppThemeMode.light,
+          groupValue: appThemeMode,
           onChanged: (value) {
-            // TODO: Update theme mode (TASK-029)
+            if (value != null) {
+              themeModeNotifier.setThemeMode(value);
+            }
           },
         ),
-        RadioListTile<ThemeMode>(
+        RadioListTile<AppThemeMode>(
           title: const Text('Dark'),
-          value: ThemeMode.dark,
-          groupValue: selectedMode,
+          value: AppThemeMode.dark,
+          groupValue: appThemeMode,
           onChanged: (value) {
-            // TODO: Update theme mode (TASK-029)
+            if (value != null) {
+              themeModeNotifier.setThemeMode(value);
+            }
           },
         ),
-        RadioListTile<ThemeMode>(
+        RadioListTile<AppThemeMode>(
           title: const Text('Automatic'),
           subtitle: const Text('Follow system setting'),
-          value: ThemeMode.system,
-          groupValue: selectedMode,
+          value: AppThemeMode.system,
+          groupValue: appThemeMode,
           onChanged: (value) {
-            // TODO: Update theme mode (TASK-029)
+            if (value != null) {
+              themeModeNotifier.setThemeMode(value);
+            }
           },
         ),
       ],
