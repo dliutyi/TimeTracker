@@ -228,29 +228,36 @@ class _SpeechTextFieldState extends ConsumerState<SpeechTextField>
         labelText: widget.label,
         hintText: widget.hint,
         suffixIcon: Listener(
-          onPointerDown: (_) => _handleMicrophonePress(),
-          onPointerUp: (_) => _handleMicrophoneRelease(),
-          onPointerCancel: (_) => _handleMicrophoneRelease(),
-          child: GestureDetector(
-            // Prevent tap from interfering
-            onTap: () {},
-            child: AnimatedBuilder(
-              animation: _scaleAnimation,
-              builder: (context, child) {
-                return Transform.scale(
-                  scale: _isRecording ? _scaleAnimation.value : 1.0,
-                  child: Container(
-                    padding: const EdgeInsets.all(12),
-                    child: Icon(
-                      _isRecording ? Icons.mic : Icons.mic_none,
-                      color: _isRecording
-                          ? theme.colorScheme.error
-                          : theme.colorScheme.onSurfaceVariant,
-                    ),
+          onPointerDown: (event) {
+            // Prevent text field from getting focus
+            _focusNode.unfocus();
+            // Stop event propagation to prevent text field from handling it
+            _handleMicrophonePress();
+          },
+          onPointerUp: (event) {
+            _handleMicrophoneRelease();
+          },
+          onPointerCancel: (event) {
+            _handleMicrophoneRelease();
+          },
+          // Ensure we capture all pointer events, even when text field is focused
+          behavior: HitTestBehavior.opaque,
+          child: AnimatedBuilder(
+            animation: _scaleAnimation,
+            builder: (context, child) {
+              return Transform.scale(
+                scale: _isRecording ? _scaleAnimation.value : 1.0,
+                child: Container(
+                  padding: const EdgeInsets.all(12),
+                  child: Icon(
+                    _isRecording ? Icons.mic : Icons.mic_none,
+                    color: _isRecording
+                        ? theme.colorScheme.error
+                        : theme.colorScheme.onSurfaceVariant,
                   ),
-                );
-              },
-            ),
+                ),
+              );
+            },
           ),
         ),
       ),
