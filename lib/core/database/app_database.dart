@@ -50,9 +50,10 @@ class AppDatabase extends _$AppDatabase {
   /// Creates indexes for better query performance.
   Future<void> _createIndexes() async {
     // Index for sessions by task_id and datetime
+    // Note: Drift converts camelCase to snake_case, so startDateTime becomes start_date_time
     await customStatement(
       'CREATE INDEX IF NOT EXISTS idx_sessions_task_datetime '
-      'ON sessions(task_id, start_datetime DESC)',
+      'ON sessions(task_id, start_date_time DESC)',
     );
 
     // Index for task_criteria by task_id
