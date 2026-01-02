@@ -211,7 +211,11 @@ class _SpeechTextFieldState extends ConsumerState<SpeechTextField>
           // Capitalize first letter
           String finalText = _accumulatedText.trim();
           if (finalText.isNotEmpty) {
-            finalText = finalText[0].toUpperCase() + finalText.substring(1);
+            if (finalText.length == 1) {
+              finalText = finalText[0].toUpperCase();
+            } else {
+              finalText = finalText[0].toUpperCase() + finalText.substring(1);
+            }
           }
           
           // Replace existing text (don't append)
