@@ -129,7 +129,7 @@ class _SwipeableItemState extends State<SwipeableItem>
         // Swipe was significant enough - snap to fully revealed
         _actionsRevealed = true;
         _dragOffset = -maxDrag;
-        _controller.animateTo(1.0);
+        _controller.value = 1.0; // Set immediately to 1.0 to maintain position
       } else {
         // Not far enough - snap back to default
         _actionsRevealed = false;
@@ -219,8 +219,8 @@ class _SwipeableItemState extends State<SwipeableItem>
               } else {
                 // When not dragging, use animation for smooth transitions
                 if (_actionsRevealed) {
-                  // Actions are revealed - use animation to maintain position
-                  offset = -(_animation.value * maxRightDrag);
+                  // Actions are revealed - maintain position at full offset
+                  offset = -maxRightDrag;
                 } else {
                   // Use animation for snap back
                   offset = _animation.value * _dragOffset;
@@ -240,9 +240,8 @@ class _SwipeableItemState extends State<SwipeableItem>
                   onHorizontalDragUpdate: _handleDragUpdate,
                   onHorizontalDragEnd: _handleDragEnd,
                   child: Container(
-                    color: isActivating
-                        ? Theme.of(context).colorScheme.primary.withOpacity(0.1)
-                        : Theme.of(context).scaffoldBackgroundColor,
+                    // Keep background opaque - don't change color here
+                    color: Theme.of(context).scaffoldBackgroundColor,
                     child: widget.child,
                   ),
                 ),

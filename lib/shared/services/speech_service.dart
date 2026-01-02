@@ -29,11 +29,19 @@ class SpeechService {
         onError: (error) {
           debugPrint('Speech recognition error: $error');
           _textController.addError(error);
+          _isListening = false;
         },
         onStatus: (status) {
           debugPrint('Speech recognition status: $status');
+          // Only update listening state if we're actually in a listening session
+          // Don't update on initialization status changes
           if (status == 'done' || status == 'notListening') {
-            _isListening = false;
+            // Only set to false if we were actually listening
+            if (_isListening) {
+              _isListening = false;
+            }
+          } else if (status == 'listening') {
+            _isListening = true;
           }
         },
       );
@@ -128,11 +136,17 @@ class SpeechService {
       debugPrint('Speech listen result: $result');
       // Handle null result - if null, check if actually listening
       if (result == null) {
-        // Wait a bit and check status
-        await Future.delayed(const Duration(milliseconds: 100));
-        _isListening = _speech.isListening;
-        debugPrint('Speech isListening after null result: $_isListening');
-        return _isListening;
+        // Wait a bit and check status - sometimes listen() returns null but is actually listening
+        await Future.delayed(const Duration(milliseconds: 200));
+        final isActuallyListening = _speech.isListening;
+        _isListening = isActuallyListening;
+        debugPrint('Speech isListening after null result: $isActuallyListening');
+        if (isActuallyListening) {
+          return true;
+        }
+        // If still not listening, there might be an error
+        debugPrint('Speech recognition failed to start - isListening is false');
+        return false;
       }
       _isListening = result;
       return result;
@@ -147,11 +161,12 @@ class SpeechService {
 
   /// Stop listening for speech
   Future<void> stopListening() async {
-    if (!_isListening) return;
+    if (!_isListening && !_speech.isListening) return;
 
     try {
       await _speech.stop();
       _isListening = false;
+      debugPrint('Speech recognition stopped');
     } catch (e) {
       debugPrint('Failed to stop listening: $e');
     }

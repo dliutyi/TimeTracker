@@ -227,10 +227,13 @@ class _SpeechTextFieldState extends ConsumerState<SpeechTextField>
       decoration: InputDecoration(
         labelText: widget.label,
         hintText: widget.hint,
-        suffixIcon: GestureDetector(
-          onTapDown: (_) => _handleMicrophonePress(),
-          onTapUp: (_) => _handleMicrophoneRelease(),
-          onTapCancel: () => _handleMicrophoneRelease(),
+        suffixIcon: Listener(
+          onPointerDown: (_) => _handleMicrophonePress(),
+          onPointerUp: (_) => _handleMicrophoneRelease(),
+          onPointerCancel: (_) => _handleMicrophoneRelease(),
+          child: GestureDetector(
+            // Prevent tap from interfering
+            onTap: () {},
           child: AnimatedBuilder(
             animation: _scaleAnimation,
             builder: (context, child) {
@@ -247,6 +250,7 @@ class _SpeechTextFieldState extends ConsumerState<SpeechTextField>
                 ),
               );
             },
+          ),
           ),
         ),
       ),
