@@ -481,8 +481,8 @@ class _AddEditCriterionWidgetState
             Expanded(
               child: SpeechTextField(
                 controller: _nameController,
-                labelText: 'Name',
-                hintText: 'Enter criterion name',
+                label: 'Name',
+                hint: 'Enter criterion name',
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
                     return 'Name is required';
@@ -549,8 +549,8 @@ class _AddEditCriterionWidgetState
         // Selection Limit
         SpeechTextField(
           controller: _selectionLimitController,
-          labelText: 'Selection Limit',
-          hintText: 'How many values can be selected',
+          label: 'Selection Limit',
+          hint: 'How many values can be selected',
           keyboardType: TextInputType.number,
           validator: (value) {
             if (value == null || value.trim().isEmpty) {
@@ -580,7 +580,7 @@ class _AddEditCriterionWidgetState
                 Expanded(
                   child: SpeechTextField(
                     controller: _valueControllers[index],
-                    hintText: 'Value ${index + 1}',
+                    hint: 'Value ${index + 1}',
                     onChanged: (_) => _updateDiscreteValues(),
                     validator: (value) {
                       if (value == null || value.trim().isEmpty) {
@@ -619,8 +619,8 @@ class _AddEditCriterionWidgetState
         const SizedBox(height: AppTheme.spacingM),
         SpeechTextField(
           controller: _minValueController,
-          labelText: 'Min Value',
-          hintText: 'Minimum allowed value',
+          label: 'Min Value',
+          hint: 'Minimum allowed value',
           keyboardType: const TextInputType.numberWithOptions(decimal: true),
           validator: (value) {
             if (value == null || value.trim().isEmpty) {
@@ -637,8 +637,8 @@ class _AddEditCriterionWidgetState
         const SizedBox(height: AppTheme.spacingM),
         SpeechTextField(
           controller: _maxValueController,
-          labelText: 'Max Value',
-          hintText: 'Maximum allowed value',
+          label: 'Max Value',
+          hint: 'Maximum allowed value',
           keyboardType: const TextInputType.numberWithOptions(decimal: true),
           validator: (value) {
             if (value == null || value.trim().isEmpty) {
@@ -658,8 +658,8 @@ class _AddEditCriterionWidgetState
         const SizedBox(height: AppTheme.spacingM),
         SpeechTextField(
           controller: _stepValueController,
-          labelText: 'Step Value',
-          hintText: 'Increment/decrement step',
+          label: 'Step Value',
+          hint: 'Increment/decrement step',
           keyboardType: const TextInputType.numberWithOptions(decimal: true),
           validator: (value) {
             if (value == null || value.trim().isEmpty) {
