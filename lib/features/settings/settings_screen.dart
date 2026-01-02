@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../app/theme/app_theme.dart';
 import '../../app/theme/theme_mode_provider.dart';
+import '../../app/config/locale_provider.dart';
 
 /// App version constant
 const String appVersion = '0.1.0';
@@ -160,21 +161,61 @@ class SettingsScreen extends ConsumerWidget {
     WidgetRef ref,
     AppLocalizations l10n,
   ) {
-    // TODO: Connect to locale provider (TASK-030)
-    final currentLocale = const Locale('en'); // Placeholder
+    final currentLocale = ref.watch(localeProvider) ?? const Locale('en');
+    final localeNotifier = ref.read(localeProvider.notifier);
+    final supportedLocales = AppLocalizations.supportedLocales;
 
     return ListTile(
       title: const Text('Language'),
       subtitle: Text(_getLanguageName(currentLocale)),
       trailing: const Icon(Icons.arrow_forward_ios, size: 16),
       onTap: () {
-        // TODO: Show language picker (TASK-030)
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Language selection will be implemented in TASK-030'),
-          ),
-        );
+        _showLanguagePicker(context, ref, currentLocale, supportedLocales, localeNotifier);
       },
+    );
+  }
+
+  void _showLanguagePicker(
+    BuildContext context,
+    WidgetRef ref,
+    Locale currentLocale,
+    List<Locale> supportedLocales,
+    LocaleNotifier localeNotifier,
+  ) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Select Language'),
+        content: SizedBox(
+          width: double.maxFinite,
+          child: ListView.builder(
+            shrinkWrap: true,
+            itemCount: supportedLocales.length,
+            itemBuilder: (context, index) {
+              final locale = supportedLocales[index];
+              final isSelected = locale.languageCode == currentLocale.languageCode;
+
+              return RadioListTile<Locale>(
+                title: Text(_getLanguageName(locale)),
+                value: locale,
+                groupValue: isSelected ? currentLocale : null,
+                onChanged: (selectedLocale) {
+                  if (selectedLocale != null) {
+                    localeNotifier.setLocale(selectedLocale);
+                    Navigator.of(context).pop();
+                  }
+                },
+              );
+            },
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Cancel'),
+          ),
+        ],
+      ),
     );
   }
 
