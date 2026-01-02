@@ -6,12 +6,14 @@ class LiquidGlassTabBar extends StatelessWidget implements PreferredSizeWidget {
   final List<BottomNavigationBarItem> items;
   final int currentIndex;
   final ValueChanged<int> onTap;
+  final Set<int>? disabledIndices;
 
   const LiquidGlassTabBar({
     super.key,
     required this.items,
     required this.currentIndex,
     required this.onTap,
+    this.disabledIndices,
   });
 
   @override
@@ -55,6 +57,7 @@ class LiquidGlassTabBar extends StatelessWidget implements PreferredSizeWidget {
                     (index) => _TabBarItem(
                       item: items[index],
                       isSelected: currentIndex == index,
+                      isDisabled: disabledIndices?.contains(index) ?? false,
                       onTap: () => onTap(index),
                     ),
                   ),
@@ -71,26 +74,30 @@ class LiquidGlassTabBar extends StatelessWidget implements PreferredSizeWidget {
 class _TabBarItem extends StatelessWidget {
   final BottomNavigationBarItem item;
   final bool isSelected;
+  final bool isDisabled;
   final VoidCallback onTap;
 
   const _TabBarItem({
     required this.item,
     required this.isSelected,
+    this.isDisabled = false,
     required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final color = isSelected
-        ? theme.colorScheme.primary
-        : theme.colorScheme.onSurface.withOpacity(0.6);
+    final color = isDisabled
+        ? theme.colorScheme.onSurface.withOpacity(0.3)
+        : isSelected
+            ? theme.colorScheme.primary
+            : theme.colorScheme.onSurface.withOpacity(0.6);
 
     return Expanded(
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          onTap: onTap,
+          onTap: isDisabled ? null : onTap,
           borderRadius: BorderRadius.circular(12),
           child: Column(
             mainAxisSize: MainAxisSize.min,

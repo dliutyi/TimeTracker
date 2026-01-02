@@ -93,6 +93,15 @@ class MainNavigationScreenState
   }
 
   void _onTabTapped(int index) {
+    // Prevent navigation to Active Task tab if there's no active session
+    if (index == MainTab.activeTask.tabIndex) {
+      final activeSession = ref.read(activeSessionProvider);
+      if (activeSession == null) {
+        // Don't allow navigation to Active Task tab when no active session
+        return;
+      }
+    }
+    
     setState(() {
       _currentIndex = index;
       _tabController.animateTo(index);
@@ -165,6 +174,9 @@ class MainNavigationScreenState
         items: tabItems,
         currentIndex: _currentIndex,
         onTap: _onTabTapped,
+        disabledIndices: activeSession == null
+            ? {MainTab.activeTask.tabIndex}
+            : null,
       ),
     );
   }
