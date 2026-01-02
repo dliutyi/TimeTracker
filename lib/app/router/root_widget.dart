@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../features/welcome/welcome_screen.dart';
 import '../../features/welcome/welcome_screen.dart' as welcome;
+import '../../features/navigation/main_navigation_screen.dart';
 
 /// Root widget that decides whether to show welcome or main screen
 class AppRootWidget extends ConsumerWidget {
@@ -14,12 +15,8 @@ class AppRootWidget extends ConsumerWidget {
     return welcomeShownAsync.when(
       data: (shown) {
         if (shown) {
-          // Welcome already shown, show main navigation (placeholder for now)
-          return const Scaffold(
-            body: Center(
-              child: Text('Main Navigation - Coming in TASK-017'),
-            ),
-          );
+          // Welcome already shown, show main navigation
+          return const MainNavigationScreen();
         } else {
           // Show welcome screen
           return const WelcomeScreen();
