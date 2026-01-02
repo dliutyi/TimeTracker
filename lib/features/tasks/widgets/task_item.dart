@@ -7,6 +7,7 @@ import '../../../shared/widgets/swipeable_item.dart';
 import '../../../shared/widgets/confirmation_dialog.dart';
 import '../../../core/repositories/repository_providers.dart';
 import '../../../core/services/session_service.dart';
+import '../../navigation/main_navigation_screen.dart';
 import '../list_tasks_screen.dart';
 import 'add_edit_task_widget.dart';
 
@@ -22,6 +23,9 @@ class TaskItem extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
+    final activeSession = ref.watch(activeSessionProvider);
+    final isActive = activeSession?.taskId == task.id;
+    final hasActiveSession = activeSession != null;
     
     // Get icon - task.icon is a string identifier, try to parse as int index
     IconData iconData = Icons.task;
@@ -36,9 +40,10 @@ class TaskItem extends ConsumerWidget {
     }
 
     final isDisabled = task.disabledAt != null;
+    final canActivate = !isDisabled && !hasActiveSession;
 
     return SwipeableItem(
-      onSwipeRight: isDisabled ? null : () => _handleActivate(context, ref),
+      onSwipeRight: canActivate ? () => _handleActivate(context, ref) : null,
       rightActions: [
         SwipeAction(
           label: 'Settings',
@@ -61,12 +66,19 @@ class TaskItem extends ConsumerWidget {
       ],
       child: Card(
         margin: const EdgeInsets.only(bottom: AppTheme.spacingS),
+        color: isActive
+            ? theme.colorScheme.primaryContainer.withOpacity(0.3)
+            : null,
         child: ListTile(
           leading: CircleAvatar(
-            backgroundColor: theme.colorScheme.primaryContainer,
+            backgroundColor: isActive
+                ? theme.colorScheme.primary
+                : theme.colorScheme.primaryContainer,
             child: Icon(
               iconData,
-              color: theme.colorScheme.onPrimaryContainer,
+              color: isActive
+                  ? theme.colorScheme.onPrimary
+                  : theme.colorScheme.onPrimaryContainer,
             ),
           ),
           title: Text(
@@ -75,34 +87,77 @@ class TaskItem extends ConsumerWidget {
               decoration: isDisabled ? TextDecoration.lineThrough : null,
               color: isDisabled
                   ? theme.colorScheme.onSurfaceVariant
-                  : null,
+                  : isActive
+                      ? theme.colorScheme.primary
+                      : null,
+              fontWeight: isActive ? FontWeight.bold : null,
             ),
           ),
-          subtitle: task.criterionIds.isNotEmpty
-              ? Text(
+          subtitle: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (task.criterionIds.isNotEmpty)
+                Text(
                   '${task.criterionIds.length} criteria',
                   style: theme.textTheme.bodySmall,
-                )
-              : null,
-          trailing: isDisabled
-              ? Icon(
+                ),
+              if (isActive)
+                Text(
+                  'Active',
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: theme.colorScheme.primary,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+            ],
+          ),
+          trailing: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (isActive)
+                Icon(
+                  Icons.play_circle_filled,
+                  color: theme.colorScheme.primary,
+                  size: 24,
+                ),
+              if (isDisabled)
+                Icon(
                   Icons.block,
                   color: theme.colorScheme.error,
                   size: 20,
-                )
-              : null,
+                ),
+            ],
+          ),
         ),
       ),
     );
   }
 
   Future<void> _handleActivate(BuildContext context, WidgetRef ref) async {
+    // Check if there's already an active session
+    final activeSession = ref.read(activeSessionProvider);
+    if (activeSession != null) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Another task is already active. Stop it first.'),
+          ),
+        );
+      }
+      return;
+    }
+
     try {
       final activeSessionNotifier = ref.read(activeSessionProvider.notifier);
       await activeSessionNotifier.startSession(task);
 
-      // Navigation will happen automatically when active session is set
-      // The MainNavigationScreen will detect the active session and switch tabs
+      // Navigate to Active Task tab
+      if (context.mounted) {
+        final mainNavState = MainNavigationScreenState.of(context);
+        if (mainNavState != null) {
+          mainNavState.switchToTab(0); // Active Task tab
+        }
+      }
     } catch (e) {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(

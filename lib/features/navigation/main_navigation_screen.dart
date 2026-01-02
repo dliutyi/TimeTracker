@@ -24,10 +24,10 @@ class MainNavigationScreen extends ConsumerStatefulWidget {
 
   @override
   ConsumerState<MainNavigationScreen> createState() =>
-      _MainNavigationScreenState();
+      MainNavigationScreenState();
 }
 
-class _MainNavigationScreenState
+class MainNavigationScreenState
     extends ConsumerState<MainNavigationScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
@@ -71,6 +71,11 @@ class _MainNavigationScreenState
     }
   }
 
+  /// Get the current state (for accessing from child widgets)
+  static MainNavigationScreenState? of(BuildContext context) {
+    return context.findAncestorStateOfType<MainNavigationScreenState>();
+  }
+
 
   void _onTabChanged() {
     if (_tabController.indexIsChanging) {
@@ -97,6 +102,23 @@ class _MainNavigationScreenState
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final activeSession = ref.watch(activeSessionProvider);
+
+    // Update tab if active session changes
+    if (activeSession != null && _currentIndex != MainTab.activeTask.tabIndex) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          switchToTab(MainTab.activeTask.tabIndex);
+        }
+      });
+    } else if (activeSession == null && _currentIndex == MainTab.activeTask.tabIndex) {
+      // If active session ends while on active task tab, switch to list
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          switchToTab(MainTab.listOfTasks.tabIndex);
+        }
+      });
+    }
 
     // Build tab items
     final tabItems = [

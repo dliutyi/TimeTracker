@@ -93,25 +93,13 @@ class CriterionRepositoryImpl implements CriterionRepository {
 
   @override
   Future<List<Criterion>> getCriteriaByUsageFrequency() async {
-    // Get all criteria with their usage counts
-    final query = _database.selectOnly(
-      _database.criteria,
-      distinct: true,
-    ).join([
-      leftOuterJoin(
-        _database.taskCriteria,
-        _database.taskCriteria.criterionId.equalsExp(
-          _database.criteria.id,
-        ),
-      ),
-    ]);
-
-    final rows = await query.get();
+    // Get all task-criteria associations to count usage
+    final taskCriteriaRows = await (_database.select(_database.taskCriteria)).get();
 
     // Count usage for each criterion
     final usageMap = <String, int>{};
-    for (final row in rows) {
-      final criterionId = row.read(_database.criteria.id)!;
+    for (final row in taskCriteriaRows) {
+      final criterionId = row.criterionId;
       usageMap[criterionId] = (usageMap[criterionId] ?? 0) + 1;
     }
 

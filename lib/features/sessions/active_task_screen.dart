@@ -26,22 +26,64 @@ class _ActiveTaskScreenState extends ConsumerState<ActiveTaskScreen> {
     final activeTaskAsync = ref.watch(_activeTaskProvider);
 
     if (activeSession == null) {
-      return const Center(
-        child: Text('No active session'),
-      );
+      return _buildNoActiveSession(context);
     }
 
     return activeTaskAsync.when(
       data: (task) {
         if (task == null) {
-          return const Center(
-            child: Text('Task not found'),
-          );
+          return _buildNoActiveSession(context);
         }
         return _buildContent(context, activeSession, task);
       },
       loading: () => const Center(child: CircularProgressIndicator()),
-      error: (error, stack) => Center(child: Text('Error: $error')),
+      error: (error, stack) => _buildNoActiveSession(context),
+    );
+  }
+
+  Widget _buildNoActiveSession(BuildContext context) {
+    final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
+
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(AppTheme.spacingXL),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.timer_off,
+              size: 64,
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
+            const SizedBox(height: AppTheme.spacingL),
+            Text(
+              'No Active Task',
+              style: theme.textTheme.headlineSmall,
+            ),
+            const SizedBox(height: AppTheme.spacingS),
+            Text(
+              'Start a task from the List of Tasks to track your time.',
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: AppTheme.spacingXL),
+            ElevatedButton.icon(
+              onPressed: () {
+                // Navigate to List of Tasks tab (index 1)
+                final mainNavState = MainNavigationScreenState.of(context);
+                if (mainNavState != null) {
+                  mainNavState.switchToTab(1);
+                }
+              },
+              icon: const Icon(Icons.list),
+              label: Text(l10n.listOfTasks),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
