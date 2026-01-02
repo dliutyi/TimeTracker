@@ -298,7 +298,13 @@ class _ActiveTaskScreenState extends ConsumerState<ActiveTaskScreen> {
     );
 
     final activeSessionNotifier = ref.read(activeSessionProvider.notifier);
-    final updatedSession = session.copyWith(startDateTime: newDateTime);
+    // If session is active (endDateTime == startDateTime), keep it active after updating start time
+    final wasActive = session.endDateTime.difference(session.startDateTime).abs().inSeconds < 1;
+    final updatedEndDateTime = wasActive ? newDateTime : session.endDateTime;
+    final updatedSession = session.copyWith(
+      startDateTime: newDateTime,
+      endDateTime: updatedEndDateTime,
+    );
     await activeSessionNotifier.updateSession(updatedSession);
   }
 
