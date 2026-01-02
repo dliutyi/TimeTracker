@@ -234,23 +234,23 @@ class _SpeechTextFieldState extends ConsumerState<SpeechTextField>
           child: GestureDetector(
             // Prevent tap from interfering
             onTap: () {},
-          child: AnimatedBuilder(
-            animation: _scaleAnimation,
-            builder: (context, child) {
-              return Transform.scale(
-                scale: _isRecording ? _scaleAnimation.value : 1.0,
-                child: Container(
-                  padding: const EdgeInsets.all(12),
-                  child: Icon(
-                    _isRecording ? Icons.mic : Icons.mic_none,
-                    color: _isRecording
-                        ? theme.colorScheme.error
-                        : theme.colorScheme.onSurfaceVariant,
+            child: AnimatedBuilder(
+              animation: _scaleAnimation,
+              builder: (context, child) {
+                return Transform.scale(
+                  scale: _isRecording ? _scaleAnimation.value : 1.0,
+                  child: Container(
+                    padding: const EdgeInsets.all(12),
+                    child: Icon(
+                      _isRecording ? Icons.mic : Icons.mic_none,
+                      color: _isRecording
+                          ? theme.colorScheme.error
+                          : theme.colorScheme.onSurfaceVariant,
+                    ),
                   ),
-                ),
-              );
-            },
-          ),
+                );
+              },
+            ),
           ),
         ),
       ),
