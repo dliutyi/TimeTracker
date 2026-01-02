@@ -427,7 +427,10 @@ class _ActiveTaskScreenState extends ConsumerState<ActiveTaskScreen> {
 
 /// Provider for active task
 final _activeTaskProvider = FutureProvider<Task?>((ref) async {
-  final activeSessionNotifier = ref.watch(activeSessionProvider.notifier);
-  return await activeSessionNotifier.getActiveTask();
+  final activeSession = ref.watch(activeSessionProvider);
+  if (activeSession == null) return null;
+  
+  final taskRepository = ref.watch(taskRepositoryProvider);
+  return await taskRepository.getTaskById(activeSession.taskId);
 });
 

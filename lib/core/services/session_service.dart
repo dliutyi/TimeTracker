@@ -9,7 +9,10 @@ import '../repositories/task_repository.dart';
 final activeSessionProvider = StateNotifierProvider<ActiveSessionNotifier, Session?>((ref) {
   final sessionRepository = ref.watch(sessionRepositoryProvider);
   final taskRepository = ref.watch(taskRepositoryProvider);
-  return ActiveSessionNotifier(sessionRepository, taskRepository);
+  final notifier = ActiveSessionNotifier(sessionRepository, taskRepository);
+  // Load active session immediately
+  notifier.loadActiveSession();
+  return notifier;
 });
 
 /// Notifier for managing active session state
@@ -18,12 +21,10 @@ class ActiveSessionNotifier extends StateNotifier<Session?> {
   final TaskRepository _taskRepository;
   bool _isInitialized = false;
 
-  ActiveSessionNotifier(this._sessionRepository, this._taskRepository) : super(null) {
-    _loadActiveSession();
-  }
+  ActiveSessionNotifier(this._sessionRepository, this._taskRepository) : super(null);
 
   /// Load active session from database on initialization
-  Future<void> _loadActiveSession() async {
+  Future<void> loadActiveSession() async {
     if (_isInitialized) return;
     _isInitialized = true;
     
