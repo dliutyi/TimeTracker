@@ -1,0 +1,136 @@
+# YuDi Time Tracker - Cursor IDE Rules
+
+This file contains guidelines and rules for AI assistance in the YuDi Time Tracker project.
+
+## Project Overview
+YuDi Time Tracker is a Flutter mobile application for tracking user time with support for multiple localizations, speech recognition, and comprehensive statistics.
+
+## Technical Stack
+- **Flutter**: Cross-platform mobile framework
+- **go_router**: Navigation and routing
+- **freezed**: Immutable data classes and unions
+- **drift**: Type-safe SQLite database
+- **intl**: Internationalization and localization
+- **riverpod**: State management
+- **speech_to_text**: Speech recognition for text input
+
+## Code Organization
+The `lib` folder follows this structure:
+- `app/` - Application-level configuration, routing, theme
+- `core/` - Core utilities, constants, base classes
+- `features/` - Feature modules (organized by domain)
+- `i18n/` - Internationalization files and translations
+- `shared/` - Shared widgets, models, utilities
+
+## Code Quality Standards
+
+### Modularity & Maintainability
+- Code must be modular and easy to extend
+- Pay special attention to Freezed and Drift schemas for extensibility
+- Each object/model description in a separate file
+- Monitor file line count (target: under several hundred lines per file)
+- Clear separation of concerns
+
+### File Organization
+- One class/model per file when possible
+- Keep files focused and maintainable
+- Use meaningful file and directory names
+
+### State Management
+- Use Riverpod for state management
+- Create providers for shared state
+- Keep state as local as possible
+
+### Database
+- Use Drift for type-safe database operations
+- Design schemas with extensibility in mind
+- Use migrations for schema changes
+
+### Data Models
+- Use Freezed for immutable data classes
+- Include JSON serialization where needed
+- Use unions for discriminated unions
+
+## UI/UX Standards
+
+### Design Principles
+- Modern, contemporary UI with smooth animations and transitions
+- Polished, engaging visual elements
+- Responsive design for phones and tablets (Android & iOS)
+- Follow platform accessibility guidelines
+
+### Speech Recognition
+- All text input fields MUST support speech-to-text functionality
+- Custom input field component with microphone button on the right side
+- Speech recording activates while user holds the microphone button
+- Text is filled in real-time as speech is recognized
+- Works for all text inputs: task names, mottos, criterion names, discrete values, etc.
+
+### Navigation
+- Use go_router for navigation
+- Implement proper deep linking
+- Handle navigation state properly
+
+## Internationalization
+- Support top 20 localizations
+- App opens with system locale by default
+- Localization files organized in `lib/i18n/`
+- Use intl package for formatting
+
+## Testing Requirements
+- Each task should include unit tests
+- Tests must pass before task completion
+- New features should not break existing tests
+- Use test-driven development where applicable
+
+## Development Workflow
+- One task per commit (commits should be named: "TASK-XXX: Description")
+- Run `flutter analyze` before committing
+- Run `flutter test` before committing
+- Run `flutter build` to verify builds work
+- Update task document with any issues or notes
+
+## Code Generation
+- Run `flutter pub run build_runner build --delete-conflicting-outputs` after changes to:
+  - Freezed models
+  - JSON serializable classes
+  - Drift database schemas
+
+## Version Control
+- Use semantic versioning (MAJOR.MINOR.PATCH)
+- Each task should have its own commit
+- Commit messages should follow: "TASK-XXX: Brief description"
+
+## Platform Support
+- Android (phones & tablets)
+- iOS (iPhone & iPad)
+- Ensure compatibility across all supported platforms
+
+## Performance
+- Optimize for smooth app performance
+- Handle large datasets efficiently
+- Consider long-term usage patterns
+
+## Security
+- Use most recent library versions to minimize security risks
+- Follow Flutter security best practices
+
+## When Writing Code
+1. Always follow the project structure
+2. Use Freezed for data models
+3. Use Riverpod for state management
+4. Include unit tests for new features
+5. Ensure all text inputs support speech recognition
+6. Make UI responsive and accessible
+7. Follow Flutter best practices and conventions
+8. Keep files modular and maintainable
+9. Document complex logic
+10. Use meaningful variable and function names
+
+## Common Patterns
+- Use sealed classes/unions with Freezed for type-safe state
+- Use Riverpod providers for dependency injection
+- Use Drift for all database operations
+- Use go_router for navigation
+- Use intl for all user-facing text formatting
+
