@@ -147,6 +147,23 @@
   "stepMustBeGreaterThanZero": "Step value must be greater than 0",
   "@stepMustBeGreaterThanZero": {
     "description": "Validation error for step value"
+  },
+  "deleteCriterion": "Delete Criterion",
+  "@deleteCriterion": {
+    "description": "Delete criterion button label"
+  },
+  "deleteCriterionWarning": "Are you sure you want to delete this criterion? This action cannot be undone.",
+  "@deleteCriterionWarning": {
+    "description": "Delete criterion warning message"
+  },
+  "criterionUsedInTasks": "This criterion is used in {count} task(s). The association will be removed from those tasks.",
+  "@criterionUsedInTasks": {
+    "description": "Message about criterion being used in tasks",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   }
 }
 

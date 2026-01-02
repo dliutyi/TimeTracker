@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../app/theme/app_theme.dart';
 import '../../../core/models/criterion.dart';
+import '../../../core/models/criterion_config.dart';
 import '../../../core/constants/icons.dart';
 
 /// Widget to display a criterion item in the list
-class CriterionItem extends ConsumerWidget {
+class CriterionItem extends StatelessWidget {
   final Criterion criterion;
 
   const CriterionItem({
@@ -15,52 +14,49 @@ class CriterionItem extends ConsumerWidget {
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final l10n = AppLocalizations.of(context)!;
-
-    // Get icon - can be an emoji or icon index
-    Widget iconWidget;
+    
+    // Get icon data
+    IconData iconData = Icons.rule;
     try {
-      // Try to parse as icon index
       final iconIndex = int.tryParse(criterion.icon);
       if (iconIndex != null) {
-        final iconData = AppIcons.getIcon(iconIndex) ?? Icons.rule;
-        iconWidget = Icon(
-          iconData,
-          color: theme.colorScheme.onPrimaryContainer,
-        );
+        iconData = AppIcons.getIcon(iconIndex) ?? Icons.rule;
       } else {
-        // Treat as emoji
-        iconWidget = Text(
-          criterion.icon,
-          style: const TextStyle(fontSize: 24),
-        );
+        // If it's not a number, it might be an emoji - we'll display it as text
+        // For now, use default icon
       }
     } catch (e) {
-      // Fallback to default icon
-      iconWidget = Icon(
-        Icons.rule,
-        color: theme.colorScheme.onPrimaryContainer,
-      );
+      iconData = Icons.rule;
     }
 
-    // Build type and configuration description
-    final typeDescription = _buildTypeDescription(l10n);
+    // Build configuration description
+    final configDescription = criterion.config.when(
+      discrete: (selectionLimit, values) {
+        return 'Discrete: $selectionLimit selection${selectionLimit != 1 ? 's' : ''}, ${values.length} value${values.length != 1 ? 's' : ''}';
+      },
+      continuous: (minValue, maxValue, stepValue) {
+        return 'Continuous: $minValue-$maxValue, step $stepValue';
+      },
+    );
 
     return Card(
       margin: const EdgeInsets.only(bottom: AppTheme.spacingS),
       child: ListTile(
         leading: CircleAvatar(
           backgroundColor: theme.colorScheme.primaryContainer,
-          child: iconWidget,
+          child: Icon(
+            iconData,
+            color: theme.colorScheme.onPrimaryContainer,
+          ),
         ),
         title: Text(
           criterion.name,
           style: theme.textTheme.titleMedium,
         ),
         subtitle: Text(
-          typeDescription,
+          configDescription,
           style: theme.textTheme.bodySmall?.copyWith(
             color: theme.colorScheme.onSurfaceVariant,
           ),
@@ -68,16 +64,4 @@ class CriterionItem extends ConsumerWidget {
       ),
     );
   }
-
-  String _buildTypeDescription(AppLocalizations l10n) {
-    return criterion.config.when(
-      discrete: (selectionLimit, values) {
-        return '${l10n.discrete}: $selectionLimit ${l10n.selections}, ${values.length} ${l10n.values}';
-      },
-      continuous: (minValue, maxValue, stepValue) {
-        return '${l10n.continuous}: $minValue-$maxValue, ${l10n.step} $stepValue';
-      },
-    );
-  }
 }
-

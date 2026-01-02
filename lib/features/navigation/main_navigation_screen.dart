@@ -6,6 +6,7 @@ import '../../core/services/session_service.dart';
 import '../tasks/list_tasks_screen.dart';
 import '../sessions/active_task_screen.dart';
 import '../criteria/list_criteria_screen.dart';
+import '../criteria/list_criteria_screen.dart';
 
 /// Tab indices
 enum MainTab {

@@ -5,7 +5,6 @@ import '../../app/theme/app_theme.dart';
 import '../../core/repositories/repository_providers.dart';
 import '../../core/models/criterion.dart';
 import 'widgets/criterion_item.dart';
-import 'widgets/add_edit_criterion_widget.dart';
 
 /// Provider for criteria sorted by usage frequency
 final criteriaProvider = FutureProvider<List<Criterion>>((ref) async {
@@ -28,12 +27,10 @@ class ListCriteriaScreen extends ConsumerWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.add),
-            onPressed: () async {
-              await AddEditCriterionWidget.show(context);
-              // Refresh criteria list
-              ref.invalidate(criteriaProvider);
+            onPressed: () {
+              // TODO: Open Add/Edit Criterion widget (TASK-026)
             },
-            tooltip: l10n.addCriterion,
+            tooltip: 'Add Criterion',
           ),
         ],
       ),
@@ -42,17 +39,26 @@ class ListCriteriaScreen extends ConsumerWidget {
           if (criteria.isEmpty) {
             return _buildEmptyState(context, l10n);
           }
-          return ListView.builder(
-            padding: const EdgeInsets.all(AppTheme.spacingM),
-            itemCount: criteria.length,
-            itemBuilder: (context, index) {
-              return CriterionItem(criterion: criteria[index]);
-            },
-          );
+          return _buildCriteriaList(context, criteria);
         },
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, stack) => Center(
-          child: Text('Error loading criteria: $error'),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.error_outline,
+                size: 64,
+                color: Theme.of(context).colorScheme.error,
+              ),
+              const SizedBox(height: AppTheme.spacingM),
+              Text(
+                'Error loading criteria: $error',
+                style: Theme.of(context).textTheme.bodyLarge,
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -73,12 +79,12 @@ class ListCriteriaScreen extends ConsumerWidget {
             ),
             const SizedBox(height: AppTheme.spacingL),
             Text(
-              l10n.noCriteria,
+              'No Criteria',
               style: theme.textTheme.headlineSmall,
             ),
             const SizedBox(height: AppTheme.spacingS),
             Text(
-              l10n.createFirstCriterion,
+              'Create your first criterion to start rating tasks.',
               style: theme.textTheme.bodyMedium?.copyWith(
                 color: theme.colorScheme.onSurfaceVariant,
               ),
@@ -89,5 +95,14 @@ class ListCriteriaScreen extends ConsumerWidget {
       ),
     );
   }
-}
 
+  Widget _buildCriteriaList(BuildContext context, List<Criterion> criteria) {
+    return ListView.builder(
+      padding: const EdgeInsets.all(AppTheme.spacingM),
+      itemCount: criteria.length,
+      itemBuilder: (context, index) {
+        return CriterionItem(criterion: criteria[index]);
+      },
+    );
+  }
+}
