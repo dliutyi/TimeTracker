@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui' as ui;
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -75,8 +76,9 @@ class SpeechService {
   }
 
   /// Start listening for speech
+  /// If localeId is not provided, uses system locale
   Future<bool> startListening({
-    String localeId = 'en_US',
+    String? localeId,
     stt.ListenMode listenMode = stt.ListenMode.dictation,
     bool pauseFor = true,
     bool partialResults = true,
@@ -111,6 +113,10 @@ class SpeechService {
         return false;
       }
 
+      // Use provided locale or detect system locale
+      final finalLocaleId = localeId ?? await getSystemLocale();
+      debugPrint('Using locale for speech recognition: $finalLocaleId');
+
       final options = stt.SpeechListenOptions(
         listenMode: listenMode,
         partialResults: partialResults,
@@ -128,7 +134,7 @@ class SpeechService {
             _textController.add(result.recognizedWords);
           }
         },
-        localeId: localeId,
+        localeId: finalLocaleId,
         listenOptions: options,
         listenFor: const Duration(seconds: 30),
       );
@@ -190,6 +196,49 @@ class SpeechService {
       await initialize();
     }
     return _speech.locales();
+  }
+
+  /// Get system locale for speech recognition
+  /// Returns locale in format like 'en_US', 'es_ES', etc.
+  /// Falls back to 'en_US' if system locale is not available
+  /// 
+  /// Note: When app localization is implemented (Phase 4), this can be
+  /// extended to use the app's selected locale from settings instead of system locale
+  Future<String> getSystemLocale() async {
+    try {
+      // Get system locale
+      final systemLocale = ui.PlatformDispatcher.instance.locale;
+      final localeString = '${systemLocale.languageCode}_${systemLocale.countryCode ?? systemLocale.languageCode.toUpperCase()}';
+      
+      // Check if this locale is available for speech recognition
+      if (!_isInitialized) {
+        await initialize();
+      }
+      
+      final availableLocales = await getAvailableLocales();
+      final isAvailable = availableLocales.any((locale) => locale.localeId == localeString);
+      
+      if (isAvailable) {
+        debugPrint('Using system locale for speech recognition: $localeString');
+        return localeString;
+      } else {
+        // Try to find a close match (same language, different country)
+        final languageCode = systemLocale.languageCode;
+        final closeMatch = availableLocales.firstWhere(
+          (locale) => locale.localeId.startsWith('${languageCode}_'),
+          orElse: () => availableLocales.firstWhere(
+            (locale) => locale.localeId == 'en_US',
+            orElse: () => availableLocales.first,
+          ),
+        );
+        
+        debugPrint('System locale $localeString not available, using: ${closeMatch.localeId}');
+        return closeMatch.localeId;
+      }
+    } catch (e) {
+      debugPrint('Failed to get system locale: $e, falling back to en_US');
+      return 'en_US';
+    }
   }
 
   /// Dispose resources
