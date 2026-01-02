@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../app/theme/liquid_glass_tab_bar.dart';
 import '../../core/repositories/repository_providers.dart';
+import '../tasks/list_tasks_screen.dart';
 
 /// Tab indices
 enum MainTab {
@@ -121,7 +122,7 @@ class _MainNavigationScreenState
         physics: const NeverScrollableScrollPhysics(), // Disable swipe
         children: [
           _buildPlaceholderScreen(l10n.activeTask),
-          _buildPlaceholderScreen(l10n.listOfTasks),
+          const ListTasksScreen(),
           _buildPlaceholderScreen(l10n.statistics),
           _buildPlaceholderScreen(l10n.listOfCriteria),
           _buildPlaceholderScreen(l10n.settings),

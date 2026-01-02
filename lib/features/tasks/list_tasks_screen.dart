@@ -1,0 +1,262 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../../app/theme/app_theme.dart';
+import '../../shared/widgets/speech_text_field.dart';
+import '../../core/repositories/repository_providers.dart';
+import '../../core/repositories/settings_repository.dart';
+import '../../core/models/task.dart';
+import 'widgets/task_item.dart';
+
+/// Provider for general motto
+final generalMottoProvider =
+    StateNotifierProvider<GeneralMottoNotifier, String>((ref) {
+  final settingsRepository = ref.watch(settingsRepositoryProvider);
+  return GeneralMottoNotifier(settingsRepository);
+});
+
+/// Notifier for general motto
+class GeneralMottoNotifier extends StateNotifier<String> {
+  final SettingsRepository _settingsRepository;
+  static const String _mottoKey = 'general_motto';
+
+  GeneralMottoNotifier(this._settingsRepository) : super('') {
+    _loadMotto();
+  }
+
+  Future<void> _loadMotto() async {
+    final motto = await _settingsRepository.getSetting(_mottoKey);
+    if (motto != null) {
+      state = motto;
+    }
+  }
+
+  Future<void> setMotto(String motto) async {
+    state = motto;
+    await _settingsRepository.setSetting(_mottoKey, motto);
+  }
+}
+
+/// List of Tasks screen
+class ListTasksScreen extends ConsumerStatefulWidget {
+  const ListTasksScreen({super.key});
+
+  @override
+  ConsumerState<ListTasksScreen> createState() => _ListTasksScreenState();
+}
+
+class _ListTasksScreenState extends ConsumerState<ListTasksScreen> {
+  final TextEditingController _mottoController = TextEditingController();
+  DateTime _currentDateTime = DateTime.now();
+
+  @override
+  void initState() {
+    super.initState();
+    // Update date/time every minute
+    _updateDateTime();
+    // Load motto
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final motto = ref.read(generalMottoProvider);
+      _mottoController.text = motto;
+    });
+  }
+
+  void _updateDateTime() {
+    setState(() {
+      _currentDateTime = DateTime.now();
+    });
+    // Schedule next update in 1 minute
+    Future.delayed(const Duration(minutes: 1), _updateDateTime);
+  }
+
+  @override
+  void dispose() {
+    _mottoController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
+    final motto = ref.watch(generalMottoProvider);
+    final tasksAsync = ref.watch(_tasksProvider);
+
+    return Scaffold(
+      body: SafeArea(
+        child: Column(
+          children: [
+            // Header
+            _buildHeader(context, theme, l10n, motto),
+            
+            // Task List
+            Expanded(
+              child: tasksAsync.when(
+                data: (tasks) {
+                  if (tasks.isEmpty) {
+                    return _buildEmptyState(context, theme, l10n);
+                  }
+                  return ListView.builder(
+                    padding: const EdgeInsets.all(AppTheme.spacingM),
+                    itemCount: tasks.length,
+                    itemBuilder: (context, index) {
+                      return TaskItem(task: tasks[index]);
+                    },
+                  );
+                },
+                loading: () => const Center(
+                  child: CircularProgressIndicator(),
+                ),
+                error: (error, stack) => Center(
+                  child: Text('Error: $error'),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildHeader(
+    BuildContext context,
+    ThemeData theme,
+    AppLocalizations l10n,
+    String motto,
+  ) {
+    return Container(
+      padding: const EdgeInsets.all(AppTheme.spacingM),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surfaceContainerHighest,
+        border: Border(
+          bottom: BorderSide(
+            color: theme.colorScheme.outline.withValues(alpha: 0.2),
+          ),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Date and Time
+          Text(
+            _formatDateTime(_currentDateTime),
+            style: theme.textTheme.titleLarge,
+          ),
+          const SizedBox(height: AppTheme.spacingM),
+          
+          // General Motto
+          SpeechTextField(
+            label: l10n.generalMotto,
+            controller: _mottoController,
+            onChanged: (value) {
+              ref.read(generalMottoProvider.notifier).setMotto(value);
+            },
+          ),
+          const SizedBox(height: AppTheme.spacingM),
+          
+          // Add Task Button
+          Align(
+            alignment: Alignment.centerRight,
+            child: IconButton(
+              onPressed: () {
+                // TODO: Open add task widget (TASK-020)
+              },
+              icon: const Icon(Icons.add_circle_outline),
+              iconSize: 32,
+              tooltip: l10n.addTask,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildEmptyState(
+    BuildContext context,
+    ThemeData theme,
+    AppLocalizations l10n,
+  ) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(AppTheme.spacingXL),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.task_outlined,
+              size: 64,
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
+            const SizedBox(height: AppTheme.spacingL),
+            Text(
+              l10n.noTasks,
+              style: theme.textTheme.headlineSmall,
+            ),
+            const SizedBox(height: AppTheme.spacingS),
+            Text(
+              l10n.createFirstTask,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  String _formatDateTime(DateTime dateTime) {
+    // Format: "Monday, January 1, 2024 - 12:34 PM"
+    final weekday = _getWeekdayName(dateTime.weekday);
+    final month = _getMonthName(dateTime.month);
+    final day = dateTime.day;
+    final year = dateTime.year;
+    final hour = dateTime.hour;
+    final minute = dateTime.minute.toString().padLeft(2, '0');
+    final period = hour >= 12 ? 'PM' : 'AM';
+    final displayHour = hour > 12 ? hour - 12 : (hour == 0 ? 12 : hour);
+    
+    return '$weekday, $month $day, $year - $displayHour:$minute $period';
+  }
+
+  String _getWeekdayName(int weekday) {
+    const weekdays = [
+      'Monday',
+      'Tuesday',
+      'Wednesday',
+      'Thursday',
+      'Friday',
+      'Saturday',
+      'Sunday',
+    ];
+    return weekdays[weekday - 1];
+  }
+
+  String _getMonthName(int month) {
+    const months = [
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'June',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'December',
+    ];
+    return months[month - 1];
+  }
+}
+
+/// Provider for tasks list (will be enhanced with sorting in TASK-019)
+final _tasksProvider = FutureProvider<List<Task>>((ref) async {
+  final taskRepository = ref.watch(taskRepositoryProvider);
+  // For now, just get all active tasks
+  // In TASK-019, this will use the frequency sorting
+  return await taskRepository.getActiveTasks();
+});
+
