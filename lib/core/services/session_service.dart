@@ -30,7 +30,12 @@ class ActiveSessionNotifier extends StateNotifier<Session?> {
     try {
       final activeSession = await _sessionRepository.getActiveSession();
       if (activeSession != null) {
-        state = activeSession;
+        // Only set state if we found a valid active session
+        // An active session should have endDateTime equal to startDateTime
+        final diff = activeSession.endDateTime.difference(activeSession.startDateTime).abs();
+        if (diff.inSeconds < 1) {
+          state = activeSession;
+        }
       }
     } catch (e) {
       // If loading fails, just continue without active session
