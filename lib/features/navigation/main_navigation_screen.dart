@@ -6,6 +6,7 @@ import '../../core/services/session_service.dart';
 import '../tasks/list_tasks_screen.dart';
 import '../sessions/active_task_screen.dart';
 import '../criteria/list_criteria_screen.dart';
+import '../settings/settings_screen.dart';
 import '../criteria/list_criteria_screen.dart';
 
 /// Tab indices
@@ -145,7 +146,7 @@ class MainNavigationScreenState extends ConsumerState<MainNavigationScreen> {
           const ListTasksScreen(),
           _buildPlaceholderScreen(l10n.statistics),
           const ListCriteriaScreen(),
-          _buildPlaceholderScreen(l10n.settings),
+          const SettingsScreen(),
         ],
       ),
       bottomNavigationBar: LiquidGlassTabBar(
