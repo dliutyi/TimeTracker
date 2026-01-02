@@ -6,6 +6,7 @@ import '../../core/repositories/repository_providers.dart';
 import '../../core/models/criterion.dart';
 import 'widgets/criterion_item.dart';
 import 'widgets/add_edit_criterion_widget.dart';
+import '../tasks/list_tasks_screen.dart';
 
 /// Provider for criteria sorted by usage frequency
 final criteriaProvider = FutureProvider<List<Criterion>>((ref) async {
@@ -33,6 +34,8 @@ class ListCriteriaScreen extends ConsumerWidget {
               if (result != null && context.mounted) {
                 // Refresh the criteria list
                 ref.invalidate(criteriaProvider);
+                // Also refresh tasks list in case criteria were updated
+                ref.invalidate(tasksProvider);
               }
             },
             tooltip: 'Add Criterion',
