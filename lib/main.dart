@@ -5,9 +5,11 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'app/theme/app_theme.dart';
 import 'app/theme/theme_mode_provider.dart';
 import 'app/config/locale_provider.dart';
-import 'shared/widgets/components_demo_screen.dart';
+import 'app/router/app_router.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await initializeApp();
   runApp(
     const ProviderScope(
       child: MyApp(),
@@ -22,8 +24,9 @@ class MyApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final themeMode = ref.watch(flutterThemeModeProvider);
     final locale = ref.watch(localeProvider);
+    final router = ref.watch(appRouterProvider);
 
-    return MaterialApp(
+    return MaterialApp.router(
       title: 'YuDi Time Tracker',
       theme: AppTheme.lightTheme(),
       darkTheme: AppTheme.darkTheme(),
@@ -36,7 +39,7 @@ class MyApp extends ConsumerWidget {
         GlobalCupertinoLocalizations.delegate,
       ],
       supportedLocales: AppLocalizations.supportedLocales,
-      home: const ComponentsDemoScreen(),
+      routerConfig: router,
       debugShowCheckedModeBanner: false,
     );
   }
