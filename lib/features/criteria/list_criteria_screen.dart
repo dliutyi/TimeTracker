@@ -4,6 +4,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../app/theme/app_theme.dart';
 import '../../core/repositories/repository_providers.dart';
 import '../../core/models/criterion.dart';
+import '../../core/utils/responsive.dart';
 import 'widgets/criterion_item.dart';
 import 'widgets/add_edit_criterion_widget.dart';
 import '../tasks/list_tasks_screen.dart';

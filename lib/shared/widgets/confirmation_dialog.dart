@@ -48,7 +48,6 @@ class ConfirmationDialog extends StatelessWidget {
     VoidCallback? onCancel,
   }) async {
     return showDialog<bool>(
-      transitionDuration: AppTheme.animationMedium,
       context: context,
       builder: (context) => ConfirmationDialog(
         title: title,
