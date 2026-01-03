@@ -69,6 +69,9 @@ class _RateTaskWidgetState extends ConsumerState<RateTaskWidget> {
       await activeSessionNotifier.updateSession(updatedSession);
       activeSessionNotifier.clearActiveSession();
 
+      // Sessions providers will auto-refresh because they watch activeSessionProvider
+      // which is cleared above, triggering a refresh
+
       if (mounted) {
         Navigator.of(context).pop();
       }

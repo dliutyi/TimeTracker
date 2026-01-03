@@ -11,6 +11,8 @@ import '../../../shared/widgets/icon_picker.dart';
 import '../../../core/utils/responsive.dart';
 import '../list_criteria_screen.dart';
 import '../../tasks/list_tasks_screen.dart';
+import '../../statistics/widgets/history_view.dart'
+    show allTasksProvider, allCriteriaProvider;
 
 /// Add/Edit Criterion Widget
 class AddEditCriterionWidget extends ConsumerStatefulWidget {
@@ -233,6 +235,9 @@ class _AddEditCriterionWidgetState
       // Invalidate providers to refresh UI
       ref.invalidate(criteriaProvider);
       ref.invalidate(tasksProvider);
+      // Invalidate statistics providers for live updates
+      ref.invalidate(allTasksProvider);
+      ref.invalidate(allCriteriaProvider);
 
       if (mounted) {
         Navigator.of(context).pop(criterion);

@@ -31,30 +31,48 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen>
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.statistics),
-        bottom: TabBar(
-          controller: _tabController,
-          tabs: [
-            Tab(
-              icon: const Icon(Icons.history),
-              text: l10n.history,
+      body: SafeArea(
+        child: Column(
+          children: [
+            // Custom Tab Bar
+            Container(
+              decoration: BoxDecoration(
+                color: theme.colorScheme.surface,
+                border: Border(
+                  bottom: BorderSide(
+                    color: theme.colorScheme.outline.withValues(alpha: 0.2),
+                  ),
+                ),
+              ),
+              child: TabBar(
+                controller: _tabController,
+                tabs: [
+                  Tab(
+                    icon: const Icon(Icons.history),
+                    text: l10n.history,
+                  ),
+                  Tab(
+                    icon: const Icon(Icons.bar_chart),
+                    text: l10n.charts,
+                  ),
+                ],
+              ),
             ),
-            Tab(
-              icon: const Icon(Icons.bar_chart),
-              text: l10n.charts,
+            // Tab Content
+            Expanded(
+              child: TabBarView(
+                controller: _tabController,
+                children: const [
+                  HistoryView(),
+                  ChartsView(),
+                ],
+              ),
             ),
           ],
         ),
-      ),
-      body: TabBarView(
-        controller: _tabController,
-        children: const [
-          HistoryView(),
-          ChartsView(),
-        ],
       ),
     );
   }

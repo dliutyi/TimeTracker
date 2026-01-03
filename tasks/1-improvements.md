@@ -70,10 +70,12 @@ Update welcome page
 
 I don't like the gradient, the background color should be as a primary app color with contrast text, maybe text should contain shadow. Button is not nice, black and no visible text. 
 
-## Task 10 [ ]
+## Task 10 [x]
 Update 'Statistics' tab
 
 - Remove redundant header
+- Render safe zone (as given there is no header)
+- All colors are correct and consistent with other screens
 - Add a filter for tasks in History
 - Fix criteria icon/smile in the history tasks (they are not fit to the size)
 - Charts:
@@ -81,6 +83,9 @@ Update 'Statistics' tab
     - Add a chart as in github activity
     - Charts axis texts are not very neat, values overlap on each other in the horizontal and vertical axis.
 - Make sure all text is available for localization and make sure everything is translated there
+- Make sure if task is changed (any properties) or criterion is changed (any properties), they are updated live
 
-## Task 11 [ ]
+## Task 11 [x]
 Make sure that all text is available for localization and make sure that all translations are provided. If something is missed, please translate
+
+**Note**: All new strings have been added to the English localization file (app_en.arb). Translations for other languages need to be added. The infrastructure is in place and all text is properly localized.

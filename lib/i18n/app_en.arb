@@ -224,6 +224,58 @@
   "swipeToStop": "Swipe to stop",
   "@swipeToStop": {
     "description": "Instruction text for swipe to stop action"
+  },
+  "filterByTask": "Filter by Task",
+  "@filterByTask": {
+    "description": "Task filter label in history view"
+  },
+  "allTasks": "All Tasks",
+  "@allTasks": {
+    "description": "All tasks option in filter"
+  },
+  "filterByCriterion": "Filter by Criterion",
+  "@filterByCriterion": {
+    "description": "Criterion filter label in charts view"
+  },
+  "allCriteria": "All Criteria",
+  "@allCriteria": {
+    "description": "All criteria option in filter"
+  },
+  "timeSpentPerTask": "Time Spent per Task",
+  "@timeSpentPerTask": {
+    "description": "Chart title for time spent per task"
+  },
+  "taskFrequencyOverTime": "Task Frequency Over Time",
+  "@taskFrequencyOverTime": {
+    "description": "Chart title for task frequency over time"
+  },
+  "averageCriterionRatings": "Average Criterion Ratings",
+  "@averageCriterionRatings": {
+    "description": "Chart title for average criterion ratings"
+  },
+  "activityChart": "Activity Chart",
+  "@activityChart": {
+    "description": "Chart title for GitHub-style activity chart"
+  },
+  "day": "Day",
+  "@day": {
+    "description": "Day time period label"
+  },
+  "week": "Week",
+  "@week": {
+    "description": "Week time period label"
+  },
+  "month": "Month",
+  "@month": {
+    "description": "Month time period label"
+  },
+  "year": "Year",
+  "@year": {
+    "description": "Year time period label"
+  },
+  "all": "All",
+  "@all": {
+    "description": "All time period label"
   }
 }
 

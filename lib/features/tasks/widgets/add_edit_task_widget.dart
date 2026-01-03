@@ -12,6 +12,7 @@ import '../../../shared/widgets/color_picker.dart';
 import '../../../core/utils/responsive.dart';
 import '../list_tasks_screen.dart';
 import '../../criteria/list_criteria_screen.dart';
+import '../../statistics/widgets/history_view.dart' show allTasksProvider, allCriteriaProvider;
 
 /// Provider for criteria list sorted by usage frequency
 /// Made public so it can be invalidated from other screens
@@ -137,6 +138,9 @@ class _AddEditTaskWidgetState extends ConsumerState<AddEditTaskWidget> {
       // Invalidate providers to refresh UI
       ref.invalidate(tasksProvider);
       ref.invalidate(criteriaProvider);
+      // Invalidate statistics providers for live updates
+      ref.invalidate(allTasksProvider);
+      ref.invalidate(allCriteriaProvider);
 
       if (mounted) {
         Navigator.of(context).pop(savedTask);

@@ -4,12 +4,10 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:intl/intl.dart';
 import '../../../app/theme/app_theme.dart';
-import '../../../core/repositories/repository_providers.dart';
 import '../../../core/models/models.dart';
-import '../../../core/repositories/task_repository.dart';
-import '../../../core/repositories/criterion_repository.dart';
 import 'time_period_filter.dart';
-import 'history_view.dart';
+import 'history_view.dart' show allTasksProvider, allCriteriaProvider, allSessionsProvider, sessionsByDateRangeProvider, TimePeriod;
+
 
 /// Charts view showing various visualizations
 class ChartsView extends ConsumerStatefulWidget {
@@ -21,100 +19,238 @@ class ChartsView extends ConsumerStatefulWidget {
 
 class _ChartsViewState extends ConsumerState<ChartsView> {
   TimePeriod _selectedPeriod = TimePeriod.all;
+  String? _selectedTaskId;
+  String? _selectedCriterionId;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final sessionRepository = ref.watch(sessionRepositoryProvider);
-    final taskRepository = ref.watch(taskRepositoryProvider);
-    final criterionRepository = ref.watch(criterionRepositoryProvider);
+    final tasksAsync = ref.watch(allTasksProvider);
+    final criteriaAsync = ref.watch(allCriteriaProvider);
 
     // Calculate date range based on selected period
     final dateRange = _getDateRange(_selectedPeriod);
 
-    return FutureBuilder<List<Session>>(
-      future: dateRange != null
-          ? sessionRepository.getSessionsByDateRange(
-              dateRange.start,
-              dateRange.end,
-            )
-          : sessionRepository.getAllSessions(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
-        }
+    // Use provider for live updates
+    final sessionsAsync = dateRange != null
+        ? ref.watch(sessionsByDateRangeProvider(dateRange))
+        : ref.watch(allSessionsProvider);
+    
+    // Always get all sessions for activity chart (not filtered by period)
+    final allSessionsForActivityAsync = ref.watch(allSessionsProvider);
 
-        if (snapshot.hasError) {
-          return Center(
-            child: Text(
-              'Error: ${snapshot.error}',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Theme.of(context).colorScheme.error,
-                  ),
-            ),
-          );
-        }
+    return allSessionsForActivityAsync.when(
+      data: (allSessionsForActivity) {
+        return sessionsAsync.when(
+          data: (sessions) {
+            var filteredSessions = sessions;
 
-        final sessions = snapshot.data ?? [];
-
-        if (sessions.isEmpty) {
-          return _buildEmptyState(context, l10n);
-        }
-
-        return FutureBuilder<Map<String, Task>>(
-          future: _loadTasks(taskRepository, sessions),
-          builder: (context, tasksSnapshot) {
-            if (tasksSnapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
+            // Filter by selected task
+            if (_selectedTaskId != null) {
+              filteredSessions = filteredSessions.where((s) => s.taskId == _selectedTaskId).toList();
             }
 
-            final tasks = tasksSnapshot.data ?? {};
+            if (filteredSessions.isEmpty && allSessionsForActivity.isEmpty) {
+              return _buildEmptyState(context, l10n);
+            }
 
-            return FutureBuilder<Map<String, Criterion>>(
-              future: _loadCriteria(criterionRepository, sessions, tasks),
-              builder: (context, criteriaSnapshot) {
-                if (criteriaSnapshot.connectionState ==
-                    ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                }
+            return tasksAsync.when(
+              data: (allTasks) {
+                final tasksMap = <String, Task>{for (var t in allTasks) t.id: t};
+                return criteriaAsync.when(
+                  data: (allCriteria) {
+                    final criteriaMap = <String, Criterion>{for (var c in allCriteria) c.id: c};
 
-                final criteria = criteriaSnapshot.data ?? {};
+                    return Column(
+                      children: [
+                        // Filters
+                        Column(
+                          children: [
+                            // Time period filter
+                            TimePeriodFilter(
+                              selectedPeriod: _selectedPeriod,
+                              onPeriodChanged: (period) {
+                                setState(() {
+                                  _selectedPeriod = period;
+                                });
+                              },
+                            ),
+                            // Task and criterion filters
+                            _buildChartFilters(context, l10n, tasksAsync, criteriaAsync),
+                          ],
+                        ),
 
-                return Column(
-                  children: [
-                    // Time period filter
-                    TimePeriodFilter(
-                      selectedPeriod: _selectedPeriod,
-                      onPeriodChanged: (period) {
-                        setState(() {
-                          _selectedPeriod = period;
-                        });
-                      },
-                    ),
-
-                    // Charts list
-                    Expanded(
-                      child: ListView(
-                        padding: const EdgeInsets.all(AppTheme.spacingM),
-                        children: [
+                        // Charts list
+                        Expanded(
+                          child: ListView(
+                            padding: const EdgeInsets.all(AppTheme.spacingM),
+                            children: [
+                              // Activity chart uses all sessions (not filtered) to show full year view
+                              _buildActivityChart(context, l10n, allSessionsForActivity, tasksMap),
+                          const SizedBox(height: AppTheme.spacingL),
                           _buildTimeSpentPerTaskChart(
-                              context, sessions, tasks),
+                              context, l10n, filteredSessions, tasksMap),
                           const SizedBox(height: AppTheme.spacingL),
-                          _buildTaskFrequencyChart(context, sessions),
+                          _buildTaskFrequencyChart(context, l10n, filteredSessions),
                           const SizedBox(height: AppTheme.spacingL),
-                          if (sessions.any((s) => s.ratings.isNotEmpty))
+                          if (filteredSessions.any((s) => s.ratings.isNotEmpty))
                             _buildCriterionRatingsChart(
-                                context, sessions, tasks, criteria),
+                                context, l10n, filteredSessions, tasksMap, criteriaMap, _selectedCriterionId),
                         ],
                       ),
                     ),
                   ],
                 );
+                  },
+                  loading: () => const Center(child: CircularProgressIndicator()),
+                  error: (error, stack) => Center(
+                    child: Text(
+                      'Error loading criteria: $error',
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            color: Theme.of(context).colorScheme.error,
+                          ),
+                    ),
+                  ),
+                );
               },
+              loading: () => const Center(child: CircularProgressIndicator()),
+              error: (error, stack) => Center(
+                child: Text(
+                  'Error loading tasks: $error',
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: Theme.of(context).colorScheme.error,
+                      ),
+                ),
+              ),
             );
           },
+          loading: () => const Center(child: CircularProgressIndicator()),
+          error: (error, stack) => Center(
+            child: Text(
+              'Error loading sessions: $error',
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Theme.of(context).colorScheme.error,
+                  ),
+            ),
+          ),
         );
       },
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (error, stack) => Center(
+        child: Text(
+          'Error loading all sessions: $error',
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: Theme.of(context).colorScheme.error,
+              ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildChartFilters(
+    BuildContext context,
+    AppLocalizations l10n,
+    AsyncValue<List<Task>> tasksAsync,
+    AsyncValue<List<Criterion>> criteriaAsync,
+  ) {
+    final theme = Theme.of(context);
+
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppTheme.spacingM,
+        vertical: AppTheme.spacingS,
+      ),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surface,
+        border: Border(
+          bottom: BorderSide(
+            color: theme.colorScheme.outline.withValues(alpha: 0.2),
+          ),
+        ),
+      ),
+      child: Row(
+        children: [
+          // Task filter
+          Expanded(
+            child: tasksAsync.when(
+              data: (tasks) {
+                final allTasksOption = <Task?>[null, ...tasks];
+                return DropdownButton<Task?>(
+                  value: _selectedTaskId == null
+                      ? null
+                      : (tasks.where((t) => t.id == _selectedTaskId).firstOrNull),
+                  isExpanded: true,
+                  hint: Text(l10n.filterByTask),
+                  items: allTasksOption.map((task) {
+                    return DropdownMenuItem<Task?>(
+                      value: task,
+                      child: Text(
+                        task == null ? l10n.allTasks : task.name,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    );
+                  }).toList(),
+                  onChanged: (selectedTask) {
+                    setState(() {
+                      _selectedTaskId = selectedTask?.id;
+                    });
+                  },
+                );
+              },
+              loading: () => const SizedBox(
+                height: 48,
+                child: Center(child: CircularProgressIndicator()),
+              ),
+              error: (error, stack) => Text(
+                'Error',
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: theme.colorScheme.error,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(width: AppTheme.spacingM),
+          // Criterion filter
+          Expanded(
+            child: criteriaAsync.when(
+              data: (criteria) {
+                final allCriteriaOption = <Criterion?>[null, ...criteria];
+                return DropdownButton<Criterion?>(
+                  value: _selectedCriterionId == null
+                      ? null
+                      : (criteria.where((c) => c.id == _selectedCriterionId).firstOrNull),
+                  isExpanded: true,
+                  hint: Text(l10n.filterByCriterion),
+                  items: allCriteriaOption.map((criterion) {
+                    return DropdownMenuItem<Criterion?>(
+                      value: criterion,
+                      child: Text(
+                        criterion == null ? l10n.allCriteria : criterion.name,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    );
+                  }).toList(),
+                  onChanged: (selectedCriterion) {
+                    setState(() {
+                      _selectedCriterionId = selectedCriterion?.id;
+                    });
+                  },
+                );
+              },
+              loading: () => const SizedBox(
+                height: 48,
+                child: Center(child: CircularProgressIndicator()),
+              ),
+              error: (error, stack) => Text(
+                'Error',
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: theme.colorScheme.error,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -151,6 +287,7 @@ class _ChartsViewState extends ConsumerState<ChartsView> {
 
   Widget _buildTimeSpentPerTaskChart(
     BuildContext context,
+    AppLocalizations l10n,
     List<Session> sessions,
     Map<String, Task> tasks,
   ) {
@@ -173,6 +310,9 @@ class _ChartsViewState extends ConsumerState<ChartsView> {
       return const SizedBox.shrink();
     }
 
+    final maxMinutes = topTasks.first.value.inMinutes;
+    final interval = maxMinutes > 0 ? (maxMinutes / 5).ceil().toDouble() : 1.0;
+
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(AppTheme.spacingM),
@@ -180,7 +320,7 @@ class _ChartsViewState extends ConsumerState<ChartsView> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Time Spent per Task',
+              l10n.timeSpentPerTask,
               style: theme.textTheme.titleLarge,
             ),
             const SizedBox(height: AppTheme.spacingM),
@@ -189,7 +329,7 @@ class _ChartsViewState extends ConsumerState<ChartsView> {
               child: BarChart(
                 BarChartData(
                   alignment: BarChartAlignment.spaceAround,
-                  maxY: topTasks.first.value.inMinutes.toDouble(),
+                  maxY: maxMinutes.toDouble(),
                   barTouchData: BarTouchData(
                     touchTooltipData: BarTouchTooltipData(
                       getTooltipColor: (_) => theme.colorScheme.surface,
@@ -201,6 +341,7 @@ class _ChartsViewState extends ConsumerState<ChartsView> {
                     bottomTitles: AxisTitles(
                       sideTitles: SideTitles(
                         showTitles: true,
+                        interval: 1,
                         getTitlesWidget: (value, meta) {
                           final index = value.toInt();
                           if (index >= 0 && index < topTasks.length) {
@@ -208,38 +349,50 @@ class _ChartsViewState extends ConsumerState<ChartsView> {
                             final name = task?.name ?? 'Unknown';
                             return Padding(
                               padding: const EdgeInsets.only(top: 8),
-                              child: Text(
-                                name.length > 10 ? '${name.substring(0, 10)}...' : name,
-                                style: theme.textTheme.bodySmall,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
+                              child: Transform.rotate(
+                                angle: -0.5,
+                                child: Text(
+                                  name.length > 8 ? '${name.substring(0, 8)}...' : name,
+                                  style: theme.textTheme.bodySmall?.copyWith(fontSize: 10),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
                               ),
                             );
                           }
                           return const Text('');
                         },
-                        reservedSize: 40,
+                        reservedSize: 50,
                       ),
                     ),
                     leftTitles: AxisTitles(
                       sideTitles: SideTitles(
                         showTitles: true,
+                        interval: interval,
                         getTitlesWidget: (value, meta) {
                           final minutes = value.toInt();
                           if (minutes >= 60) {
                             final hours = minutes ~/ 60;
                             final mins = minutes % 60;
-                            return Text(
-                              '${hours}h${mins > 0 ? ' ${mins}m' : ''}',
-                              style: theme.textTheme.bodySmall,
+                            return Padding(
+                              padding: const EdgeInsets.only(right: 4),
+                              child: Text(
+                                '${hours}h${mins > 0 ? '${mins}m' : ''}',
+                                style: theme.textTheme.bodySmall?.copyWith(fontSize: 10),
+                                textAlign: TextAlign.right,
+                              ),
                             );
                           }
-                          return Text(
-                            '${minutes}m',
-                            style: theme.textTheme.bodySmall,
+                          return Padding(
+                            padding: const EdgeInsets.only(right: 4),
+                            child: Text(
+                              '${minutes}m',
+                              style: theme.textTheme.bodySmall?.copyWith(fontSize: 10),
+                              textAlign: TextAlign.right,
+                            ),
                           );
                         },
-                        reservedSize: 50,
+                        reservedSize: 60,
                       ),
                     ),
                     topTitles: const AxisTitles(
@@ -253,9 +406,7 @@ class _ChartsViewState extends ConsumerState<ChartsView> {
                   gridData: FlGridData(
                     show: true,
                     drawVerticalLine: false,
-                    horizontalInterval: topTasks.first.value.inMinutes > 0
-                        ? topTasks.first.value.inMinutes / 5
-                        : 1.0,
+                    horizontalInterval: interval,
                     getDrawingHorizontalLine: (value) {
                       return FlLine(
                         color: theme.colorScheme.outline.withValues(alpha: 0.1),
@@ -289,8 +440,137 @@ class _ChartsViewState extends ConsumerState<ChartsView> {
     );
   }
 
+  Widget _buildActivityChart(
+    BuildContext context,
+    AppLocalizations l10n,
+    List<Session> sessions,
+    Map<String, Task> tasks,
+  ) {
+    final theme = Theme.of(context);
+
+    // Group sessions by date using string keys for reliable matching
+    final sessionsByDate = <String, int>{};
+    for (final session in sessions) {
+      // Normalize to date only (remove time component)
+      final date = DateTime(
+        session.startDateTime.year,
+        session.startDateTime.month,
+        session.startDateTime.day,
+      );
+      final dateKey = '${date.year}-${date.month}-${date.day}';
+      sessionsByDate[dateKey] = (sessionsByDate[dateKey] ?? 0) + 1;
+    }
+
+    // Get last 52 weeks (1 year) starting from Monday
+    final now = DateTime.now();
+    final weeks = <List<int>>[];
+    
+    // Find the Monday of the current week
+    // DateTime.weekday: 1 = Monday, 7 = Sunday
+    final daysFromMonday = (now.weekday - 1) % 7;
+    final currentWeekMonday = DateTime(now.year, now.month, now.day)
+        .subtract(Duration(days: daysFromMonday));
+
+    // Generate 52 weeks of data (going back from current week)
+    for (int week = 51; week >= 0; week--) {
+      final weekStart = currentWeekMonday.subtract(Duration(days: week * 7));
+      final weekData = <int>[];
+      for (int day = 0; day < 7; day++) {
+        final date = weekStart.add(Duration(days: day));
+        // Normalize to date only
+        final dateOnly = DateTime(date.year, date.month, date.day);
+        final dateKey = '${dateOnly.year}-${dateOnly.month}-${dateOnly.day}';
+        weekData.add(sessionsByDate[dateKey] ?? 0);
+      }
+      weeks.add(weekData);
+    }
+    
+    // Calculate max count for color intensity
+    final allCounts = weeks.expand((week) => week).toList();
+    if (allCounts.isEmpty) {
+      return const SizedBox.shrink();
+    }
+    final maxCount = allCounts.reduce((a, b) => a > b ? a : b);
+    
+
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(AppTheme.spacingM),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              l10n.activityChart,
+              style: theme.textTheme.titleLarge,
+            ),
+            const SizedBox(height: AppTheme.spacingM),
+            SizedBox(
+              height: 200,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Day labels (Monday through Sunday)
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        SizedBox(height: (200 - 20) / 7, child: Center(child: Text('M', style: theme.textTheme.bodySmall?.copyWith(fontSize: 10)))),
+                        SizedBox(height: (200 - 20) / 7, child: Center(child: Text('T', style: theme.textTheme.bodySmall?.copyWith(fontSize: 10)))),
+                        SizedBox(height: (200 - 20) / 7, child: Center(child: Text('W', style: theme.textTheme.bodySmall?.copyWith(fontSize: 10)))),
+                        SizedBox(height: (200 - 20) / 7, child: Center(child: Text('T', style: theme.textTheme.bodySmall?.copyWith(fontSize: 10)))),
+                        SizedBox(height: (200 - 20) / 7, child: Center(child: Text('F', style: theme.textTheme.bodySmall?.copyWith(fontSize: 10)))),
+                        SizedBox(height: (200 - 20) / 7, child: Center(child: Text('S', style: theme.textTheme.bodySmall?.copyWith(fontSize: 10)))),
+                        SizedBox(height: (200 - 20) / 7, child: Center(child: Text('S', style: theme.textTheme.bodySmall?.copyWith(fontSize: 10)))),
+                      ],
+                    ),
+                    const SizedBox(width: 4),
+                    // Activity grid
+                    Row(
+                      children: weeks.asMap().entries.map((weekEntry) {
+                        return Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: weekEntry.value.asMap().entries.map((dayEntry) {
+                            final count = dayEntry.value;
+                            final intensity = maxCount > 0 ? count / maxCount : 0.0;
+                            Color color;
+                            if (intensity == 0) {
+                              color = theme.colorScheme.surfaceContainerHighest;
+                            } else if (intensity < 0.25) {
+                              color = theme.colorScheme.primary.withValues(alpha: 0.3);
+                            } else if (intensity < 0.5) {
+                              color = theme.colorScheme.primary.withValues(alpha: 0.5);
+                            } else if (intensity < 0.75) {
+                              color = theme.colorScheme.primary.withValues(alpha: 0.7);
+                            } else {
+                              color = theme.colorScheme.primary;
+                            }
+                            return Container(
+                              width: 12,
+                              height: 12,
+                              margin: const EdgeInsets.all(1),
+                              decoration: BoxDecoration(
+                                color: color,
+                                borderRadius: BorderRadius.circular(2),
+                              ),
+                            );
+                          }).toList(),
+                        );
+                      }).toList(),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _buildTaskFrequencyChart(
     BuildContext context,
+    AppLocalizations l10n,
     List<Session> sessions,
   ) {
     final theme = Theme.of(context);
@@ -324,7 +604,7 @@ class _ChartsViewState extends ConsumerState<ChartsView> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Task Frequency Over Time',
+              l10n.taskFrequencyOverTime,
               style: theme.textTheme.titleLarge,
             ),
             const SizedBox(height: AppTheme.spacingM),
@@ -353,36 +633,39 @@ class _ChartsViewState extends ConsumerState<ChartsView> {
                     bottomTitles: AxisTitles(
                       sideTitles: SideTitles(
                         showTitles: true,
+                        interval: displayDates.length > 5 ? (displayDates.length / 5).ceil().toDouble() : 1.0,
                         getTitlesWidget: (value, meta) {
                           final index = value.toInt();
-                          final step = displayDates.length > 5
-                              ? displayDates.length ~/ 5
-                              : 1;
-                          if (index >= 0 &&
-                              index < displayDates.length &&
-                              step > 0 &&
-                              index % step == 0) {
+                          if (index >= 0 && index < displayDates.length) {
                             final date = displayDates[index];
                             return Padding(
                               padding: const EdgeInsets.only(top: 8),
-                              child: Text(
-                                DateFormat('MMM d').format(date),
-                                style: theme.textTheme.bodySmall,
+                              child: Transform.rotate(
+                                angle: -0.5,
+                                child: Text(
+                                  DateFormat('MMM d').format(date),
+                                  style: theme.textTheme.bodySmall?.copyWith(fontSize: 10),
+                                ),
                               ),
                             );
                           }
                           return const Text('');
                         },
-                        reservedSize: 40,
+                        reservedSize: 50,
                       ),
                     ),
                     leftTitles: AxisTitles(
                       sideTitles: SideTitles(
                         showTitles: true,
+                        interval: 1,
                         getTitlesWidget: (value, meta) {
-                          return Text(
-                            value.toInt().toString(),
-                            style: theme.textTheme.bodySmall,
+                          return Padding(
+                            padding: const EdgeInsets.only(right: 4),
+                            child: Text(
+                              value.toInt().toString(),
+                              style: theme.textTheme.bodySmall?.copyWith(fontSize: 10),
+                              textAlign: TextAlign.right,
+                            ),
                           );
                         },
                         reservedSize: 40,
@@ -431,16 +714,22 @@ class _ChartsViewState extends ConsumerState<ChartsView> {
 
   Widget _buildCriterionRatingsChart(
     BuildContext context,
+    AppLocalizations l10n,
     List<Session> sessions,
     Map<String, Task> tasks,
     Map<String, Criterion> criteria,
+    String? selectedCriterionId,
   ) {
     final theme = Theme.of(context);
 
-    // Collect all ratings
+    // Collect all ratings, filter by selected criterion if any
     final criterionRatings = <String, List<double>>{};
     for (final session in sessions) {
       for (final entry in session.ratings.entries) {
+        // Filter by selected criterion
+        if (selectedCriterionId != null && entry.key != selectedCriterionId) {
+          continue;
+        }
         final criterion = criteria[entry.key];
         if (criterion == null) continue;
 
@@ -484,7 +773,7 @@ class _ChartsViewState extends ConsumerState<ChartsView> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Average Criterion Ratings',
+              l10n.averageCriterionRatings,
               style: theme.textTheme.titleLarge,
             ),
             const SizedBox(height: AppTheme.spacingM),
@@ -505,6 +794,7 @@ class _ChartsViewState extends ConsumerState<ChartsView> {
                     bottomTitles: AxisTitles(
                       sideTitles: SideTitles(
                         showTitles: true,
+                        interval: 1,
                         getTitlesWidget: (value, meta) {
                           final index = value.toInt();
                           if (index >= 0 && index < topCriteria.length) {
@@ -513,28 +803,36 @@ class _ChartsViewState extends ConsumerState<ChartsView> {
                             final name = criterion?.name ?? 'Unknown';
                             return Padding(
                               padding: const EdgeInsets.only(top: 8),
-                              child: Text(
-                                name.length > 10
-                                    ? '${name.substring(0, 10)}...'
-                                    : name,
-                                style: theme.textTheme.bodySmall,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
+                              child: Transform.rotate(
+                                angle: -0.5,
+                                child: Text(
+                                  name.length > 8
+                                      ? '${name.substring(0, 8)}...'
+                                      : name,
+                                  style: theme.textTheme.bodySmall?.copyWith(fontSize: 10),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
                               ),
                             );
                           }
                           return const Text('');
                         },
-                        reservedSize: 40,
+                        reservedSize: 50,
                       ),
                     ),
                     leftTitles: AxisTitles(
                       sideTitles: SideTitles(
                         showTitles: true,
+                        interval: topCriteria.isNotEmpty ? (topCriteria.first.value * 1.2 / 5) : 1.0,
                         getTitlesWidget: (value, meta) {
-                          return Text(
-                            value.toStringAsFixed(1),
-                            style: theme.textTheme.bodySmall,
+                          return Padding(
+                            padding: const EdgeInsets.only(right: 4),
+                            child: Text(
+                              value.toStringAsFixed(1),
+                              style: theme.textTheme.bodySmall?.copyWith(fontSize: 10),
+                              textAlign: TextAlign.right,
+                            ),
                           );
                         },
                         reservedSize: 50,
@@ -584,43 +882,6 @@ class _ChartsViewState extends ConsumerState<ChartsView> {
     );
   }
 
-  Future<Map<String, Task>> _loadTasks(
-    TaskRepository repository,
-    List<Session> sessions,
-  ) async {
-    final taskIds = sessions.map((s) => s.taskId).toSet();
-    final tasks = <String, Task>{};
-
-    for (final taskId in taskIds) {
-      final task = await repository.getTaskById(taskId);
-      if (task != null) {
-        tasks[taskId] = task;
-      }
-    }
-
-    return tasks;
-  }
-
-  Future<Map<String, Criterion>> _loadCriteria(
-    CriterionRepository repository,
-    List<Session> sessions,
-    Map<String, Task> tasks,
-  ) async {
-    final criterionIds = <String>{};
-    for (final session in sessions) {
-      criterionIds.addAll(session.ratings.keys);
-      final task = tasks[session.taskId];
-      if (task != null) {
-        criterionIds.addAll(task.criterionIds);
-      }
-    }
-
-    if (criterionIds.isEmpty) return {};
-
-    final criteriaList =
-        await repository.getCriteriaByIds(criterionIds.toList());
-    return {for (var c in criteriaList) c.id: c};
-  }
 
   ({DateTime start, DateTime end})? _getDateRange(TimePeriod period) {
     final now = DateTime.now();

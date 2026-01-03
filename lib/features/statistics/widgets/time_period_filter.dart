@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../app/theme/app_theme.dart';
 import 'history_view.dart';
 
@@ -16,6 +17,7 @@ class TimePeriodFilter extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
     return Container(
       padding: const EdgeInsets.symmetric(
@@ -39,7 +41,9 @@ class TimePeriodFilter extends StatelessWidget {
               padding: const EdgeInsets.only(right: AppTheme.spacingS),
               child: FilterChip(
                 selected: isSelected,
-                label: Text(_getPeriodLabel(period)),
+                label: Text(_getPeriodLabel(period, l10n)),
+                selectedColor: theme.colorScheme.tertiaryContainer,
+                checkmarkColor: theme.colorScheme.onTertiaryContainer,
                 onSelected: (selected) {
                   if (selected) {
                     onPeriodChanged(period);
@@ -53,18 +57,18 @@ class TimePeriodFilter extends StatelessWidget {
     );
   }
 
-  String _getPeriodLabel(TimePeriod period) {
+  String _getPeriodLabel(TimePeriod period, AppLocalizations l10n) {
     switch (period) {
       case TimePeriod.day:
-        return 'Day';
+        return l10n.day;
       case TimePeriod.week:
-        return 'Week';
+        return l10n.week;
       case TimePeriod.month:
-        return 'Month';
+        return l10n.month;
       case TimePeriod.year:
-        return 'Year';
+        return l10n.year;
       case TimePeriod.all:
-        return 'All';
+        return l10n.all;
     }
   }
 }

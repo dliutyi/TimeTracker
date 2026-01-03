@@ -122,9 +122,16 @@ class SessionItem extends StatelessWidget {
                   if (criterion == null) return const SizedBox.shrink();
 
                   return Chip(
-                    avatar: Text(
-                      criterion.icon,
-                      style: const TextStyle(fontSize: 16),
+                    avatar: SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: Center(
+                        child: Text(
+                          criterion.icon,
+                          style: const TextStyle(fontSize: 14),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
                     ),
                     label: Text(
                       _formatRating(entry.value, criterion),

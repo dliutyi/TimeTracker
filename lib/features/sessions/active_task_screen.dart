@@ -14,6 +14,7 @@ import '../../shared/widgets/color_picker.dart';
 import '../../shared/widgets/swipeable_item.dart';
 import '../../shared/widgets/confirmation_dialog.dart';
 import 'widgets/rate_task_widget.dart';
+import '../statistics/widgets/history_view.dart' show allSessionsProvider;
 
 /// Active Task Screen
 class ActiveTaskScreen extends ConsumerStatefulWidget {
@@ -485,6 +486,8 @@ class _ActiveTaskScreenState extends ConsumerState<ActiveTaskScreen> {
         } else {
           // Clear active session if no criteria
           activeSessionNotifier.clearActiveSession();
+          // Invalidate sessions providers to refresh history
+          ref.invalidate(allSessionsProvider);
         }
       }
     } catch (e) {
