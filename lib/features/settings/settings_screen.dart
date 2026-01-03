@@ -3,11 +3,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:file_picker/file_picker.dart';
 import 'dart:io';
 import '../../app/theme/app_theme.dart';
 import '../../app/theme/theme_mode_provider.dart';
 import '../../app/config/locale_provider.dart';
 import '../../core/services/export_service.dart';
+import '../../core/services/import_service.dart';
+import '../../shared/widgets/confirmation_dialog.dart';
 
 /// App version constant
 const String appVersion = '0.1.0';
@@ -241,14 +244,7 @@ class SettingsScreen extends ConsumerWidget {
               leading: const Icon(Icons.download),
               title: const Text('Import Data'),
               subtitle: const Text('Import data from a file'),
-              onTap: () {
-                // TODO: Implement import (TASK-034)
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Import functionality will be implemented in TASK-034'),
-                  ),
-                );
-              },
+              onTap: () => _handleImport(context, ref),
             ),
           ],
         );
@@ -314,6 +310,87 @@ class SettingsScreen extends ConsumerWidget {
           SnackBar(
             content: Text('Failed to export data: $e'),
             backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
+  Future<void> _handleImport(BuildContext context, WidgetRef ref) async {
+    final importService = ref.read(importServiceProvider);
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
+
+    // Show confirmation dialog first
+    final confirmed = await ConfirmationDialog.showImportConfirmation(
+      context,
+      title: 'Import Data',
+      message: 'All existing data will be permanently deleted.\n\n'
+          'All current tasks, criteria, sessions, and settings will be lost.\n\n'
+          'Data will be replaced with imported data.\n\n'
+          'This action cannot be undone.',
+      importText: 'Import',
+      cancelText: 'Cancel',
+    );
+
+    if (confirmed != true || !context.mounted) {
+      return;
+    }
+
+    // Pick file
+    final result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['json'],
+    );
+
+    if (result == null || result.files.single.path == null || !context.mounted) {
+      return;
+    }
+
+    final filePath = result.files.single.path!;
+    final file = File(filePath);
+
+    // Show loading indicator
+    if (!context.mounted) return;
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (dialogContext) => const Center(
+        child: CircularProgressIndicator(),
+      ),
+    );
+
+    try {
+      // Read file
+      final jsonData = await file.readAsString();
+
+      // Import data
+      await importService.importData(jsonData);
+
+      // Close loading indicator
+      if (context.mounted) {
+        Navigator.of(context).pop();
+      }
+
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Data imported successfully'),
+            backgroundColor: Colors.green,
+          ),
+        );
+      }
+    } catch (e) {
+      // Close loading indicator if still open
+      if (context.mounted) {
+        Navigator.of(context).pop();
+      }
+
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to import data: $e'),
+            backgroundColor: Colors.red,
+            duration: const Duration(seconds: 5),
           ),
         );
       }
