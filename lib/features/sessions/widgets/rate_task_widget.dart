@@ -119,7 +119,8 @@ class _RateTaskWidgetState extends ConsumerState<RateTaskWidget> {
     final isTablet = Responsive.isTablet(context);
     final maxWidth = Responsive.getMaxContentWidth(context);
     
-    return Center(
+    return Align(
+      alignment: Alignment.bottomCenter,
       child: Container(
         width: isTablet ? maxWidth : double.infinity,
         constraints: BoxConstraints(
