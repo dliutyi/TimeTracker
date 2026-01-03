@@ -7,7 +7,7 @@ import '../tasks/list_tasks_screen.dart';
 import '../sessions/active_task_screen.dart';
 import '../criteria/list_criteria_screen.dart';
 import '../settings/settings_screen.dart';
-import '../criteria/list_criteria_screen.dart';
+import '../statistics/statistics_screen.dart';
 
 /// Tab indices
 enum MainTab {
@@ -144,7 +144,7 @@ class MainNavigationScreenState extends ConsumerState<MainNavigationScreen> {
         children: [
           const ActiveTaskScreen(),
           const ListTasksScreen(),
-          _buildPlaceholderScreen(l10n.statistics),
+          const StatisticsScreen(),
           const ListCriteriaScreen(),
           const SettingsScreen(),
         ],
@@ -156,33 +156,6 @@ class MainNavigationScreenState extends ConsumerState<MainNavigationScreen> {
         disabledIndices: activeSession == null
             ? {MainTab.activeTask.tabIndex}
             : null,
-      ),
-    );
-  }
-
-  Widget _buildPlaceholderScreen(String title) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.construction,
-            size: 64,
-            color: Theme.of(context).colorScheme.onSurfaceVariant,
-          ),
-          const SizedBox(height: 16),
-          Text(
-            title,
-            style: Theme.of(context).textTheme.headlineSmall,
-          ),
-          const SizedBox(height: 8),
-          Text(
-            'Coming soon...',
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                ),
-          ),
-        ],
       ),
     );
   }

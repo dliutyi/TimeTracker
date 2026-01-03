@@ -164,6 +164,26 @@
         "type": "int"
       }
     }
+  },
+  "history": "History",
+  "@history": {
+    "description": "History tab label in statistics screen"
+  },
+  "charts": "Charts",
+  "@charts": {
+    "description": "Charts tab label in statistics screen"
+  },
+  "noSessions": "No sessions yet",
+  "@noSessions": {
+    "description": "Empty state message when no sessions exist"
+  },
+  "noSessionsDescription": "Start tracking time to see your sessions here",
+  "@noSessionsDescription": {
+    "description": "Empty state helper text for no sessions"
+  },
+  "noSessionsForPeriod": "No sessions found for the selected time period",
+  "@noSessionsForPeriod": {
+    "description": "Empty state message when no sessions exist for selected period"
   }
 }
 
