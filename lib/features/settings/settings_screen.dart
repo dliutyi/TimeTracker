@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:path_provider/path_provider.dart';
+import 'dart:io';
 import '../../app/theme/app_theme.dart';
 import '../../app/theme/theme_mode_provider.dart';
 import '../../app/config/locale_provider.dart';
+import '../../core/services/export_service.dart';
 
 /// App version constant
 const String appVersion = '0.1.0';
@@ -65,7 +69,7 @@ class SettingsScreen extends ConsumerWidget {
             decoration: BoxDecoration(
               border: Border(
                 top: BorderSide(
-                  color: theme.colorScheme.outline.withOpacity(0.2),
+                  color: theme.colorScheme.outline.withValues(alpha: 0.2),
                 ),
               ),
             ),
@@ -115,7 +119,6 @@ class SettingsScreen extends ConsumerWidget {
   }
 
   Widget _buildDarkModeSelector(BuildContext context, WidgetRef ref) {
-    final theme = Theme.of(context);
     final appThemeMode = ref.watch(themeModeProvider);
     final themeModeNotifier = ref.read(themeModeProvider.notifier);
 
@@ -223,37 +226,98 @@ class SettingsScreen extends ConsumerWidget {
     BuildContext context,
     AppLocalizations l10n,
   ) {
-    return Column(
-      children: [
-        ListTile(
-          leading: const Icon(Icons.upload),
-          title: const Text('Export Data'),
-          subtitle: const Text('Export all app data to a file'),
-          onTap: () {
-            // TODO: Implement export (TASK-033)
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Export functionality will be implemented in TASK-033'),
-              ),
-            );
-          },
-        ),
-        const Divider(height: 1),
-        ListTile(
-          leading: const Icon(Icons.download),
-          title: const Text('Import Data'),
-          subtitle: const Text('Import data from a file'),
-          onTap: () {
-            // TODO: Implement import (TASK-034)
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Import functionality will be implemented in TASK-034'),
-              ),
-            );
-          },
-        ),
-      ],
+    return Consumer(
+      builder: (context, ref, child) {
+        return Column(
+          children: [
+            ListTile(
+              leading: const Icon(Icons.upload),
+              title: const Text('Export Data'),
+              subtitle: const Text('Export all app data to a file'),
+              onTap: () => _handleExport(context, ref),
+            ),
+            const Divider(height: 1),
+            ListTile(
+              leading: const Icon(Icons.download),
+              title: const Text('Import Data'),
+              subtitle: const Text('Import data from a file'),
+              onTap: () {
+                // TODO: Implement import (TASK-034)
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Import functionality will be implemented in TASK-034'),
+                  ),
+                );
+              },
+            ),
+          ],
+        );
+      },
     );
+  }
+
+  Future<void> _handleExport(BuildContext context, WidgetRef ref) async {
+    final exportService = ref.read(exportServiceProvider);
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
+
+    // Show loading indicator
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => const Center(
+        child: CircularProgressIndicator(),
+      ),
+    );
+
+    try {
+      // Export data
+      final jsonData = await exportService.exportData();
+
+      // Close loading indicator
+      if (context.mounted) {
+        Navigator.of(context).pop();
+      }
+
+      // Create file name with timestamp
+      final timestamp = DateTime.now().toIso8601String().replaceAll(':', '-');
+      final fileName = 'yudi_time_tracker_export_$timestamp.json';
+
+      // Share the file
+      if (context.mounted) {
+        // Save to temporary file first, then share
+        final tempDir = await getTemporaryDirectory();
+        final file = File('${tempDir.path}/$fileName');
+        await file.writeAsString(jsonData);
+
+        final result = await Share.shareXFiles(
+          [XFile(file.path, name: fileName, mimeType: 'application/json')],
+          text: 'YuDi Time Tracker Export',
+        );
+
+        if (result.status == ShareResultStatus.success) {
+          scaffoldMessenger.showSnackBar(
+            const SnackBar(
+              content: Text('Data exported successfully'),
+              backgroundColor: Colors.green,
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      // Close loading indicator if still open
+      if (context.mounted) {
+        Navigator.of(context).pop();
+      }
+
+      if (context.mounted) {
+        scaffoldMessenger.showSnackBar(
+          SnackBar(
+            content: Text('Failed to export data: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
   }
 
   String _getLanguageName(Locale locale) {
