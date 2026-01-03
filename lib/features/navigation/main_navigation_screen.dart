@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:yudi_time_tracker/generated/l10n/app_localizations.dart';
 import '../../app/theme/liquid_glass_tab_bar.dart';
 import '../../core/services/session_service.dart';
 import '../tasks/list_tasks_screen.dart';

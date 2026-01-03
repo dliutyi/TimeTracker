@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:yudi_time_tracker/generated/l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import '../../app/theme/app_theme.dart';
 import '../../shared/widgets/speech_text_field.dart';
