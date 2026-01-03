@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../app/theme/app_theme.dart';
 import '../../../core/models/criterion.dart';
 import '../../../core/models/criterion_config.dart';
@@ -17,17 +16,14 @@ import '../../tasks/list_tasks_screen.dart';
 class AddEditCriterionWidget extends ConsumerStatefulWidget {
   final Criterion? criterion; // If null, create mode; if not null, edit mode
 
-  const AddEditCriterionWidget({
-    super.key,
-    this.criterion,
-  });
+  const AddEditCriterionWidget({super.key, this.criterion});
 
   /// Show the widget as a modal
   static Future<Criterion?> show(
     BuildContext context, {
     Criterion? criterion,
   }) async {
-      return await showModalBottomSheet<Criterion?>(
+    return await showModalBottomSheet<Criterion?>(
       context: context,
       isScrollControlled: true,
       isDismissible: false,
@@ -67,6 +63,12 @@ class _AddEditCriterionWidgetState
     super.initState();
     _nameController = TextEditingController(text: widget.criterion?.name ?? '');
 
+    // Initialize all controllers first
+    _selectionLimitController = TextEditingController(text: '1');
+    _minValueController = TextEditingController(text: '0.0');
+    _maxValueController = TextEditingController(text: '10.0');
+    _stepValueController = TextEditingController(text: '0.5');
+
     if (widget.criterion != null) {
       // Edit mode - populate fields
       final criterion = widget.criterion!;
@@ -85,8 +87,7 @@ class _AddEditCriterionWidgetState
         discrete: (limit, values) {
           _selectionLimit = limit;
           _discreteValues = List.from(values);
-          _selectionLimitController =
-              TextEditingController(text: limit.toString());
+          _selectionLimitController.text = limit.toString();
           for (var value in values) {
             final controller = TextEditingController(text: value);
             final focusNode = FocusNode();
@@ -98,18 +99,21 @@ class _AddEditCriterionWidgetState
           _minValue = min;
           _maxValue = max;
           _stepValue = step;
-          _minValueController = TextEditingController(text: min.toString());
-          _maxValueController = TextEditingController(text: max.toString());
-          _stepValueController = TextEditingController(text: step.toString());
+          _minValueController.text = min.toString();
+          _maxValueController.text = max.toString();
+          _stepValueController.text = step.toString();
         },
       );
     } else {
       // Create mode - set defaults
       _selectedIcon = AppIcons.defaultIcons[0];
-      _selectionLimitController = TextEditingController(text: '1');
-      _minValueController = TextEditingController(text: '0.0');
-      _maxValueController = TextEditingController(text: '10.0');
-      _stepValueController = TextEditingController(text: '0.5');
+      // Add default first value for discrete type
+      if (_selectedType == CriterionType.discrete) {
+        final controller = TextEditingController();
+        final focusNode = FocusNode();
+        _valueControllers.add(controller);
+        _valueFocusNodes.add(focusNode);
+      }
     }
   }
 
@@ -139,8 +143,11 @@ class _AddEditCriterionWidgetState
       if (_discreteValues.isEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('At least one value is required for discrete criteria'),
+            content: Text(
+              'At least one value is required for discrete criteria',
+            ),
             backgroundColor: Colors.red,
+            duration: Duration(seconds: 2),
           ),
         );
         return;
@@ -150,6 +157,7 @@ class _AddEditCriterionWidgetState
           const SnackBar(
             content: Text('Selection limit must be greater than 0'),
             backgroundColor: Colors.red,
+            duration: Duration(seconds: 2),
           ),
         );
         return;
@@ -160,6 +168,7 @@ class _AddEditCriterionWidgetState
           const SnackBar(
             content: Text('Min value must be less than max value'),
             backgroundColor: Colors.red,
+            duration: Duration(seconds: 2),
           ),
         );
         return;
@@ -169,6 +178,7 @@ class _AddEditCriterionWidgetState
           const SnackBar(
             content: Text('Step value must be greater than 0'),
             backgroundColor: Colors.red,
+            duration: Duration(seconds: 2),
           ),
         );
         return;
@@ -189,20 +199,23 @@ class _AddEditCriterionWidgetState
         iconString = _selectedEmoji ?? '0';
       }
 
-      final config = _selectedType == CriterionType.discrete
-          ? CriterionConfig.discrete(
-              selectionLimit: _selectionLimit,
-              values: _discreteValues,
-            )
-          : CriterionConfig.continuous(
-              minValue: _minValue,
-              maxValue: _maxValue,
-              stepValue: _stepValue,
-            );
+      final config =
+          _selectedType == CriterionType.discrete
+              ? CriterionConfig.discrete(
+                selectionLimit: _selectionLimit,
+                values: _discreteValues,
+              )
+              : CriterionConfig.continuous(
+                minValue: _minValue,
+                maxValue: _maxValue,
+                stepValue: _stepValue,
+              );
 
       final now = DateTime.now();
       final criterion = Criterion(
-        id: widget.criterion?.id ?? DateTime.now().millisecondsSinceEpoch.toString(),
+        id:
+            widget.criterion?.id ??
+            DateTime.now().millisecondsSinceEpoch.toString(),
         icon: iconString,
         name: _nameController.text.trim(),
         type: _selectedType,
@@ -230,6 +243,7 @@ class _AddEditCriterionWidgetState
           SnackBar(
             content: Text('Error saving criterion: $e'),
             backgroundColor: Theme.of(context).colorScheme.error,
+            duration: const Duration(seconds: 2),
           ),
         );
       }
@@ -303,14 +317,13 @@ class _AddEditCriterionWidgetState
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final screenHeight = MediaQuery.of(context).size.height;
     final keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
 
     final isTablet = Responsive.isTablet(context);
     final maxWidth = Responsive.getMaxContentWidth(context);
-    
+
     return Align(
       alignment: Alignment.bottomCenter,
       child: Container(
@@ -323,111 +336,119 @@ class _AddEditCriterionWidgetState
           color: theme.scaffoldBackgroundColor,
           borderRadius: BorderRadius.vertical(
             top: const Radius.circular(AppTheme.radiusXL),
-            bottom: isTablet ? const Radius.circular(AppTheme.radiusXL) : Radius.zero,
+            bottom:
+                isTablet
+                    ? const Radius.circular(AppTheme.radiusXL)
+                    : Radius.zero,
           ),
         ),
-      child: Form(
-        key: _formKey,
-        child: Column(
-          children: [
-            // Header
-            Container(
-              padding: const EdgeInsets.all(AppTheme.spacingM),
-              decoration: BoxDecoration(
-                border: Border(
-                  bottom: BorderSide(
-                    color: theme.colorScheme.outline.withOpacity(0.2),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              // Header
+              Container(
+                padding: const EdgeInsets.all(AppTheme.spacingM),
+                decoration: BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(
+                      color: theme.colorScheme.outline.withOpacity(0.2),
+                    ),
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    Text(
+                      widget.criterion == null
+                          ? 'Add Criterion'
+                          : 'Edit Criterion',
+                      style: theme.textTheme.titleLarge,
+                    ),
+                    const Spacer(),
+                    IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: _handleDiscard,
+                    ),
+                  ],
+                ),
+              ),
+
+              // Content
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: EdgeInsets.only(
+                    bottom: keyboardHeight + AppTheme.spacingXL,
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(AppTheme.spacingM),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // First Section: Icon/Emoji and Name
+                        _buildFirstSection(theme),
+                        const SizedBox(height: AppTheme.spacingL),
+
+                        // Second Section: Type Selector
+                        _buildSecondSection(theme),
+                        const SizedBox(height: AppTheme.spacingL),
+
+                        // Third Section: Configuration (Dynamic)
+                        _buildThirdSection(theme),
+                      ],
+                    ),
                   ),
                 ),
               ),
-              child: Row(
-                children: [
-                  Text(
-                    widget.criterion == null
-                        ? 'Add Criterion'
-                        : 'Edit Criterion',
-                    style: theme.textTheme.titleLarge,
-                  ),
-                  const Spacer(),
-                  IconButton(
-                    icon: const Icon(Icons.close),
-                    onPressed: _handleDiscard,
-                  ),
-                ],
-              ),
-            ),
 
-            // Content
-            Expanded(
-              child: SingleChildScrollView(
+              // Fourth Section: Action Buttons (Docked at bottom)
+              Container(
                 padding: EdgeInsets.only(
-                  bottom: keyboardHeight + AppTheme.spacingXL,
+                  left: AppTheme.spacingM,
+                  right: AppTheme.spacingM,
+                  top: AppTheme.spacingM,
+                  bottom: AppTheme.spacingM + keyboardHeight,
                 ),
-                child: Padding(
-                  padding: const EdgeInsets.all(AppTheme.spacingM),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // First Section: Icon/Emoji and Name
-                      _buildFirstSection(theme),
-                      const SizedBox(height: AppTheme.spacingL),
-
-                      // Second Section: Type Selector
-                      _buildSecondSection(theme),
-                      const SizedBox(height: AppTheme.spacingL),
-
-                      // Third Section: Configuration (Dynamic)
-                      _buildThirdSection(theme),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-
-            // Fourth Section: Action Buttons (Docked at bottom)
-            Container(
-              padding: EdgeInsets.only(
-                left: AppTheme.spacingM,
-                right: AppTheme.spacingM,
-                top: AppTheme.spacingM,
-                bottom: AppTheme.spacingM + keyboardHeight,
-              ),
-              decoration: BoxDecoration(
-                color: theme.scaffoldBackgroundColor,
-                border: Border(
-                  top: BorderSide(
-                    color: theme.colorScheme.outline.withOpacity(0.2),
-                  ),
-                ),
-              ),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: OutlinedButton(
-                      onPressed: _isSaving ? null : _handleDiscard,
-                      child: const Text('Discard'),
+                decoration: BoxDecoration(
+                  color: theme.scaffoldBackgroundColor,
+                  border: Border(
+                    top: BorderSide(
+                      color: theme.colorScheme.outline.withOpacity(0.2),
                     ),
                   ),
-                  const SizedBox(width: AppTheme.spacingM),
-                  Expanded(
-                    flex: 2,
-                    child: ElevatedButton(
-                      onPressed: _isSaving ? null : _handleSave,
-                      child: _isSaving
-                          ? const SizedBox(
-                              height: 20,
-                              width: 20,
-                              child: CircularProgressIndicator(strokeWidth: 2),
-                            )
-                          : Text(widget.criterion == null ? 'Add' : 'Update'),
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: OutlinedButton(
+                        onPressed: _isSaving ? null : _handleDiscard,
+                        child: const Text('Discard'),
+                      ),
                     ),
-                  ),
-                ],
+                    const SizedBox(width: AppTheme.spacingM),
+                    Expanded(
+                      flex: 2,
+                      child: ElevatedButton(
+                        onPressed: _isSaving ? null : _handleSave,
+                        child:
+                            _isSaving
+                                ? const SizedBox(
+                                  height: 20,
+                                  width: 20,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                  ),
+                                )
+                                : Text(
+                                  widget.criterion == null ? 'Add' : 'Update',
+                                ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
-      ),
       ),
     );
   }
@@ -444,24 +465,28 @@ class _AddEditCriterionWidgetState
                 // Show dialog to choose icon or emoji
                 final choice = await showDialog<String>(
                   context: context,
-                  builder: (context) => AlertDialog(
-                    title: const Text('Select Icon Type'),
-                    content: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        ListTile(
-                          leading: const Icon(Icons.image),
-                          title: const Text('Icon'),
-                          onTap: () => Navigator.of(context).pop('icon'),
+                  builder:
+                      (context) => AlertDialog(
+                        title: const Text('Select Icon Type'),
+                        content: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            ListTile(
+                              leading: const Icon(Icons.image),
+                              title: const Text('Icon'),
+                              onTap: () => Navigator.of(context).pop('icon'),
+                            ),
+                            ListTile(
+                              leading: const Text(
+                                '😀',
+                                style: TextStyle(fontSize: 24),
+                              ),
+                              title: const Text('Emoji'),
+                              onTap: () => Navigator.of(context).pop('emoji'),
+                            ),
+                          ],
                         ),
-                        ListTile(
-                          leading: const Text('😀', style: TextStyle(fontSize: 24)),
-                          title: const Text('Emoji'),
-                          onTap: () => Navigator.of(context).pop('emoji'),
-                        ),
-                      ],
-                    ),
-                  ),
+                      ),
                 );
                 if (choice == 'icon') {
                   await _selectIcon();
@@ -476,23 +501,24 @@ class _AddEditCriterionWidgetState
                   color: theme.colorScheme.primaryContainer,
                   borderRadius: BorderRadius.circular(AppTheme.radiusM),
                 ),
-                child: _selectedIcon != null
-                    ? Icon(
-                        _selectedIcon,
-                        size: 32,
-                        color: theme.colorScheme.onPrimaryContainer,
-                      )
-                    : _selectedEmoji != null
+                child:
+                    _selectedIcon != null
+                        ? Icon(
+                          _selectedIcon,
+                          size: 32,
+                          color: theme.colorScheme.onPrimaryContainer,
+                        )
+                        : _selectedEmoji != null
                         ? Text(
-                            _selectedEmoji!,
-                            style: const TextStyle(fontSize: 32),
-                            textAlign: TextAlign.center,
-                          )
+                          _selectedEmoji!,
+                          style: const TextStyle(fontSize: 32),
+                          textAlign: TextAlign.center,
+                        )
                         : Icon(
-                            Icons.add,
-                            size: 32,
-                            color: theme.colorScheme.onPrimaryContainer,
-                          ),
+                          Icons.add,
+                          size: 32,
+                          color: theme.colorScheme.onPrimaryContainer,
+                        ),
               ),
             ),
             const SizedBox(width: AppTheme.spacingM),
@@ -519,10 +545,7 @@ class _AddEditCriterionWidgetState
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'Type',
-          style: theme.textTheme.titleMedium,
-        ),
+        Text('Type', style: theme.textTheme.titleMedium),
         const SizedBox(height: AppTheme.spacingS),
         SegmentedButton<CriterionType>(
           segments: const [
@@ -558,12 +581,9 @@ class _AddEditCriterionWidgetState
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'Discrete Configuration',
-          style: theme.textTheme.titleMedium,
-        ),
+        Text('Discrete Configuration', style: theme.textTheme.titleMedium),
         const SizedBox(height: AppTheme.spacingM),
-        
+
         // Selection Limit
         SpeechTextField(
           controller: _selectionLimitController,
@@ -583,12 +603,9 @@ class _AddEditCriterionWidgetState
           },
         ),
         const SizedBox(height: AppTheme.spacingM),
-        
+
         // Values
-        Text(
-          'Values',
-          style: theme.textTheme.titleSmall,
-        ),
+        Text('Values', style: theme.textTheme.titleSmall),
         const SizedBox(height: AppTheme.spacingS),
         ...List.generate(_valueControllers.length, (index) {
           return Padding(
@@ -630,10 +647,7 @@ class _AddEditCriterionWidgetState
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'Continuous Configuration',
-          style: theme.textTheme.titleMedium,
-        ),
+        Text('Continuous Configuration', style: theme.textTheme.titleMedium),
         const SizedBox(height: AppTheme.spacingM),
         SpeechTextField(
           controller: _minValueController,

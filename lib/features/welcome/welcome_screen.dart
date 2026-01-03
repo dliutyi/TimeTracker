@@ -84,16 +84,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen>
 
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              theme.colorScheme.primary,
-              theme.colorScheme.secondary,
-            ],
-          ),
-        ),
+        color: theme.colorScheme.primary,
         child: SafeArea(
           child: FadeTransition(
             opacity: _fadeAnimation,
@@ -134,6 +125,13 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen>
                         style: theme.textTheme.displayMedium?.copyWith(
                           color: theme.colorScheme.onPrimary,
                           fontWeight: FontWeight.bold,
+                          shadows: [
+                            Shadow(
+                              offset: const Offset(2, 2),
+                              blurRadius: 4,
+                              color: Colors.black.withValues(alpha: 0.3),
+                            ),
+                          ],
                         ),
                         textAlign: TextAlign.center,
                       ),
@@ -144,6 +142,13 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen>
                         l10n.welcomeDescription,
                         style: theme.textTheme.bodyLarge?.copyWith(
                           color: theme.colorScheme.onPrimary.withValues(alpha: 0.9),
+                          shadows: [
+                            Shadow(
+                              offset: const Offset(1, 1),
+                              blurRadius: 3,
+                              color: Colors.black.withValues(alpha: 0.3),
+                            ),
+                          ],
                         ),
                         textAlign: TextAlign.center,
                       ),
@@ -172,6 +177,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen>
                             l10n.continueButton,
                             style: theme.textTheme.titleLarge?.copyWith(
                               fontWeight: FontWeight.bold,
+                              color: theme.colorScheme.primary,
                             ),
                           ),
                         ),

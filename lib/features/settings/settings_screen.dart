@@ -5,6 +5,8 @@ import 'package:share_plus/share_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:file_picker/file_picker.dart';
 import 'dart:io';
+import 'dart:typed_data';
+import 'dart:convert';
 import '../../app/theme/app_theme.dart';
 import '../../app/theme/theme_mode_provider.dart';
 import '../../app/config/locale_provider.dart';
@@ -27,67 +29,60 @@ class SettingsScreen extends ConsumerWidget {
     final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.settings),
-      ),
-      body: Column(
-        children: [
-          Expanded(
-            child: ListView(
+      body: SafeArea(
+        child: Column(
+          children: [
+            Expanded(
+              child: ListView(
+                padding: const EdgeInsets.all(AppTheme.spacingM),
+                children: [
+                  // Dark Mode Section
+                  _buildSection(
+                    context,
+                    title: 'Dark Mode',
+                    children: [_buildDarkModeSelector(context, ref)],
+                  ),
+                  const SizedBox(height: AppTheme.spacingL),
+
+                  // Localization Section
+                  _buildSection(
+                    context,
+                    title: 'Language',
+                    children: [_buildLocalizationSelector(context, ref, l10n)],
+                  ),
+                  const SizedBox(height: AppTheme.spacingL),
+
+                  // Data Management Section
+                  _buildSection(
+                    context,
+                    title: 'Data Management',
+                    children: [_buildDataManagementButtons(context, l10n)],
+                  ),
+                ],
+              ),
+            ),
+
+            // App Version (Docked at bottom)
+            Container(
               padding: const EdgeInsets.all(AppTheme.spacingM),
-              children: [
-                // Dark Mode Section
-                _buildSection(
-                  context,
-                  title: 'Dark Mode',
-                  children: [
-                    _buildDarkModeSelector(context, ref),
-                  ],
+              decoration: BoxDecoration(
+                border: Border(
+                  top: BorderSide(
+                    color: theme.colorScheme.outline.withValues(alpha: 0.2),
+                  ),
                 ),
-                const SizedBox(height: AppTheme.spacingL),
-
-                // Localization Section
-                _buildSection(
-                  context,
-                  title: 'Language',
-                  children: [
-                    _buildLocalizationSelector(context, ref, l10n),
-                  ],
-                ),
-                const SizedBox(height: AppTheme.spacingL),
-
-                // Data Management Section
-                _buildSection(
-                  context,
-                  title: 'Data Management',
-                  children: [
-                    _buildDataManagementButtons(context, l10n),
-                  ],
-                ),
-              ],
-            ),
-          ),
-
-          // App Version (Docked at bottom)
-          Container(
-            padding: const EdgeInsets.all(AppTheme.spacingM),
-            decoration: BoxDecoration(
-              border: Border(
-                top: BorderSide(
-                  color: theme.colorScheme.outline.withValues(alpha: 0.2),
+              ),
+              child: Center(
+                child: Text(
+                  'Version $appVersion',
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant,
+                  ),
                 ),
               ),
             ),
-            child: Center(
-              child: Text(
-                'Version $appVersion',
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: theme.colorScheme.onSurfaceVariant,
-                ),
-              ),
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -114,11 +109,7 @@ class SettingsScreen extends ConsumerWidget {
             ),
           ),
         ),
-        Card(
-          child: Column(
-            children: children,
-          ),
-        ),
+        Card(child: Column(children: children)),
       ],
     );
   }
@@ -178,7 +169,13 @@ class SettingsScreen extends ConsumerWidget {
       subtitle: Text(_getLanguageName(currentLocale)),
       trailing: const Icon(Icons.arrow_forward_ios, size: 16),
       onTap: () {
-        _showLanguagePicker(context, ref, currentLocale, supportedLocales, localeNotifier);
+        _showLanguagePicker(
+          context,
+          ref,
+          currentLocale,
+          supportedLocales,
+          localeNotifier,
+        );
       },
     );
   }
@@ -192,38 +189,40 @@ class SettingsScreen extends ConsumerWidget {
   ) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Select Language'),
-        content: SizedBox(
-          width: double.maxFinite,
-          child: ListView.builder(
-            shrinkWrap: true,
-            itemCount: supportedLocales.length,
-            itemBuilder: (context, index) {
-              final locale = supportedLocales[index];
-              final isSelected = locale.languageCode == currentLocale.languageCode;
+      builder:
+          (context) => AlertDialog(
+            title: const Text('Select Language'),
+            content: SizedBox(
+              width: double.maxFinite,
+              child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: supportedLocales.length,
+                itemBuilder: (context, index) {
+                  final locale = supportedLocales[index];
+                  final isSelected =
+                      locale.languageCode == currentLocale.languageCode;
 
-              return RadioListTile<Locale>(
-                title: Text(_getLanguageName(locale)),
-                value: locale,
-                groupValue: isSelected ? currentLocale : null,
-                onChanged: (selectedLocale) {
-                  if (selectedLocale != null) {
-                    localeNotifier.setLocale(selectedLocale);
-                    Navigator.of(context).pop();
-                  }
+                  return RadioListTile<Locale>(
+                    title: Text(_getLanguageName(locale)),
+                    value: locale,
+                    groupValue: isSelected ? currentLocale : null,
+                    onChanged: (selectedLocale) {
+                      if (selectedLocale != null) {
+                        localeNotifier.setLocale(selectedLocale);
+                        Navigator.of(context).pop();
+                      }
+                    },
+                  );
                 },
-              );
-            },
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('Cancel'),
+              ),
+            ],
           ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancel'),
-          ),
-        ],
-      ),
     );
   }
 
@@ -258,39 +257,95 @@ class SettingsScreen extends ConsumerWidget {
     final exportService = ref.read(exportServiceProvider);
     final scaffoldMessenger = ScaffoldMessenger.of(context);
 
+    bool loadingDialogOpen = false;
+
     // Show loading indicator
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => const Center(
-        child: CircularProgressIndicator(),
-      ),
-    );
+    if (context.mounted) {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => const Center(child: CircularProgressIndicator()),
+      );
+      loadingDialogOpen = true;
+    }
 
     try {
       // Export data
       final jsonData = await exportService.exportData();
 
       // Close loading indicator
-      if (context.mounted) {
+      if (context.mounted && loadingDialogOpen) {
         Navigator.of(context).pop();
+        loadingDialogOpen = false;
       }
 
       // Create file name with timestamp
       final timestamp = DateTime.now().toIso8601String().replaceAll(':', '-');
       final fileName = 'yudi_time_tracker_export_$timestamp.json';
 
-      // Share the file
-      if (context.mounted) {
-        // Save to temporary file first, then share
+      // Show dialog to choose between share and save
+      if (!context.mounted) return;
+      final action = await showDialog<String>(
+        context: context,
+        builder:
+            (context) => AlertDialog(
+              title: const Text('Export Data'),
+              content: const Text('Choose how you want to export the data:'),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop('save'),
+                  child: const Text('Save to Device'),
+                ),
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop('share'),
+                  child: const Text('Share'),
+                ),
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(null),
+                  child: const Text('Cancel'),
+                ),
+              ],
+            ),
+      );
+
+      if (action == null || !context.mounted) return;
+
+      if (action == 'save') {
+        // Allow user to choose save location
+        // Use a small delay to ensure dialog is fully closed before opening file picker
+        await Future.delayed(const Duration(milliseconds: 100));
+
+        if (!context.mounted) return;
+
+        // Convert JSON string to bytes for Android/iOS
+        final bytes = Uint8List.fromList(utf8.encode(jsonData));
+
+        final savePath = await FilePicker.platform.saveFile(
+          dialogTitle: 'Save Export File',
+          fileName: fileName,
+          type: FileType.custom,
+          allowedExtensions: ['json'],
+          bytes: bytes, // Required for Android/iOS
+        );
+
+        if (savePath != null && context.mounted) {
+          scaffoldMessenger.showSnackBar(
+            SnackBar(
+              content: Text('Data saved to: $savePath'),
+              backgroundColor: Colors.green,
+              duration: const Duration(seconds: 3),
+            ),
+          );
+        }
+      } else if (action == 'share') {
+        // Share the file
         final tempDir = await getTemporaryDirectory();
         final file = File('${tempDir.path}/$fileName');
         await file.writeAsString(jsonData);
 
-        final result = await Share.shareXFiles(
-          [XFile(file.path, name: fileName, mimeType: 'application/json')],
-          text: 'YuDi Time Tracker Export',
-        );
+        final result = await Share.shareXFiles([
+          XFile(file.path, name: fileName, mimeType: 'application/json'),
+        ], text: 'YuDi Time Tracker Export');
 
         if (result.status == ShareResultStatus.success) {
           scaffoldMessenger.showSnackBar(
@@ -303,8 +358,13 @@ class SettingsScreen extends ConsumerWidget {
       }
     } catch (e) {
       // Close loading indicator if still open
-      if (context.mounted) {
-        Navigator.of(context).pop();
+      if (context.mounted && loadingDialogOpen) {
+        try {
+          Navigator.of(context).pop();
+        } catch (_) {
+          // Dialog might already be closed, ignore
+        }
+        loadingDialogOpen = false;
       }
 
       if (context.mounted) {
@@ -325,7 +385,8 @@ class SettingsScreen extends ConsumerWidget {
     final confirmed = await ConfirmationDialog.showImportConfirmation(
       context,
       title: 'Import Data',
-      message: 'All existing data will be permanently deleted.\n\n'
+      message:
+          'All existing data will be permanently deleted.\n\n'
           'All current tasks, criteria, sessions, and settings will be lost.\n\n'
           'Data will be replaced with imported data.\n\n'
           'This action cannot be undone.',
@@ -343,7 +404,9 @@ class SettingsScreen extends ConsumerWidget {
       allowedExtensions: ['json'],
     );
 
-    if (result == null || result.files.single.path == null || !context.mounted) {
+    if (result == null ||
+        result.files.single.path == null ||
+        !context.mounted) {
       return;
     }
 
@@ -355,9 +418,8 @@ class SettingsScreen extends ConsumerWidget {
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (dialogContext) => const Center(
-        child: CircularProgressIndicator(),
-      ),
+      builder:
+          (dialogContext) => const Center(child: CircularProgressIndicator()),
     );
 
     try {
@@ -428,7 +490,7 @@ class SettingsScreen extends ConsumerWidget {
       'ur': 'Urdu',
       'uk': 'Ukrainian',
     };
-    return languageNames[locale.languageCode] ?? locale.languageCode.toUpperCase();
+    return languageNames[locale.languageCode] ??
+        locale.languageCode.toUpperCase();
   }
 }
-

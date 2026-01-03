@@ -243,7 +243,7 @@ class _SwipeableItemState extends State<SwipeableItem>
             }
 
             // Calculate color interpolation for gradual change
-            Color? itemColor = widget.baseColor;
+            Color? itemColor;
             final currentHasRightSwipe =
                 widget.onSwipeRight != null && _dragOffset > 0;
             if (currentHasRightSwipe &&
@@ -258,16 +258,10 @@ class _SwipeableItemState extends State<SwipeableItem>
                 widget.activationColor,
                 progress,
               );
+            } else if (widget.baseColor != null) {
+              // When not swiping, use baseColor as background
+              itemColor = widget.baseColor;
             }
-
-            // Calculate icon opacity and size based on swipe progress
-            final iconOpacity =
-                currentHasRightSwipe
-                    ? (_dragOffset / _activationThreshold).clamp(0.0, 1.0)
-                    : 0.0;
-            final currentIsActivating =
-                _dragOffset >= _activationThreshold * 0.8;
-            final iconSize = currentIsActivating ? 32.0 : 24.0;
 
             return Transform.translate(
               offset: Offset(offset, 0),
@@ -281,37 +275,9 @@ class _SwipeableItemState extends State<SwipeableItem>
                 onHorizontalDragStart: _handleDragStart,
                 onHorizontalDragUpdate: _handleDragUpdate,
                 onHorizontalDragEnd: _handleDragEnd,
-                child: Stack(
-                  children: [
-                    // Background with gradual color change
-                    Container(
-                      color:
-                          itemColor ??
-                          Theme.of(context).scaffoldBackgroundColor,
-                      child: widget.child,
-                    ),
-                    // Icon indicator (appears on right swipe)
-                    if (currentHasRightSwipe &&
-                        widget.rightSwipeIcon != null &&
-                        iconOpacity > 0)
-                      Positioned(
-                        left: AppTheme.spacingL,
-                        top: 0,
-                        bottom: 0,
-                        child: Center(
-                          child: Opacity(
-                            opacity: iconOpacity,
-                            child: Icon(
-                              widget.rightSwipeIcon,
-                              color:
-                                  widget.iconColor ??
-                                  Theme.of(context).colorScheme.onSurface,
-                              size: iconSize,
-                            ),
-                          ),
-                        ),
-                      ),
-                  ],
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(AppTheme.radiusM),
+                  child: Container(color: itemColor, child: widget.child),
                 ),
               ),
             );

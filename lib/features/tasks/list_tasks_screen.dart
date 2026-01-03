@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:intl/intl.dart';
 import '../../app/theme/app_theme.dart';
 import '../../shared/widgets/speech_text_field.dart';
 import '../../core/repositories/repository_providers.dart';
@@ -14,9 +15,9 @@ import 'widgets/add_edit_task_widget.dart';
 /// Provider for general motto
 final generalMottoProvider =
     StateNotifierProvider<GeneralMottoNotifier, String>((ref) {
-  final settingsRepository = ref.watch(settingsRepositoryProvider);
-  return GeneralMottoNotifier(settingsRepository);
-});
+      final settingsRepository = ref.watch(settingsRepositoryProvider);
+      return GeneralMottoNotifier(settingsRepository);
+    });
 
 /// Notifier for general motto
 class GeneralMottoNotifier extends StateNotifier<String> {
@@ -91,7 +92,7 @@ class _ListTasksScreenState extends ConsumerState<ListTasksScreen> {
           children: [
             // Header
             _buildHeader(context, theme, l10n, motto),
-            
+
             // Task List
             Expanded(
               child: tasksAsync.when(
@@ -101,7 +102,12 @@ class _ListTasksScreenState extends ConsumerState<ListTasksScreen> {
                   }
                   final padding = Responsive.getPadding(context);
                   return ListView.builder(
-                    padding: padding,
+                    padding: EdgeInsets.only(
+                      left: padding.left,
+                      right: padding.right,
+                      top: padding.top,
+                      bottom: 0, // Remove bottom padding to avoid weird spacing
+                    ),
                     itemCount: tasks.length,
                     itemBuilder: (context, index) {
                       return TweenAnimationBuilder<double>(
@@ -117,21 +123,33 @@ class _ListTasksScreenState extends ConsumerState<ListTasksScreen> {
                             ),
                           );
                         },
-                        child: TaskItem(task: tasks[index]),
+                        child: Container(
+                          margin: const EdgeInsets.only(
+                            bottom: AppTheme.spacingS,
+                          ),
+                          child: TaskItem(task: tasks[index]),
+                        ),
                       );
                     },
                   );
                 },
-                loading: () => const Center(
-                  child: CircularProgressIndicator(),
-                ),
-                error: (error, stack) => Center(
-                  child: Text('Error: $error'),
-                ),
+                loading: () => const Center(child: CircularProgressIndicator()),
+                error: (error, stack) => Center(child: Text('Error: $error')),
               ),
             ),
           ],
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          final result = await AddEditTaskWidget.show(context);
+          if (result != null && mounted) {
+            // Refresh tasks list
+            ref.invalidate(tasksProvider);
+          }
+        },
+        child: const Icon(Icons.add),
+        tooltip: l10n.addTask,
       ),
     );
   }
@@ -155,13 +173,53 @@ class _ListTasksScreenState extends ConsumerState<ListTasksScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Date and Time
-          Text(
-            _formatDateTime(_currentDateTime),
-            style: theme.textTheme.titleLarge,
+          // Date and Time in two columns
+          Row(
+            children: [
+              // Calendar icon and day of week
+              Expanded(
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.calendar_today,
+                      size: 20,
+                      color: theme.colorScheme.onSurfaceVariant,
+                    ),
+                    const SizedBox(width: AppTheme.spacingS),
+                    Text(
+                      DateFormat(
+                        'EEEE',
+                        Localizations.localeOf(context).toString(),
+                      ).format(_currentDateTime),
+                      style: theme.textTheme.titleMedium,
+                    ),
+                  ],
+                ),
+              ),
+              // Clock icon and current time
+              Expanded(
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.access_time,
+                      size: 20,
+                      color: theme.colorScheme.onSurfaceVariant,
+                    ),
+                    const SizedBox(width: AppTheme.spacingS),
+                    Text(
+                      DateFormat(
+                        'HH:mm',
+                        Localizations.localeOf(context).toString(),
+                      ).format(_currentDateTime),
+                      style: theme.textTheme.titleMedium,
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
           const SizedBox(height: AppTheme.spacingM),
-          
+
           // General Motto
           SpeechTextField(
             label: l10n.generalMotto,
@@ -169,24 +227,6 @@ class _ListTasksScreenState extends ConsumerState<ListTasksScreen> {
             onChanged: (value) {
               ref.read(generalMottoProvider.notifier).setMotto(value);
             },
-          ),
-          const SizedBox(height: AppTheme.spacingM),
-          
-          // Add Task Button
-          Align(
-            alignment: Alignment.centerRight,
-            child: IconButton(
-              onPressed: () async {
-                final result = await AddEditTaskWidget.show(context);
-                if (result != null && mounted) {
-                  // Refresh tasks list
-                  ref.invalidate(tasksProvider);
-                }
-              },
-              icon: const Icon(Icons.add_circle_outline),
-              iconSize: 32,
-              tooltip: l10n.addTask,
-            ),
           ),
         ],
       ),
@@ -210,10 +250,7 @@ class _ListTasksScreenState extends ConsumerState<ListTasksScreen> {
               color: theme.colorScheme.onSurfaceVariant,
             ),
             const SizedBox(height: AppTheme.spacingL),
-            Text(
-              l10n.noTasks,
-              style: theme.textTheme.headlineSmall,
-            ),
+            Text(l10n.noTasks, style: theme.textTheme.headlineSmall),
             const SizedBox(height: AppTheme.spacingS),
             Text(
               l10n.createFirstTask,
@@ -227,51 +264,6 @@ class _ListTasksScreenState extends ConsumerState<ListTasksScreen> {
       ),
     );
   }
-
-  String _formatDateTime(DateTime dateTime) {
-    // Format: "Monday, January 1, 2024 - 12:34 PM"
-    final weekday = _getWeekdayName(dateTime.weekday);
-    final month = _getMonthName(dateTime.month);
-    final day = dateTime.day;
-    final year = dateTime.year;
-    final hour = dateTime.hour;
-    final minute = dateTime.minute.toString().padLeft(2, '0');
-    final period = hour >= 12 ? 'PM' : 'AM';
-    final displayHour = hour > 12 ? hour - 12 : (hour == 0 ? 12 : hour);
-    
-    return '$weekday, $month $day, $year - $displayHour:$minute $period';
-  }
-
-  String _getWeekdayName(int weekday) {
-    const weekdays = [
-      'Monday',
-      'Tuesday',
-      'Wednesday',
-      'Thursday',
-      'Friday',
-      'Saturday',
-      'Sunday',
-    ];
-    return weekdays[weekday - 1];
-  }
-
-  String _getMonthName(int month) {
-    const months = [
-      'January',
-      'February',
-      'March',
-      'April',
-      'May',
-      'June',
-      'July',
-      'August',
-      'September',
-      'October',
-      'November',
-      'December',
-    ];
-    return months[month - 1];
-  }
 }
 
 /// Provider for tasks list with frequency sorting
@@ -279,11 +271,10 @@ final tasksProvider = FutureProvider<List<Task>>((ref) async {
   final taskRepository = ref.watch(taskRepositoryProvider);
   final sessionRepository = ref.watch(sessionRepositoryProvider);
   final frequencyService = FrequencyService(sessionRepository);
-  
+
   // Get all tasks (including disabled)
   final allTasks = await taskRepository.getAllTasks();
-  
+
   // Sort by frequency
   return await frequencyService.sortTasksByFrequency(allTasks);
 });
-

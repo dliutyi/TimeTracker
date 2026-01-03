@@ -31,7 +31,7 @@ Visualization should be redeveloped:
 - When task is stopped and there is no criteria, no need to show Rate task widget.
 - Make sure all text is available for localization and make sure everything is translated there
 
-## Task 6 [ ]
+## Task 6 [x]
 Update 'List of Criteria' tab
 
 - Move '+' action to the floating action button
@@ -40,7 +40,7 @@ Update 'List of Criteria' tab
 - Fix an exception in Add/Edit Criteria for continuous type in _AddEditCriterionWidgetState: LateInitializationError: Field _minValueController has not been initialzied
 - Error overlay is behind the Add/Edit criterion widget and should disappear quicker.
 
-## Task 7 [ ]
+## Task 7 [x]
 Update 'List of Tasks' tab
 
 - Move '+' action to the floating action button
@@ -49,15 +49,28 @@ Update 'List of Tasks' tab
         - Calendar icon and day of week
         - Clock icon and current time (the format should depend on phone localization)
 - Icon background should be taken from the task color
+- swipeable_item icon should be set after the change in the shared component
 - Each task should enumerate assigned criteria instead of just N criteria
 - When the task is active - show task duration not just Active
 - Disable button should spawn a confirmation dialog with Disable color schema (orange)
 - Delete button should spawn a confirmation dialog with Delete color schema (red)
+- Disable and delete buttons are disabled while the task is active.
 - Make sure all text is available for localization and make sure everything is translated there
 - Make sure when the task icon, color, name, motto, criteria are changed, it is live updated in Active Task and Statistics
-- Error overlay is behind the Add/Edit task widget and should disappear quicker.
+- Error overlay is behind the Add/Edit task widget and should disappear quicker
 
-## Task 8 [ ]
+## Task 8 [x]
+Update 'Settings' tab
+
+- Remove redundant header
+- Export Data should offer local device saving (not only share)
+
+## Task 9 [x]
+Update welcome page
+
+I don't like the gradient, the background color should be as a primary app color with contrast text, maybe text should contain shadow. Button is not nice, black and no visible text. 
+
+## Task 10 [ ]
 Update 'Statistics' tab
 
 - Remove redundant header
@@ -68,17 +81,6 @@ Update 'Statistics' tab
     - Add a chart as in github activity
     - Charts axis texts are not very neat, values overlap on each other in the horizontal and vertical axis.
 - Make sure all text is available for localization and make sure everything is translated there
-
-## Task 9 [ ]
-Update 'Settings' tab
-
-- Remove redundant header
-- Export Data should offer local device saving (not only share)
-
-## Task 10 [ ]
-Update welcome page
-
-I don't like the gradient, the background color should be as a primary app color with contrast text, maybe text should contain shadow. Button is not nice, black and no visible text. 
 
 ## Task 11 [ ]
 Make sure that all text is available for localization and make sure that all translations are provided. If something is missed, please translate

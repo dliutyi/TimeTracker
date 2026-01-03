@@ -284,9 +284,11 @@ class _ActiveTaskScreenState extends ConsumerState<ActiveTaskScreen> {
                   iconColor: contrastColor, // Icon color for visibility
                   child: Container(
                     width: double.infinity,
-                    decoration: const BoxDecoration(
+                    decoration: BoxDecoration(
+                      color:
+                          Colors
+                              .transparent, // Let SwipeableItem handle background
                       borderRadius: BorderRadius.zero, // No round corners
-                      // Color is handled by parent SwipeableItem
                     ),
                     padding: const EdgeInsets.symmetric(
                       horizontal: AppTheme.spacingL,

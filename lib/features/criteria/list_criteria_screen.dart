@@ -8,6 +8,7 @@ import '../../core/utils/responsive.dart';
 import 'widgets/criterion_item.dart';
 import 'widgets/add_edit_criterion_widget.dart';
 import '../tasks/list_tasks_screen.dart';
+import '../tasks/widgets/add_edit_task_widget.dart' as task_widget;
 
 /// Provider for criteria sorted by usage frequency
 final criteriaProvider = FutureProvider<List<Criterion>>((ref) async {
@@ -25,25 +26,8 @@ class ListCriteriaScreen extends ConsumerWidget {
     final criteriaAsync = ref.watch(criteriaProvider);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.listOfCriteria),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.add),
-            onPressed: () async {
-              final result = await AddEditCriterionWidget.show(context);
-              if (result != null && context.mounted) {
-                // Refresh the criteria list
-                ref.invalidate(criteriaProvider);
-                // Also refresh tasks list in case criteria were updated
-                ref.invalidate(tasksProvider);
-              }
-            },
-            tooltip: 'Add Criterion',
-          ),
-        ],
-      ),
-      body: criteriaAsync.when(
+      body: SafeArea(
+        child: criteriaAsync.when(
         data: (criteria) {
           if (criteria.isEmpty) {
             return _buildEmptyState(context, l10n);
@@ -69,6 +53,22 @@ class ListCriteriaScreen extends ConsumerWidget {
             ],
           ),
         ),
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          final result = await AddEditCriterionWidget.show(context);
+          if (result != null && context.mounted) {
+            // Refresh the criteria list
+            ref.invalidate(criteriaProvider);
+            // Also refresh tasks list in case criteria were updated
+            ref.invalidate(tasksProvider);
+            // Invalidate criteria provider used in Add/Edit Task widget
+            ref.invalidate(task_widget.criteriaForTaskProvider);
+          }
+        },
+        child: const Icon(Icons.add),
+        tooltip: 'Add Criterion',
       ),
     );
   }
@@ -88,12 +88,12 @@ class ListCriteriaScreen extends ConsumerWidget {
             ),
             const SizedBox(height: AppTheme.spacingL),
             Text(
-              'No Criteria',
+              l10n.noCriteria,
               style: theme.textTheme.headlineSmall,
             ),
             const SizedBox(height: AppTheme.spacingS),
             Text(
-              'Create your first criterion to start rating tasks.',
+              l10n.createFirstCriterion,
               style: theme.textTheme.bodyMedium?.copyWith(
                 color: theme.colorScheme.onSurfaceVariant,
               ),

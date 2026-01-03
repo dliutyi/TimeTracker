@@ -14,7 +14,8 @@ import '../list_tasks_screen.dart';
 import '../../criteria/list_criteria_screen.dart';
 
 /// Provider for criteria list sorted by usage frequency
-final _criteriaProvider = FutureProvider<List<Criterion>>((ref) async {
+/// Made public so it can be invalidated from other screens
+final criteriaForTaskProvider = FutureProvider<List<Criterion>>((ref) async {
   final criterionRepository = ref.watch(criterionRepositoryProvider);
   return await criterionRepository.getCriteriaByUsageFrequency();
 });
@@ -146,6 +147,7 @@ class _AddEditTaskWidgetState extends ConsumerState<AddEditTaskWidget> {
           SnackBar(
             content: Text('Error saving task: $e'),
             backgroundColor: Theme.of(context).colorScheme.error,
+            duration: const Duration(seconds: 2),
           ),
         );
       }
@@ -219,7 +221,7 @@ class _AddEditTaskWidgetState extends ConsumerState<AddEditTaskWidget> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
-    final criteriaAsync = ref.watch(_criteriaProvider);
+    final criteriaAsync = ref.watch(criteriaForTaskProvider);
     final screenHeight = MediaQuery.of(context).size.height;
 
     final isTablet = Responsive.isTablet(context);
