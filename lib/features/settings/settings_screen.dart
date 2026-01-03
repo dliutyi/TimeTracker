@@ -11,6 +11,8 @@ import '../../app/config/locale_provider.dart';
 import '../../core/services/export_service.dart';
 import '../../core/services/import_service.dart';
 import '../../shared/widgets/confirmation_dialog.dart';
+import '../tasks/list_tasks_screen.dart';
+import '../criteria/list_criteria_screen.dart';
 
 /// App version constant
 const String appVersion = '0.1.0';
@@ -318,7 +320,6 @@ class SettingsScreen extends ConsumerWidget {
 
   Future<void> _handleImport(BuildContext context, WidgetRef ref) async {
     final importService = ref.read(importServiceProvider);
-    final scaffoldMessenger = ScaffoldMessenger.of(context);
 
     // Show confirmation dialog first
     final confirmed = await ConfirmationDialog.showImportConfirmation(
@@ -365,6 +366,10 @@ class SettingsScreen extends ConsumerWidget {
 
       // Import data
       await importService.importData(jsonData);
+
+      // Invalidate providers to refresh UI
+      ref.invalidate(tasksProvider);
+      ref.invalidate(criteriaProvider);
 
       // Close loading indicator
       if (context.mounted) {

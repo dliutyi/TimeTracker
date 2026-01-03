@@ -8,6 +8,8 @@ import '../../../core/repositories/repository_providers.dart';
 import '../../../core/constants/icons.dart';
 import '../../../shared/widgets/speech_text_field.dart';
 import '../../../shared/widgets/icon_picker.dart';
+import '../list_tasks_screen.dart';
+import '../../criteria/list_criteria_screen.dart';
 
 /// Provider for criteria list sorted by usage frequency
 final _criteriaProvider = FutureProvider<List<Criterion>>((ref) async {
@@ -119,6 +121,10 @@ class _AddEditTaskWidgetState extends ConsumerState<AddEditTaskWidget> {
         savedTask.id,
         _selectedCriterionIds.toList(),
       );
+
+      // Invalidate providers to refresh UI
+      ref.invalidate(tasksProvider);
+      ref.invalidate(criteriaProvider);
 
       if (mounted) {
         Navigator.of(context).pop(savedTask);

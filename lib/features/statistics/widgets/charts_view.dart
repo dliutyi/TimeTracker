@@ -253,7 +253,9 @@ class _ChartsViewState extends ConsumerState<ChartsView> {
                   gridData: FlGridData(
                     show: true,
                     drawVerticalLine: false,
-                    horizontalInterval: topTasks.first.value.inMinutes / 5,
+                    horizontalInterval: topTasks.first.value.inMinutes > 0
+                        ? topTasks.first.value.inMinutes / 5
+                        : 1.0,
                     getDrawingHorizontalLine: (value) {
                       return FlLine(
                         color: theme.colorScheme.outline.withValues(alpha: 0.1),
@@ -353,9 +355,13 @@ class _ChartsViewState extends ConsumerState<ChartsView> {
                         showTitles: true,
                         getTitlesWidget: (value, meta) {
                           final index = value.toInt();
+                          final step = displayDates.length > 5
+                              ? displayDates.length ~/ 5
+                              : 1;
                           if (index >= 0 &&
                               index < displayDates.length &&
-                              index % (displayDates.length ~/ 5) == 0) {
+                              step > 0 &&
+                              index % step == 0) {
                             final date = displayDates[index];
                             return Padding(
                               padding: const EdgeInsets.only(top: 8),

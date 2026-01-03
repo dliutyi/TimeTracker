@@ -9,6 +9,8 @@ import '../../../core/repositories/repository_providers.dart';
 import '../../../core/constants/icons.dart';
 import '../../../shared/widgets/speech_text_field.dart';
 import '../../../shared/widgets/icon_picker.dart';
+import '../list_criteria_screen.dart';
+import '../../tasks/list_tasks_screen.dart';
 
 /// Add/Edit Criterion Widget
 class AddEditCriterionWidget extends ConsumerStatefulWidget {
@@ -213,6 +215,10 @@ class _AddEditCriterionWidgetState
       } else {
         await criterionRepository.updateCriterion(criterion);
       }
+
+      // Invalidate providers to refresh UI
+      ref.invalidate(criteriaProvider);
+      ref.invalidate(tasksProvider);
 
       if (mounted) {
         Navigator.of(context).pop(criterion);
