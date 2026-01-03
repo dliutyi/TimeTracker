@@ -192,6 +192,7 @@ class SettingsScreen extends ConsumerWidget {
   ) {
     showDialog(
       context: context,
+      transitionDuration: AppTheme.animationMedium,
       builder: (context) => AlertDialog(
         title: const Text('Select Language'),
         content: SizedBox(

@@ -8,6 +8,7 @@ import '../../../core/repositories/repository_providers.dart';
 import '../../../core/constants/icons.dart';
 import '../../../shared/widgets/speech_text_field.dart';
 import '../../../shared/widgets/icon_picker.dart';
+import '../../../shared/widgets/animated_modal.dart';
 import '../list_tasks_screen.dart';
 import '../../criteria/list_criteria_screen.dart';
 
@@ -36,6 +37,7 @@ class AddEditTaskWidget extends ConsumerStatefulWidget {
       isScrollControlled: true,
       isDismissible: false,
       backgroundColor: Colors.transparent,
+      transitionDuration: AppTheme.animationMedium,
       builder: (context) => AddEditTaskWidget(task: task),
     );
   }

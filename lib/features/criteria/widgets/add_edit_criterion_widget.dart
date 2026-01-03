@@ -31,6 +31,7 @@ class AddEditCriterionWidget extends ConsumerStatefulWidget {
       isScrollControlled: true,
       isDismissible: false,
       backgroundColor: Colors.transparent,
+      transitionDuration: AppTheme.animationMedium,
       builder: (context) => AddEditCriterionWidget(criterion: criterion),
     );
   }

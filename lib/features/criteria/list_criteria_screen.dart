@@ -109,7 +109,21 @@ class ListCriteriaScreen extends ConsumerWidget {
       padding: const EdgeInsets.all(AppTheme.spacingM),
       itemCount: criteria.length,
       itemBuilder: (context, index) {
-        return CriterionItem(criterion: criteria[index]);
+        return TweenAnimationBuilder<double>(
+          tween: Tween(begin: 0.0, end: 1.0),
+          duration: AppTheme.animationMedium,
+          curve: Curves.easeOut,
+          builder: (context, value, child) {
+            return Opacity(
+              opacity: value,
+              child: Transform.translate(
+                offset: Offset(0, 20 * (1 - value)),
+                child: child,
+              ),
+            );
+          },
+          child: CriterionItem(criterion: criteria[index]),
+        );
       },
     );
   }

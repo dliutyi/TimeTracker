@@ -388,6 +388,7 @@ class _ActiveTaskScreenState extends ConsumerState<ActiveTaskScreen> {
   Future<void> _handleDiscard(BuildContext context) async {
     final confirmed = await showDialog<bool>(
       context: context,
+      transitionDuration: AppTheme.animationMedium,
       builder: (context) => AlertDialog(
         title: const Text('Discard Session'),
         content: const Text(

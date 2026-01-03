@@ -31,6 +31,7 @@ class RateTaskWidget extends ConsumerStatefulWidget {
       isScrollControlled: true,
       isDismissible: false,
       backgroundColor: Colors.transparent,
+      transitionDuration: AppTheme.animationMedium,
       builder: (context) => RateTaskWidget(
         session: session,
         task: task,
