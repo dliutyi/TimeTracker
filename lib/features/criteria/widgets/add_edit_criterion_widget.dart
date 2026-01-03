@@ -9,6 +9,7 @@ import '../../../core/repositories/repository_providers.dart';
 import '../../../core/constants/icons.dart';
 import '../../../shared/widgets/speech_text_field.dart';
 import '../../../shared/widgets/icon_picker.dart';
+import '../../../core/utils/responsive.dart';
 import '../list_criteria_screen.dart';
 import '../../tasks/list_tasks_screen.dart';
 
@@ -26,12 +27,11 @@ class AddEditCriterionWidget extends ConsumerStatefulWidget {
     BuildContext context, {
     Criterion? criterion,
   }) async {
-    return await showModalBottomSheet<Criterion?>(
+      return await showModalBottomSheet<Criterion?>(
       context: context,
       isScrollControlled: true,
       isDismissible: false,
       backgroundColor: Colors.transparent,
-      transitionDuration: AppTheme.animationMedium,
       builder: (context) => AddEditCriterionWidget(criterion: criterion),
     );
   }
@@ -308,14 +308,23 @@ class _AddEditCriterionWidgetState
     final screenHeight = MediaQuery.of(context).size.height;
     final keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
 
-    return Container(
-      height: screenHeight * 0.9,
-      decoration: BoxDecoration(
-        color: theme.scaffoldBackgroundColor,
-        borderRadius: const BorderRadius.vertical(
-          top: Radius.circular(AppTheme.radiusXL),
+    final isTablet = Responsive.isTablet(context);
+    final maxWidth = Responsive.getMaxContentWidth(context);
+    
+    return Center(
+      child: Container(
+        width: isTablet ? maxWidth : double.infinity,
+        constraints: BoxConstraints(
+          maxHeight: screenHeight * 0.9,
+          maxWidth: maxWidth,
         ),
-      ),
+        decoration: BoxDecoration(
+          color: theme.scaffoldBackgroundColor,
+          borderRadius: BorderRadius.vertical(
+            top: const Radius.circular(AppTheme.radiusXL),
+            bottom: isTablet ? const Radius.circular(AppTheme.radiusXL) : Radius.zero,
+          ),
+        ),
       child: Form(
         key: _formKey,
         child: Column(
@@ -417,6 +426,7 @@ class _AddEditCriterionWidgetState
             ),
           ],
         ),
+      ),
       ),
     );
   }

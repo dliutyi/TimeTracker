@@ -8,6 +8,7 @@ import '../../../core/models/rating_value.dart';
 import '../../../core/repositories/repository_providers.dart';
 import '../../../core/services/session_service.dart';
 import '../../../core/constants/icons.dart';
+import '../../../core/utils/responsive.dart';
 
 /// Rate Task Widget
 class RateTaskWidget extends ConsumerStatefulWidget {
@@ -31,7 +32,6 @@ class RateTaskWidget extends ConsumerStatefulWidget {
       isScrollControlled: true,
       isDismissible: false,
       backgroundColor: Colors.transparent,
-      transitionDuration: AppTheme.animationMedium,
       builder: (context) => RateTaskWidget(
         session: session,
         task: task,
@@ -116,14 +116,23 @@ class _RateTaskWidgetState extends ConsumerState<RateTaskWidget> {
     final screenHeight = MediaQuery.of(context).size.height;
     final criteriaAsync = ref.watch(_criteriaProvider(widget.task.criterionIds));
 
-    return Container(
-      height: screenHeight * 0.9,
-      decoration: BoxDecoration(
-        color: theme.scaffoldBackgroundColor,
-        borderRadius: const BorderRadius.vertical(
-          top: Radius.circular(AppTheme.radiusXL),
+    final isTablet = Responsive.isTablet(context);
+    final maxWidth = Responsive.getMaxContentWidth(context);
+    
+    return Center(
+      child: Container(
+        width: isTablet ? maxWidth : double.infinity,
+        constraints: BoxConstraints(
+          maxHeight: screenHeight * 0.9,
+          maxWidth: maxWidth,
         ),
-      ),
+        decoration: BoxDecoration(
+          color: theme.scaffoldBackgroundColor,
+          borderRadius: BorderRadius.vertical(
+            top: const Radius.circular(AppTheme.radiusXL),
+            bottom: isTablet ? const Radius.circular(AppTheme.radiusXL) : Radius.zero,
+          ),
+        ),
       child: SafeArea(
         child: Column(
           children: [
@@ -230,6 +239,7 @@ class _RateTaskWidgetState extends ConsumerState<RateTaskWidget> {
             ),
           ],
         ),
+      ),
       ),
     );
   }

@@ -7,6 +7,7 @@ import '../../core/repositories/repository_providers.dart';
 import '../../core/repositories/settings_repository.dart';
 import '../../core/models/task.dart';
 import '../../core/services/frequency_service.dart';
+import '../../core/utils/responsive.dart';
 import 'widgets/task_item.dart';
 import 'widgets/add_edit_task_widget.dart';
 
@@ -98,8 +99,9 @@ class _ListTasksScreenState extends ConsumerState<ListTasksScreen> {
                   if (tasks.isEmpty) {
                     return _buildEmptyState(context, theme, l10n);
                   }
+                  final padding = Responsive.getPadding(context);
                   return ListView.builder(
-                    padding: const EdgeInsets.all(AppTheme.spacingM),
+                    padding: padding,
                     itemCount: tasks.length,
                     itemBuilder: (context, index) {
                       return TweenAnimationBuilder<double>(

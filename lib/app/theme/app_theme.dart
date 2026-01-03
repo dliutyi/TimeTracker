@@ -28,6 +28,10 @@ class AppTheme {
   static const Duration animationMedium = Duration(milliseconds: 300);
   static const Duration animationSlow = Duration(milliseconds: 500);
 
+  // Responsive breakpoints
+  static const double breakpointTablet = 600.0;
+  static const double breakpointDesktop = 1200.0;
+
   /// Light theme color scheme
   static const ColorScheme lightColorScheme = ColorScheme(
     brightness: Brightness.light,

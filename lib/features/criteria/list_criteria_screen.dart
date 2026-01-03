@@ -105,8 +105,9 @@ class ListCriteriaScreen extends ConsumerWidget {
   }
 
   Widget _buildCriteriaList(BuildContext context, List<Criterion> criteria) {
+    final padding = Responsive.getPadding(context);
     return ListView.builder(
-      padding: const EdgeInsets.all(AppTheme.spacingM),
+      padding: padding,
       itemCount: criteria.length,
       itemBuilder: (context, index) {
         return TweenAnimationBuilder<double>(
