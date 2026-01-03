@@ -79,7 +79,11 @@ class _HistoryViewState extends ConsumerState<HistoryView> {
 
     return sessionsAsync.when(
       data: (sessions) {
-        var filteredSessions = sessions;
+        // Filter out active sessions (where endDateTime equals startDateTime or difference < 1 second)
+        var filteredSessions = sessions.where((session) {
+          final diff = session.endDateTime.difference(session.startDateTime).abs();
+          return diff.inSeconds >= 1; // Only include stopped sessions
+        }).toList();
 
         // Filter by selected task
         if (_selectedTaskId != null) {

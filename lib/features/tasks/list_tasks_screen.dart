@@ -97,6 +97,11 @@ class _ListTasksScreenState extends ConsumerState<ListTasksScreen> {
             Expanded(
               child: tasksAsync.when(
                 data: (tasks) {
+                  // If refreshing, show loading indicator instead of empty state
+                  // This prevents showing "No tasks" briefly when provider is invalidated
+                  if (tasksAsync.isRefreshing) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
                   if (tasks.isEmpty) {
                     return _buildEmptyState(context, theme, l10n);
                   }

@@ -41,16 +41,26 @@ class _ChartsViewState extends ConsumerState<ChartsView> {
 
     return allSessionsForActivityAsync.when(
       data: (allSessionsForActivity) {
+        // Filter out active sessions from activity chart as well
+        final filteredAllSessionsForActivity = allSessionsForActivity.where((session) {
+          final diff = session.endDateTime.difference(session.startDateTime).abs();
+          return diff.inSeconds >= 1; // Only include stopped sessions
+        }).toList();
+        
         return sessionsAsync.when(
           data: (sessions) {
-            var filteredSessions = sessions;
+            // Filter out active sessions (where endDateTime equals startDateTime or difference < 1 second)
+            var filteredSessions = sessions.where((session) {
+              final diff = session.endDateTime.difference(session.startDateTime).abs();
+              return diff.inSeconds >= 1; // Only include stopped sessions
+            }).toList();
 
             // Filter by selected task
             if (_selectedTaskId != null) {
               filteredSessions = filteredSessions.where((s) => s.taskId == _selectedTaskId).toList();
             }
 
-            if (filteredSessions.isEmpty && allSessionsForActivity.isEmpty) {
+            if (filteredSessions.isEmpty && filteredAllSessionsForActivity.isEmpty) {
               return _buildEmptyState(context, l10n);
             }
 
@@ -85,8 +95,9 @@ class _ChartsViewState extends ConsumerState<ChartsView> {
                           child: ListView(
                             padding: const EdgeInsets.all(AppTheme.spacingM),
                             children: [
-                              // Activity chart uses all sessions (not filtered) to show full year view
-                              _buildActivityChart(context, l10n, allSessionsForActivity, tasksMap),
+                              // Activity chart uses all sessions (not filtered by period) to show full year view
+                              // But still excludes active sessions
+                              _buildActivityChart(context, l10n, filteredAllSessionsForActivity, tasksMap),
                           const SizedBox(height: AppTheme.spacingL),
                           _buildTimeSpentPerTaskChart(
                               context, l10n, filteredSessions, tasksMap),

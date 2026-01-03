@@ -28,6 +28,9 @@ class _ActiveTaskScreenState extends ConsumerState<ActiveTaskScreen> {
   DateTime? _customEndDateTime;
   bool _useCustomEndTime = false;
   Timer? _durationTimer;
+  bool _isStopping = false;
+  Session? _lastKnownSession;
+  Task? _lastKnownTask;
 
   @override
   void initState() {
@@ -53,20 +56,76 @@ class _ActiveTaskScreenState extends ConsumerState<ActiveTaskScreen> {
     final activeSession = ref.watch(activeSessionProvider);
     final activeTaskAsync = ref.watch(_activeTaskProvider);
 
-    if (activeSession == null) {
+    // Update last known session when available
+    if (activeSession != null) {
+      _lastKnownSession = activeSession;
+    }
+
+    // Use last known values if we're stopping to prevent flash of "No Active Task"
+    final sessionToUse = _isStopping ? _lastKnownSession : activeSession;
+
+    // If stopping and we have cached data, always show it (never show "No Active Task")
+    if (_isStopping && _lastKnownSession != null && _lastKnownTask != null) {
+      return _buildContent(context, _lastKnownSession!, _lastKnownTask!);
+    }
+
+    if (sessionToUse == null && !_isStopping) {
       return _buildNoActiveSession(context);
     }
 
-    return activeTaskAsync.when(
-      data: (task) {
-        if (task == null) {
-          return _buildNoActiveSession(context);
-        }
-        return _buildContent(context, activeSession, task);
-      },
-      loading: () => const Center(child: CircularProgressIndicator()),
-      error: (error, stack) => _buildNoActiveSession(context),
-    );
+    // If we have a session (either current or last known during stop), show content
+    if (sessionToUse != null) {
+      return activeTaskAsync.when(
+        data: (task) {
+          // Update last known task when available
+          if (task != null) {
+            _lastKnownTask = task;
+          }
+
+          if (task == null && !_isStopping) {
+            return _buildNoActiveSession(context);
+          }
+          // Use cached task if stopping, otherwise use loaded task
+          final finalTask =
+              _isStopping && _lastKnownTask != null ? _lastKnownTask! : task;
+          if (finalTask == null && !_isStopping) {
+            return _buildNoActiveSession(context);
+          }
+          // If stopping but no task yet, use cached if available
+          if (finalTask == null && _isStopping && _lastKnownTask != null) {
+            return _buildContent(context, sessionToUse, _lastKnownTask!);
+          }
+          if (finalTask == null) {
+            return _buildNoActiveSession(context);
+          }
+          return _buildContent(context, sessionToUse, finalTask);
+        },
+        loading:
+            () =>
+                _isStopping &&
+                        _lastKnownTask != null &&
+                        _lastKnownSession != null
+                    ? _buildContent(
+                      context,
+                      _lastKnownSession!,
+                      _lastKnownTask!,
+                    )
+                    : const Center(child: CircularProgressIndicator()),
+        error:
+            (error, stack) =>
+                _isStopping &&
+                        _lastKnownTask != null &&
+                        _lastKnownSession != null
+                    ? _buildContent(
+                      context,
+                      _lastKnownSession!,
+                      _lastKnownTask!,
+                    )
+                    : _buildNoActiveSession(context),
+      );
+    }
+
+    return _buildNoActiveSession(context);
   }
 
   Widget _buildNoActiveSession(BuildContext context) {
@@ -469,11 +528,29 @@ class _ActiveTaskScreenState extends ConsumerState<ActiveTaskScreen> {
       return;
     }
 
+    // Set stopping flag to prevent showing "No Active Task" during operation
+    setState(() {
+      _isStopping = true;
+      _lastKnownSession = activeSession;
+      _lastKnownTask = task;
+    });
+
     try {
       final activeSessionNotifier = ref.read(activeSessionProvider.notifier);
       final stoppedSession = await activeSessionNotifier.stopSession(
         endDateTime,
       );
+
+      // Ensure the session is fully persisted before proceeding
+      // Add a small delay to ensure database write completes
+      await Future.delayed(const Duration(milliseconds: 50));
+
+      // Update cached session with the stopped session (which has the correct endDateTime)
+      if (mounted) {
+        setState(() {
+          _lastKnownSession = stoppedSession;
+        });
+      }
 
       if (mounted) {
         // Only show rate task widget if task has criteria
@@ -483,11 +560,37 @@ class _ActiveTaskScreenState extends ConsumerState<ActiveTaskScreen> {
             session: stoppedSession,
             task: task,
           );
+          // RateTaskWidget saves ratings and clears the session when it closes
+          // Invalidate sessions providers to refresh history
+          ref.invalidate(allSessionsProvider);
+          // Keep _isStopping true until navigation happens
+          // Reset it after a short delay to allow navigation to complete
+          if (mounted) {
+            Future.delayed(const Duration(milliseconds: 300), () {
+              if (mounted) {
+                setState(() {
+                  _isStopping = false;
+                });
+              }
+            });
+          }
         } else {
           // Clear active session if no criteria
+          // The session is already saved to database by stopSession()
           activeSessionNotifier.clearActiveSession();
           // Invalidate sessions providers to refresh history
           ref.invalidate(allSessionsProvider);
+          // Navigation will happen automatically via MainNavigationScreen
+          // Reset flag after a short delay to allow navigation to complete
+          if (mounted) {
+            Future.delayed(const Duration(milliseconds: 300), () {
+              if (mounted) {
+                setState(() {
+                  _isStopping = false;
+                });
+              }
+            });
+          }
         }
       }
     } catch (e) {
@@ -498,46 +601,54 @@ class _ActiveTaskScreenState extends ConsumerState<ActiveTaskScreen> {
             backgroundColor: Theme.of(context).colorScheme.error,
           ),
         );
+        // Reset flag on error
+        setState(() {
+          _isStopping = false;
+        });
       }
     }
   }
 
   Future<void> _handleDiscard(BuildContext context) async {
-    final l10n = AppLocalizations.of(context)!;
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder:
-          (context) => AlertDialog(
-            title: const Text('Discard Session'),
-            content: const Text(
-              'Are you sure you want to discard this session? It will not be saved.',
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(false),
-                child: const Text('Cancel'),
-              ),
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(true),
-                child: Text(l10n.discard),
-              ),
-            ],
-          ),
-    );
+    // Confirmation is already shown by SwipeableItem, so just perform the discard
+    final activeSession = ref.read(activeSessionProvider);
 
-    if (confirmed == true && mounted) {
-      try {
-        final activeSessionNotifier = ref.read(activeSessionProvider.notifier);
-        await activeSessionNotifier.discardSession();
-      } catch (e) {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Error discarding session: $e'),
-              backgroundColor: Theme.of(context).colorScheme.error,
-            ),
-          );
+    // Set stopping flag to prevent showing "No Active Task" during operation
+    // Use last known session and task (already tracked in build method)
+    if (mounted) {
+      setState(() {
+        _isStopping = true;
+        if (activeSession != null) {
+          _lastKnownSession = activeSession;
         }
+        // _lastKnownTask is already set in build method
+      });
+    }
+
+    try {
+      final activeSessionNotifier = ref.read(activeSessionProvider.notifier);
+      await activeSessionNotifier.discardSession();
+      // Invalidate sessions providers to refresh history
+      ref.invalidate(allSessionsProvider);
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error discarding session: $e'),
+            backgroundColor: Theme.of(context).colorScheme.error,
+          ),
+        );
+      }
+    } finally {
+      // Reset stopping flag after operation completes
+      if (mounted) {
+        Future.delayed(const Duration(milliseconds: 300), () {
+          if (mounted) {
+            setState(() {
+              _isStopping = false;
+            });
+          }
+        });
       }
     }
   }
