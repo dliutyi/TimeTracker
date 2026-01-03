@@ -32,11 +32,19 @@ class AppTheme {
   static const double breakpointTablet = 600.0;
   static const double breakpointDesktop = 1200.0;
 
+  /// Main app color - #a1ff5f
+  //static const Color mainAppColor = Color(0xFFA1FF5F);
+  static const Color mainAppColor = Color(0xFFF0AA11);
+
+  /// Main app color for dark mode - slightly brighter for better visibility
+  //static const Color mainAppColorDark = Color(0xFFB5FF7A);
+  static const Color mainAppColorDark = Color(0xFFF0AA11);
+
   /// Light theme color scheme
   static const ColorScheme lightColorScheme = ColorScheme(
     brightness: Brightness.light,
-    primary: Color(0xFF007AFF),
-    onPrimary: Colors.white,
+    primary: mainAppColor,
+    onPrimary: Color(0xFF000000), // Black text on bright green for contrast
     secondary: Color(0xFF5856D6),
     onSecondary: Colors.white,
     tertiary: Color(0xFFAF52DE),
@@ -53,14 +61,14 @@ class AppTheme {
     scrim: Colors.black54,
     inverseSurface: Color(0xFF1C1C1E),
     onInverseSurface: Colors.white,
-    inversePrimary: Color(0xFF5AC8FA),
+    inversePrimary: Color(0xFF7ACC4A),
   );
 
   /// Dark theme color scheme
   static const ColorScheme darkColorScheme = ColorScheme(
     brightness: Brightness.dark,
-    primary: Color(0xFF0A84FF),
-    onPrimary: Colors.white,
+    primary: mainAppColorDark,
+    onPrimary: Color(0xFF000000), // Black text on bright green for contrast
     secondary: Color(0xFF5E5CE6),
     onSecondary: Colors.white,
     tertiary: Color(0xFFBF5AF2),
@@ -77,7 +85,7 @@ class AppTheme {
     scrim: Colors.black87,
     inverseSurface: Color(0xFFF2F2F7),
     onInverseSurface: Color(0xFF1C1C1E),
-    inversePrimary: Color(0xFF0051D5),
+    inversePrimary: Color(0xFF8FDD5F),
   );
 
   /// Typography styles
@@ -344,4 +352,3 @@ class AppTheme {
     );
   }
 }
-

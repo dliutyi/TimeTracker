@@ -14,6 +14,9 @@ class Tasks extends Table {
   /// Optional motivational phrase or description
   TextColumn get motto => text().nullable()();
 
+  /// Task color (hex color string, e.g., "#f0aa11")
+  TextColumn get color => text().withDefault(const Constant('#f0aa11'))();
+
   /// Timestamp when the task was created
   DateTimeColumn get createdAt => dateTime()();
 

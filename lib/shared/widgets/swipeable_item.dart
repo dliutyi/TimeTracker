@@ -22,6 +22,11 @@ class SwipeableItem extends StatefulWidget {
   final List<SwipeAction>? leftActions;
   final List<SwipeAction>? rightActions;
   final VoidCallback? onSwipeRight;
+  final IconData?
+  rightSwipeIcon; // Icon for right swipe activation (e.g., stop, play)
+  final Color? baseColor; // Base color of the item for gradual color change
+  final Color? activationColor; // Color when activation threshold is reached
+  final Color? iconColor; // Color for the right swipe icon
   final double threshold;
   final bool dismissOnAction;
 
@@ -31,6 +36,10 @@ class SwipeableItem extends StatefulWidget {
     this.leftActions,
     this.rightActions,
     this.onSwipeRight,
+    this.rightSwipeIcon,
+    this.baseColor,
+    this.activationColor,
+    this.iconColor,
     this.threshold = 0.3,
     this.dismissOnAction = true,
   });
@@ -46,7 +55,8 @@ class _SwipeableItemState extends State<SwipeableItem>
   double _dragOffset = 0.0;
   bool _isDragging = false;
   bool _actionsRevealed = false;
-  static const double _activationThreshold = 80.0; // Pixels to pull for activation
+  static const double _activationThreshold =
+      80.0; // Pixels to pull for activation
 
   @override
   void initState() {
@@ -55,9 +65,10 @@ class _SwipeableItemState extends State<SwipeableItem>
       vsync: this,
       duration: AppTheme.animationMedium,
     );
-    _animation = Tween<double>(begin: 0.0, end: 0.0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeOut),
-    );
+    _animation = Tween<double>(
+      begin: 0.0,
+      end: 0.0,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
   }
 
   @override
@@ -69,7 +80,7 @@ class _SwipeableItemState extends State<SwipeableItem>
   double _getMaxDrag(bool isLeftSwipe) {
     final actions = isLeftSwipe ? widget.leftActions : widget.rightActions;
     if (actions == null || actions.isEmpty) return 0.0;
-    return actions.length * 80.0; // 80px per action button
+    return actions.length * 60.0; // 60px per action button (smaller)
   }
 
   void _handleDragStart(DragStartDetails details) {
@@ -120,11 +131,13 @@ class _SwipeableItemState extends State<SwipeableItem>
         // Not far enough - snap back
         _resetPosition();
       }
-    } else if (_dragOffset < 0 && widget.rightActions != null && widget.rightActions!.isNotEmpty) {
+    } else if (_dragOffset < 0 &&
+        widget.rightActions != null &&
+        widget.rightActions!.isNotEmpty) {
       // Left swipe to reveal actions
       final maxDrag = _getMaxDrag(false);
       final threshold = maxDrag * widget.threshold;
-      
+
       if (_dragOffset.abs() > threshold) {
         // Swipe was significant enough - snap to fully revealed
         _actionsRevealed = true;
@@ -162,114 +175,149 @@ class _SwipeableItemState extends State<SwipeableItem>
   @override
   Widget build(BuildContext context) {
     final rightActions = widget.rightActions;
-    final hasRightSwipe = widget.onSwipeRight != null && _dragOffset > 0;
-    final isActivating = _dragOffset >= _activationThreshold * 0.8;
-    final maxRightDrag = rightActions != null && rightActions.isNotEmpty
-        ? rightActions.length * 80.0
-        : 0.0;
+    final maxRightDrag =
+        rightActions != null && rightActions.isNotEmpty
+            ? rightActions.length * 60.0
+            : 0.0;
 
     return Stack(
-        children: [
-          // Right action buttons (behind, revealed on left swipe)
-          if (rightActions != null && rightActions.isNotEmpty)
-            Positioned.fill(
-              child: IgnorePointer(
-                // Ignore pointer events only when actions are not revealed
-                ignoring: !_actionsRevealed,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: rightActions.map((action) {
-                    return Container(
-                      width: 80,
-                      color: action.color,
-                      child: Material(
-                        color: Colors.transparent,
-                        child: InkWell(
-                          onTap: () => _handleActionTap(action),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(action.icon, color: Colors.white),
-                              const SizedBox(height: 4),
-                              Text(
-                                action.label,
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 12,
-                                ),
-                                textAlign: TextAlign.center,
+      children: [
+        // Right action buttons (behind, revealed on left swipe)
+        if (rightActions != null && rightActions.isNotEmpty)
+          Positioned.fill(
+            child: IgnorePointer(
+              // Ignore pointer events only when actions are not revealed
+              ignoring: !_actionsRevealed,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children:
+                    rightActions.map((action) {
+                      return Container(
+                        width: 60,
+                        margin: const EdgeInsets.only(
+                          right: AppTheme.spacingXS,
+                          top: AppTheme.spacingXS,
+                          bottom: AppTheme.spacingXS,
+                        ),
+                        child: Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            onTap: () => _handleActionTap(action),
+                            borderRadius: BorderRadius.zero,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.zero,
                               ),
-                            ],
+                              child: Center(
+                                child: Icon(
+                                  action.icon,
+                                  color: action.color,
+                                  size: 24,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    }).toList(),
+              ),
+            ),
+          ),
+        // Main content (on top)
+        AnimatedBuilder(
+          animation: _controller,
+          builder: (context, child) {
+            double offset;
+            if (_isDragging) {
+              // Use actual drag offset during dragging
+              offset = _dragOffset;
+            } else {
+              // When not dragging, use animation for smooth transitions
+              if (_actionsRevealed) {
+                // Actions are revealed - maintain position at full offset
+                offset = -maxRightDrag;
+              } else {
+                // Use animation for snap back
+                offset = _animation.value * _dragOffset;
+              }
+            }
+
+            // Calculate color interpolation for gradual change
+            Color? itemColor = widget.baseColor;
+            final currentHasRightSwipe =
+                widget.onSwipeRight != null && _dragOffset > 0;
+            if (currentHasRightSwipe &&
+                widget.baseColor != null &&
+                widget.activationColor != null) {
+              final progress = (_dragOffset / _activationThreshold).clamp(
+                0.0,
+                1.0,
+              );
+              itemColor = Color.lerp(
+                widget.baseColor,
+                widget.activationColor,
+                progress,
+              );
+            }
+
+            // Calculate icon opacity and size based on swipe progress
+            final iconOpacity =
+                currentHasRightSwipe
+                    ? (_dragOffset / _activationThreshold).clamp(0.0, 1.0)
+                    : 0.0;
+            final currentIsActivating =
+                _dragOffset >= _activationThreshold * 0.8;
+            final iconSize = currentIsActivating ? 32.0 : 24.0;
+
+            return Transform.translate(
+              offset: Offset(offset, 0),
+              child: GestureDetector(
+                onTap: () {
+                  // Tap on main content to close revealed actions
+                  if (_actionsRevealed) {
+                    _resetPosition();
+                  }
+                },
+                onHorizontalDragStart: _handleDragStart,
+                onHorizontalDragUpdate: _handleDragUpdate,
+                onHorizontalDragEnd: _handleDragEnd,
+                child: Stack(
+                  children: [
+                    // Background with gradual color change
+                    Container(
+                      color:
+                          itemColor ??
+                          Theme.of(context).scaffoldBackgroundColor,
+                      child: widget.child,
+                    ),
+                    // Icon indicator (appears on right swipe)
+                    if (currentHasRightSwipe &&
+                        widget.rightSwipeIcon != null &&
+                        iconOpacity > 0)
+                      Positioned(
+                        left: AppTheme.spacingL,
+                        top: 0,
+                        bottom: 0,
+                        child: Center(
+                          child: Opacity(
+                            opacity: iconOpacity,
+                            child: Icon(
+                              widget.rightSwipeIcon,
+                              color:
+                                  widget.iconColor ??
+                                  Theme.of(context).colorScheme.onSurface,
+                              size: iconSize,
+                            ),
                           ),
                         ),
                       ),
-                    );
-                  }).toList(),
+                  ],
                 ),
               ),
-            ),
-          // Main content (on top)
-          AnimatedBuilder(
-            animation: _controller,
-            builder: (context, child) {
-              double offset;
-              if (_isDragging) {
-                // Use actual drag offset during dragging
-                offset = _dragOffset;
-              } else {
-                // When not dragging, use animation for smooth transitions
-                if (_actionsRevealed) {
-                  // Actions are revealed - maintain position at full offset
-                  offset = -maxRightDrag;
-                } else {
-                  // Use animation for snap back
-                  offset = _animation.value * _dragOffset;
-                }
-              }
-
-              return Transform.translate(
-                offset: Offset(offset, 0),
-                child: GestureDetector(
-                  onTap: () {
-                    // Tap on main content to close revealed actions
-                    if (_actionsRevealed) {
-                      _resetPosition();
-                    }
-                  },
-                  onHorizontalDragStart: _handleDragStart,
-                  onHorizontalDragUpdate: _handleDragUpdate,
-                  onHorizontalDragEnd: _handleDragEnd,
-                  child: Container(
-                    // Keep background opaque - don't change color here
-                    color: Theme.of(context).scaffoldBackgroundColor,
-                    child: widget.child,
-                  ),
-                ),
-              );
-            },
-          ),
-          // Right swipe indicator (for activation)
-          if (hasRightSwipe && _dragOffset > 10)
-            Positioned(
-              left: 0,
-              top: 0,
-              bottom: 0,
-              child: Container(
-                width: _dragOffset.clamp(0.0, _activationThreshold),
-                color: isActivating
-                    ? Theme.of(context).colorScheme.primary.withOpacity(0.5)
-                    : Theme.of(context).colorScheme.primary.withOpacity(0.2),
-                child: Center(
-                  child: Icon(
-                    Icons.play_arrow,
-                    color: Theme.of(context).colorScheme.primary,
-                    size: isActivating ? 40 : 32,
-                  ),
-                ),
-              ),
-            ),
-        ],
+            );
+          },
+        ),
+      ],
     );
   }
 }
-

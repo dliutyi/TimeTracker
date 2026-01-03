@@ -13,11 +13,14 @@ class Task with _$Task {
     /// Icon identifier (String representation of icon)
     required String icon,
 
-    /// Task name
+    /// Task name (max 32 characters)
     required String name,
 
-    /// Optional motivational phrase or description
+    /// Optional motivational phrase or description (max 128 characters)
     String? motto,
+
+    /// Task color (hex color string, e.g., "#f0aa11")
+    @Default('#f0aa11') String color,
 
     /// List of criterion IDs associated with this task
     @Default([]) List<String> criterionIds,

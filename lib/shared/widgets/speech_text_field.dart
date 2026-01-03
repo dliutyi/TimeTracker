@@ -250,6 +250,7 @@ class _SpeechTextFieldState extends ConsumerState<SpeechTextField>
       focusNode: _focusNode,
       enabled: widget.enabled && !_isRecording, // Disable during recording
       keyboardType: widget.keyboardType,
+      textCapitalization: TextCapitalization.sentences,
       maxLength: widget.maxLength,
       maxLines: widget.maxLines,
       minLines: widget.minLines,

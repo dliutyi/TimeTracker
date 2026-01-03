@@ -184,6 +184,46 @@
   "noSessionsForPeriod": "No sessions found for the selected time period",
   "@noSessionsForPeriod": {
     "description": "Empty state message when no sessions exist for selected period"
+  },
+  "noActiveTask": "No active task",
+  "@noActiveTask": {
+    "description": "Message when no task is currently active"
+  },
+  "startTaskFromList": "Start a task from the list to begin tracking",
+  "@startTaskFromList": {
+    "description": "Helper text when no task is active"
+  },
+  "startTime": "Start Time",
+  "@startTime": {
+    "description": "Start time label"
+  },
+  "endTime": "End Time",
+  "@endTime": {
+    "description": "End time label"
+  },
+  "stop": "Stop",
+  "@stop": {
+    "description": "Stop button label"
+  },
+  "endTimeAfterStart": "End time must be after start time",
+  "@endTimeAfterStart": {
+    "description": "Validation error for end time"
+  },
+  "discardSession": "Discard Session",
+  "@discardSession": {
+    "description": "Discard session dialog title"
+  },
+  "discardSessionMessage": "Are you sure you want to discard this session? This action cannot be undone.",
+  "@discardSessionMessage": {
+    "description": "Discard session confirmation message"
+  },
+  "cancel": "Cancel",
+  "@cancel": {
+    "description": "Cancel button label"
+  },
+  "swipeToStop": "Swipe to stop",
+  "@swipeToStop": {
+    "description": "Instruction text for swipe to stop action"
   }
 }
 

@@ -8,6 +8,7 @@ import '../../../core/repositories/repository_providers.dart';
 import '../../../core/constants/icons.dart';
 import '../../../shared/widgets/speech_text_field.dart';
 import '../../../shared/widgets/icon_picker.dart';
+import '../../../shared/widgets/color_picker.dart';
 import '../../../core/utils/responsive.dart';
 import '../list_tasks_screen.dart';
 import '../../criteria/list_criteria_screen.dart';
@@ -49,6 +50,7 @@ class _AddEditTaskWidgetState extends ConsumerState<AddEditTaskWidget> {
   late TextEditingController _nameController;
   late TextEditingController _mottoController;
   IconData? _selectedIcon;
+  String _selectedColor = '#f0aa11';
   Set<String> _selectedCriterionIds = {};
   final _formKey = GlobalKey<FormState>();
   bool _isSaving = false;
@@ -69,8 +71,15 @@ class _AddEditTaskWidgetState extends ConsumerState<AddEditTaskWidget> {
       } catch (e) {
         // Use default icon
       }
+      // Set initial color
+      _selectedColor = widget.task!.color;
     }
     _selectedIcon ??= AppIcons.defaultIcons[0];
+    
+    // Set initial color
+    if (widget.task != null) {
+      _selectedColor = widget.task!.color;
+    }
     
     // Set initial selected criteria
     if (widget.task != null) {
@@ -107,6 +116,7 @@ class _AddEditTaskWidgetState extends ConsumerState<AddEditTaskWidget> {
         motto: _mottoController.text.trim().isEmpty
             ? null
             : _mottoController.text.trim(),
+        color: _selectedColor,
         criterionIds: _selectedCriterionIds.toList(),
         createdAt: widget.task?.createdAt ?? now,
         updatedAt: now,
@@ -162,6 +172,37 @@ class _AddEditTaskWidgetState extends ConsumerState<AddEditTaskWidget> {
         _selectedIcon = selectedIcon;
       });
     }
+  }
+
+  Future<void> _handleColorTap() async {
+    final selectedColor = await ColorPicker.showColorPicker(
+      context,
+      selectedColor: _selectedColor,
+    );
+    if (selectedColor != null) {
+      setState(() {
+        _selectedColor = selectedColor;
+      });
+    }
+  }
+
+  Color _getColorFromHex(String hex) {
+    try {
+      if (hex.startsWith('#')) {
+        hex = hex.substring(1);
+      }
+      if (hex.length == 6) {
+        return Color(int.parse('FF$hex', radix: 16));
+      }
+    } catch (e) {
+      // Return default color if parsing fails
+    }
+    return const Color(0xFFA1FF5F);
+  }
+
+  Color _getContrastColor(Color backgroundColor) {
+    final luminance = backgroundColor.computeLuminance();
+    return luminance > 0.5 ? Colors.black : Colors.white;
   }
 
   void _toggleCriterion(String criterionId) {
@@ -231,22 +272,41 @@ class _AddEditTaskWidgetState extends ConsumerState<AddEditTaskWidget> {
                       padding: const EdgeInsets.all(AppTheme.spacingM),
                       child: Row(
                         children: [
-                          // Icon
+                          // Icon with color background
                           GestureDetector(
                             onTap: _handleIconTap,
                             child: Container(
                               width: 64,
                               height: 64,
                               decoration: BoxDecoration(
-                                color: theme.colorScheme.primaryContainer,
+                                color: _getColorFromHex(_selectedColor),
                                 borderRadius: BorderRadius.circular(
                                   AppTheme.radiusM,
                                 ),
                               ),
                               child: Icon(
                                 _selectedIcon,
-                                color: theme.colorScheme.onPrimaryContainer,
+                                color: _getContrastColor(_getColorFromHex(_selectedColor)),
                                 size: 32,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: AppTheme.spacingM),
+                          // Color picker button
+                          GestureDetector(
+                            onTap: _handleColorTap,
+                            child: Container(
+                              width: 48,
+                              height: 48,
+                              decoration: BoxDecoration(
+                                color: _getColorFromHex(_selectedColor),
+                                borderRadius: BorderRadius.circular(
+                                  AppTheme.radiusM,
+                                ),
+                                border: Border.all(
+                                  color: theme.colorScheme.outline,
+                                  width: 2,
+                                ),
                               ),
                             ),
                           ),
@@ -256,9 +316,13 @@ class _AddEditTaskWidgetState extends ConsumerState<AddEditTaskWidget> {
                             child: SpeechTextField(
                               label: 'Task Name',
                               controller: _nameController,
+                              maxLength: 32,
                               validator: (value) {
                                 if (value == null || value.trim().isEmpty) {
                                   return 'Task name is required';
+                                }
+                                if (value.trim().length > 32) {
+                                  return 'Task name must be 32 characters or less';
                                 }
                                 return null;
                               },
@@ -277,6 +341,13 @@ class _AddEditTaskWidgetState extends ConsumerState<AddEditTaskWidget> {
                         label: 'Motto (optional)',
                         controller: _mottoController,
                         maxLines: 2,
+                        maxLength: 128,
+                        validator: (value) {
+                          if (value != null && value.trim().length > 128) {
+                            return 'Motto must be 128 characters or less';
+                          }
+                          return null;
+                        },
                       ),
                     ),
 
