@@ -155,6 +155,8 @@ class SessionRepositoryImpl implements SessionRepository {
 
     // Insert new ratings
     if (ratings.isNotEmpty) {
+      final now = DateTime.now();
+      int counter = 0;
       await _database.batch((batch) {
         for (final entry in ratings.entries) {
           final valueJson = entry.value.when(
@@ -165,11 +167,11 @@ class SessionRepositoryImpl implements SessionRepository {
           batch.insert(
             _database.ratings,
             db.RatingsCompanion(
-              id: Value(_generateRatingId()),
+              id: Value(_generateRatingId(now, counter++)),
               sessionId: Value(sessionId),
               criterionId: Value(entry.key),
               value: Value(valueJson),
-              createdAt: Value(DateTime.now()),
+              createdAt: Value(now),
             ),
           );
         }
@@ -220,8 +222,8 @@ class SessionRepositoryImpl implements SessionRepository {
   }
 
   /// Generates a unique ID for a rating.
-  String _generateRatingId() {
-    return 'rating_${DateTime.now().millisecondsSinceEpoch}_${DateTime.now().microsecondsSinceEpoch}';
+  String _generateRatingId(DateTime timestamp, int counter) {
+    return 'rating_${timestamp.millisecondsSinceEpoch}_${timestamp.microsecondsSinceEpoch}_$counter';
   }
 }
 

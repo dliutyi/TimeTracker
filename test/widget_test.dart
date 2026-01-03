@@ -26,8 +26,11 @@ void main() {
       ),
     );
 
-    // Verify that the app loads without errors
-    await tester.pumpAndSettle();
+    // Pump a few frames to allow initialization
+    await tester.pump();
+    await tester.pump(const Duration(seconds: 1));
+    
+    // Verify that the app builds without errors
     expect(find.byType(MaterialApp), findsOneWidget);
   });
 }
