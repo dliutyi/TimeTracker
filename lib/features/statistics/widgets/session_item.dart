@@ -46,11 +46,7 @@ class SessionItem extends StatelessWidget {
             // Task name and icon
             Row(
               children: [
-                Icon(
-                  iconData,
-                  size: 24,
-                  color: theme.colorScheme.primary,
-                ),
+                Icon(iconData, size: 24, color: theme.colorScheme.primary),
                 const SizedBox(width: AppTheme.spacingS),
                 Expanded(
                   child: Text(
@@ -80,8 +76,7 @@ class SessionItem extends StatelessWidget {
                   ),
                 ),
                 if (session.startDateTime.day != session.endDateTime.day ||
-                    session.startDateTime.month !=
-                        session.endDateTime.month ||
+                    session.startDateTime.month != session.endDateTime.month ||
                     session.startDateTime.year != session.endDateTime.year)
                   Text(
                     ' - ${_formatDateTime(session.endDateTime)}',
@@ -117,30 +112,31 @@ class SessionItem extends StatelessWidget {
               Wrap(
                 spacing: AppTheme.spacingS,
                 runSpacing: AppTheme.spacingXS,
-                children: session.ratings.entries.map((entry) {
-                  final criterion = criteria[entry.key];
-                  if (criterion == null) return const SizedBox.shrink();
+                children:
+                    session.ratings.entries.map((entry) {
+                      final criterion = criteria[entry.key];
+                      if (criterion == null) return const SizedBox.shrink();
 
-                  return Chip(
-                    avatar: SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: Center(
-                        child: Text(
-                          criterion.icon,
-                          style: const TextStyle(fontSize: 14),
-                          textAlign: TextAlign.center,
+                      return Chip(
+                        avatar: SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: Center(
+                            child: Text(
+                              criterion.icon,
+                              style: const TextStyle(fontSize: 14),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                    label: Text(
-                      _formatRating(entry.value, criterion),
-                      style: theme.textTheme.bodySmall,
-                    ),
-                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    visualDensity: VisualDensity.compact,
-                  );
-                }).toList(),
+                        label: Text(
+                          _formatRating(entry.value, criterion),
+                          style: theme.textTheme.bodySmall,
+                        ),
+                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        visualDensity: VisualDensity.compact,
+                      );
+                    }).toList(),
               ),
             ],
           ],
@@ -176,4 +172,3 @@ class SessionItem extends StatelessWidget {
     );
   }
 }
-
