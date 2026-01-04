@@ -27,6 +27,7 @@ class SwipeableItem extends StatefulWidget {
   final Color? baseColor; // Base color of the item for gradual color change
   final Color? activationColor; // Color when activation threshold is reached
   final Color? iconColor; // Color for the right swipe icon
+  final double radius;
   final double threshold;
   final bool dismissOnAction;
 
@@ -40,6 +41,7 @@ class SwipeableItem extends StatefulWidget {
     this.baseColor,
     this.activationColor,
     this.iconColor,
+    this.radius = AppTheme.radiusM,
     this.threshold = 0.3,
     this.dismissOnAction = true,
   });
@@ -276,7 +278,7 @@ class _SwipeableItemState extends State<SwipeableItem>
                 onHorizontalDragUpdate: _handleDragUpdate,
                 onHorizontalDragEnd: _handleDragEnd,
                 child: ClipRRect(
-                  borderRadius: BorderRadius.circular(AppTheme.radiusM),
+                  borderRadius: BorderRadius.circular(widget.radius),
                   child: Container(color: itemColor, child: widget.child),
                 ),
               ),

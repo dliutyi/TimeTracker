@@ -154,6 +154,7 @@ class _ListTasksScreenState extends ConsumerState<ListTasksScreen> {
           }
         },
         child: const Icon(Icons.add),
+        heroTag: 'add_task_button',
         tooltip: l10n.addTask,
       ),
     );

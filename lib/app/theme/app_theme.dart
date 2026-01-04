@@ -45,9 +45,9 @@ class AppTheme {
     brightness: Brightness.light,
     primary: mainAppColor,
     onPrimary: Color(0xFF000000), // Black text on bright green for contrast
-    secondary: Color(0xFF5856D6),
+    secondary: Color(0xFFA16C0B),
     onSecondary: Colors.white,
-    tertiary: Color(0xFFAF52DE),
+    tertiary: Color(0xFF714C08),
     onTertiary: Colors.white,
     error: Color(0xFFFF3B30),
     onError: Colors.white,

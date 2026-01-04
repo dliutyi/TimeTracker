@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:yudi_time_tracker/generated/l10n/app_localizations.dart';
+import 'package:yudi_time_tracker/shared/widgets/swipeable_item.dart';
 import '../../app/theme/app_theme.dart';
 import '../../core/repositories/repository_providers.dart';
 
@@ -38,20 +39,14 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen>
     );
 
     _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(
-        parent: _animationController,
-        curve: Curves.easeIn,
-      ),
+      CurvedAnimation(parent: _animationController, curve: Curves.easeIn),
     );
 
     _slideAnimation = Tween<Offset>(
       begin: const Offset(0, 0.3),
       end: Offset.zero,
     ).animate(
-      CurvedAnimation(
-        parent: _animationController,
-        curve: Curves.easeOutCubic,
-      ),
+      CurvedAnimation(parent: _animationController, curve: Curves.easeOutCubic),
     );
 
     _animationController.forward();
@@ -66,7 +61,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen>
   Future<void> _handleContinue() async {
     final settingsRepository = ref.read(settingsRepositoryProvider);
     await settingsRepository.setSetting(_welcomeShownKey, 'true');
-    
+
     if (mounted) {
       // Invalidate provider to trigger rebuild
       ref.invalidate(welcomeShownProvider);
@@ -83,109 +78,107 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen>
     final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
-      body: Container(
-        color: theme.colorScheme.primary,
-        child: SafeArea(
-          child: FadeTransition(
-            opacity: _fadeAnimation,
-            child: SlideTransition(
-              position: _slideAnimation,
-              child: Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(AppTheme.spacingXL),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      // App Logo/Icon
-                      Container(
-                        width: 120,
-                        height: 120,
-                        decoration: BoxDecoration(
-                          color: theme.colorScheme.onPrimary,
-                          shape: BoxShape.circle,
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.2),
-                              blurRadius: 20,
-                              offset: const Offset(0, 10),
-                            ),
-                          ],
+      body: SafeArea(
+        child: FadeTransition(
+          opacity: _fadeAnimation,
+          child: SlideTransition(
+            position: _slideAnimation,
+            child: Column(
+              children: [
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.all(AppTheme.spacingXL),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        // App Logo/Icon
+                        Image.asset(
+                          'assets/images/yudi_tt_logo_3.png',
+                          width: 240,
+                          height: 240,
                         ),
-                        child: Icon(
-                          Icons.access_time,
-                          size: 64,
-                          color: theme.colorScheme.primary,
-                        ),
-                      ),
-                      const SizedBox(height: AppTheme.spacingXXL),
-                      
-                      // App Name
-                      Text(
-                        l10n.appName,
-                        style: theme.textTheme.displayMedium?.copyWith(
-                          color: theme.colorScheme.onPrimary,
-                          fontWeight: FontWeight.bold,
-                          shadows: [
-                            Shadow(
-                              offset: const Offset(2, 2),
-                              blurRadius: 4,
-                              color: Colors.black.withValues(alpha: 0.3),
-                            ),
-                          ],
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: AppTheme.spacingL),
-                      
-                      // Description
-                      Text(
-                        l10n.welcomeDescription,
-                        style: theme.textTheme.bodyLarge?.copyWith(
-                          color: theme.colorScheme.onPrimary.withValues(alpha: 0.9),
-                          shadows: [
-                            Shadow(
-                              offset: const Offset(1, 1),
-                              blurRadius: 3,
-                              color: Colors.black.withValues(alpha: 0.3),
-                            ),
-                          ],
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: AppTheme.spacingXXL),
-                      
-                      // Continue Button
-                      FadeTransition(
-                        opacity: _fadeAnimation,
-                        child: ElevatedButton(
-                          onPressed: _handleContinue,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: theme.colorScheme.onPrimary,
-                            foregroundColor: theme.colorScheme.primary,
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: AppTheme.spacingXL,
-                              vertical: AppTheme.spacingM,
-                            ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(
-                                AppTheme.radiusRound,
+                        const SizedBox(height: AppTheme.spacingXS),
+
+                        // App Name
+                        Text(
+                          l10n.appName,
+                          style: theme.textTheme.displayMedium?.copyWith(
+                            color: theme.colorScheme.onPrimary,
+                            fontWeight: FontWeight.bold,
+                            shadows: [
+                              Shadow(
+                                offset: const Offset(-2, 2),
+                                blurRadius: 5,
+                                color: theme.colorScheme.onPrimary.withValues(
+                                  alpha: 0.3,
+                                ),
                               ),
-                            ),
-                            elevation: AppTheme.elevationHigh,
+                            ],
                           ),
-                          child: Text(
-                            l10n.continueButton,
-                            style: theme.textTheme.titleLarge?.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: theme.colorScheme.primary,
-                            ),
-                          ),
+                          textAlign: TextAlign.center,
                         ),
-                      ),
-                    ],
+                        const SizedBox(height: AppTheme.spacingXXL),
+
+                        // Description
+                        Text(
+                          l10n.welcomeDescription,
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            color: theme.colorScheme.onPrimary.withValues(
+                              alpha: 0.9,
+                            ),
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: AppTheme.spacingXXL),
+                      ],
+                    ),
                   ),
                 ),
-              ),
+                // Continue Button
+                FadeTransition(
+                  opacity: _fadeAnimation,
+                  child: SwipeableItem(
+                    rightActions: [],
+                    onSwipeRight: () => _handleContinue(),
+                    rightSwipeIcon: Icons.stop, // Stop icon for right swipe
+                    baseColor:
+                        theme
+                            .colorScheme
+                            .primary, // Base color for gradual change
+                    activationColor:
+                        theme
+                            .colorScheme
+                            .secondary, // Darker color when threshold reached
+                    iconColor:
+                        theme
+                            .colorScheme
+                            .onPrimary, // Icon color for visibility
+                    radius: 0,
+                    child: Container(
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        color:
+                            Colors
+                                .transparent, // Let SwipeableItem handle background
+                        borderRadius: BorderRadius.zero, // No round corners
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppTheme.spacingL,
+                        vertical: AppTheme.spacingL,
+                      ),
+                      alignment: Alignment.center,
+                      child: Text(
+                        l10n.swipeToStop,
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: theme.colorScheme.onPrimary,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ),
@@ -193,4 +186,3 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen>
     );
   }
 }
-

@@ -27,15 +27,14 @@ Page<T> _buildPageWithTransition<T extends Object?>(
           position: Tween<Offset>(
             begin: const Offset(0.0, 0.1),
             end: Offset.zero,
-          ).animate(CurvedAnimation(
-            parent: animation,
-            curve: Curves.easeOutCubic,
-          )),
+          ).animate(
+            CurvedAnimation(parent: animation, curve: Curves.easeOutCubic),
+          ),
           child: child,
         ),
       );
     },
-    transitionDuration: AppTheme.animationMedium,
+    transitionDuration: AppTheme.animationSlow,
   );
 }
 
@@ -47,20 +46,17 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/',
         name: 'root',
-        pageBuilder: (context, state) => _buildPageWithTransition(
-          const AppRootWidget(),
-          state,
-        ),
+        pageBuilder:
+            (context, state) =>
+                _buildPageWithTransition(const AppRootWidget(), state),
       ),
       GoRoute(
         path: '/main',
         name: 'main',
-        pageBuilder: (context, state) => _buildPageWithTransition(
-          const MainNavigationScreen(),
-          state,
-        ),
+        pageBuilder:
+            (context, state) =>
+                _buildPageWithTransition(const MainNavigationScreen(), state),
       ),
     ],
   );
 });
-
