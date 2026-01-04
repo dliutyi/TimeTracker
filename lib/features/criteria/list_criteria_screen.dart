@@ -28,31 +28,32 @@ class ListCriteriaScreen extends ConsumerWidget {
     return Scaffold(
       body: SafeArea(
         child: criteriaAsync.when(
-        data: (criteria) {
-          if (criteria.isEmpty) {
-            return _buildEmptyState(context, l10n);
-          }
-          return _buildCriteriaList(context, criteria);
-        },
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, stack) => Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                Icons.error_outline,
-                size: 64,
-                color: Theme.of(context).colorScheme.error,
+          data: (criteria) {
+            if (criteria.isEmpty) {
+              return _buildEmptyState(context, l10n);
+            }
+            return _buildCriteriaList(context, criteria);
+          },
+          loading: () => const Center(child: CircularProgressIndicator()),
+          error:
+              (error, stack) => Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.error_outline,
+                      size: 64,
+                      color: Theme.of(context).colorScheme.error,
+                    ),
+                    const SizedBox(height: AppTheme.spacingM),
+                    Text(
+                      l10n.errorLoadingCriteria(error.toString()),
+                      style: Theme.of(context).textTheme.bodyLarge,
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
               ),
-              const SizedBox(height: AppTheme.spacingM),
-              Text(
-                'Error loading criteria: $error',
-                style: Theme.of(context).textTheme.bodyLarge,
-                textAlign: TextAlign.center,
-              ),
-            ],
-          ),
-        ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
@@ -68,7 +69,7 @@ class ListCriteriaScreen extends ConsumerWidget {
           }
         },
         child: const Icon(Icons.add),
-        tooltip: 'Add Criterion',
+        tooltip: l10n.addCriterion,
       ),
     );
   }
@@ -87,10 +88,7 @@ class ListCriteriaScreen extends ConsumerWidget {
               color: theme.colorScheme.onSurfaceVariant,
             ),
             const SizedBox(height: AppTheme.spacingL),
-            Text(
-              l10n.noCriteria,
-              style: theme.textTheme.headlineSmall,
-            ),
+            Text(l10n.noCriteria, style: theme.textTheme.headlineSmall),
             const SizedBox(height: AppTheme.spacingS),
             Text(
               l10n.createFirstCriterion,

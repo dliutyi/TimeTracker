@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:yudi_time_tracker/generated/l10n/app_localizations.dart';
 import '../../../app/theme/app_theme.dart';
 import '../../../core/models/models.dart';
 import '../../../core/constants/icons.dart';
@@ -20,6 +21,7 @@ class SessionItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
     final duration = session.endDateTime.difference(session.startDateTime);
 
     // Get icon data from task icon string
@@ -50,7 +52,7 @@ class SessionItem extends StatelessWidget {
                 const SizedBox(width: AppTheme.spacingS),
                 Expanded(
                   child: Text(
-                    task?.name ?? 'Unknown Task',
+                    task?.name ?? l10n.unknownTask,
                     style: theme.textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
@@ -70,7 +72,7 @@ class SessionItem extends StatelessWidget {
                 ),
                 const SizedBox(width: AppTheme.spacingXS),
                 Text(
-                  _formatDateTime(session.startDateTime),
+                  _formatDateTime(session.startDateTime, l10n),
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: theme.colorScheme.onSurfaceVariant,
                   ),
@@ -79,7 +81,7 @@ class SessionItem extends StatelessWidget {
                     session.startDateTime.month != session.endDateTime.month ||
                     session.startDateTime.year != session.endDateTime.year)
                   Text(
-                    ' - ${_formatDateTime(session.endDateTime)}',
+                    ' - ${_formatDateTime(session.endDateTime, l10n)}',
                     style: theme.textTheme.bodySmall?.copyWith(
                       color: theme.colorScheme.onSurfaceVariant,
                     ),
@@ -121,13 +123,7 @@ class SessionItem extends StatelessWidget {
                         avatar: SizedBox(
                           width: 20,
                           height: 20,
-                          child: Center(
-                            child: Text(
-                              criterion.icon,
-                              style: const TextStyle(fontSize: 14),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
+                          child: Center(child: _buildCriterionIcon(criterion)),
                         ),
                         label: Text(
                           _formatRating(entry.value, criterion),
@@ -145,10 +141,33 @@ class SessionItem extends StatelessWidget {
     );
   }
 
-  String _formatDateTime(DateTime dateTime) {
-    final dateFormat = DateFormat('MMM d, y');
-    final timeFormat = DateFormat('h:mm a');
-    return '${dateFormat.format(dateTime)} ${timeFormat.format(dateTime)}';
+  Widget _buildCriterionIcon(Criterion criterion) {
+    try {
+      final iconIndex = int.tryParse(criterion.icon);
+      if (iconIndex != null) {
+        final iconData = AppIcons.getIcon(iconIndex);
+        if (iconData != null) {
+          return Icon(iconData, size: 14);
+        }
+      }
+      final emojiIndex = AppIcons.findEmojiIndex(criterion.icon);
+      if (emojiIndex != null) {
+        return Text(
+          AppIcons.emojis[emojiIndex],
+          style: const TextStyle(fontSize: 12),
+        );
+      }
+    } catch (e) {
+      // Use default icon if parsing fails
+    }
+    return Text(criterion.icon, style: const TextStyle(fontSize: 14));
+  }
+
+  String _formatDateTime(DateTime dateTime, AppLocalizations l10n) {
+    return DateFormat(
+      l10n.dateFormatInSessionHistory,
+      l10n.localeName,
+    ).format(dateTime);
   }
 
   String _formatDuration(Duration duration) {

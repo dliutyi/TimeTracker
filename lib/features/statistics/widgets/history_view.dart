@@ -16,7 +16,10 @@ final allTasksProvider = FutureProvider<List<Task>>((ref) async {
 });
 
 /// Provider for tasks by IDs - ensures we can load tasks for sessions even if they're disabled
-final tasksByIdsProvider = FutureProvider.family<List<Task>, List<String>>((ref, taskIds) async {
+final tasksByIdsProvider = FutureProvider.family<List<Task>, List<String>>((
+  ref,
+  taskIds,
+) async {
   if (taskIds.isEmpty) return [];
   final taskRepository = ref.watch(taskRepositoryProvider);
   final tasks = <Task>[];
@@ -44,12 +47,19 @@ final allSessionsProvider = FutureProvider<List<Session>>((ref) async {
 });
 
 /// Provider for sessions by date range - watches active session to auto-refresh
-final sessionsByDateRangeProvider = FutureProvider.family<List<Session>, ({DateTime start, DateTime end})>((ref, dateRange) async {
-  // Watch active session to trigger refresh when it changes
-  ref.watch(activeSessionProvider);
-  final sessionRepository = ref.watch(sessionRepositoryProvider);
-  return await sessionRepository.getSessionsByDateRange(dateRange.start, dateRange.end);
-});
+final sessionsByDateRangeProvider =
+    FutureProvider.family<List<Session>, ({DateTime start, DateTime end})>((
+      ref,
+      dateRange,
+    ) async {
+      // Watch active session to trigger refresh when it changes
+      ref.watch(activeSessionProvider);
+      final sessionRepository = ref.watch(sessionRepositoryProvider);
+      return await sessionRepository.getSessionsByDateRange(
+        dateRange.start,
+        dateRange.end,
+      );
+    });
 
 /// History view showing chronological list of sessions
 class HistoryView extends ConsumerStatefulWidget {
@@ -60,7 +70,7 @@ class HistoryView extends ConsumerStatefulWidget {
 }
 
 class _HistoryViewState extends ConsumerState<HistoryView> {
-  TimePeriod _selectedPeriod = TimePeriod.all;
+  TimePeriod _selectedPeriod = TimePeriod.week;
   String? _selectedTaskId;
 
   @override
@@ -73,21 +83,27 @@ class _HistoryViewState extends ConsumerState<HistoryView> {
     final dateRange = _getDateRange(_selectedPeriod);
 
     // Use provider for live updates
-    final sessionsAsync = dateRange != null
-        ? ref.watch(sessionsByDateRangeProvider(dateRange))
-        : ref.watch(allSessionsProvider);
+    final sessionsAsync =
+        dateRange != null
+            ? ref.watch(sessionsByDateRangeProvider(dateRange))
+            : ref.watch(allSessionsProvider);
 
     return sessionsAsync.when(
       data: (sessions) {
         // Filter out active sessions (where endDateTime equals startDateTime or difference < 1 second)
-        var filteredSessions = sessions.where((session) {
-          final diff = session.endDateTime.difference(session.startDateTime).abs();
-          return diff.inSeconds >= 1; // Only include stopped sessions
-        }).toList();
+        var filteredSessions =
+            sessions.where((session) {
+              final diff =
+                  session.endDateTime.difference(session.startDateTime).abs();
+              return diff.inSeconds >= 1; // Only include stopped sessions
+            }).toList();
 
         // Filter by selected task
         if (_selectedTaskId != null) {
-          filteredSessions = filteredSessions.where((s) => s.taskId == _selectedTaskId).toList();
+          filteredSessions =
+              filteredSessions
+                  .where((s) => s.taskId == _selectedTaskId)
+                  .toList();
         }
 
         return Column(
@@ -111,22 +127,30 @@ class _HistoryViewState extends ConsumerState<HistoryView> {
 
             // Sessions list
             Expanded(
-              child: filteredSessions.isEmpty
-                  ? _buildEmptyState(context, l10n)
-                  : _buildSessionsList(context, filteredSessions, tasksAsync, criteriaAsync),
+              child:
+                  filteredSessions.isEmpty
+                      ? _buildEmptyState(context, l10n)
+                      : _buildSessionsList(
+                        context,
+                        filteredSessions,
+                        tasksAsync,
+                        criteriaAsync,
+                        l10n,
+                      ),
             ),
           ],
         );
       },
       loading: () => const Center(child: CircularProgressIndicator()),
-      error: (error, stack) => Center(
-        child: Text(
-          'Error: $error',
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+      error:
+          (error, stack) => Center(
+            child: Text(
+              l10n.error(error.toString()),
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 color: Theme.of(context).colorScheme.error,
               ),
-        ),
-      ),
+            ),
+          ),
     );
   }
 
@@ -135,16 +159,17 @@ class _HistoryViewState extends ConsumerState<HistoryView> {
     List<Session> sessions,
     AsyncValue<List<Task>> tasksAsync,
     AsyncValue<List<Criterion>> criteriaAsync,
+    AppLocalizations l10n,
   ) {
     // Simply use allTasksProvider which includes all tasks (even disabled)
     return tasksAsync.when(
       data: (allTasks) {
         final tasksMap = <String, Task>{for (var t in allTasks) t.id: t};
-        
+
         return criteriaAsync.when(
           data: (allCriteria) {
             final criteriaMap = <String, Criterion>{
-              for (var c in allCriteria) c.id: c
+              for (var c in allCriteria) c.id: c,
             };
 
             return ListView.builder(
@@ -163,25 +188,27 @@ class _HistoryViewState extends ConsumerState<HistoryView> {
             );
           },
           loading: () => const Center(child: CircularProgressIndicator()),
-          error: (error, stack) => Center(
-            child: Text(
-              'Error loading criteria: $error',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+          error:
+              (error, stack) => Center(
+                child: Text(
+                  l10n.errorLoadingCriteria(error.toString()),
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     color: Theme.of(context).colorScheme.error,
                   ),
-            ),
-          ),
+                ),
+              ),
         );
       },
       loading: () => const Center(child: CircularProgressIndicator()),
-      error: (error, stack) => Center(
-        child: Text(
-          'Error loading tasks: $error',
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+      error:
+          (error, stack) => Center(
+            child: Text(
+              l10n.errorLoadingTasks(error.toString()),
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 color: Theme.of(context).colorScheme.error,
               ),
-        ),
-      ),
+            ),
+          ),
     );
   }
 
@@ -210,22 +237,22 @@ class _HistoryViewState extends ConsumerState<HistoryView> {
           // Add "All Tasks" option
           final allTasksOption = <Task?>[null, ...tasks];
           return DropdownButton<Task?>(
-            value: _selectedTaskId == null
-                ? null
-                : tasks.firstWhere(
-                    (t) => t.id == _selectedTaskId,
-                    orElse: () => tasks.first,
-                  ),
+            value:
+                _selectedTaskId == null
+                    ? null
+                    : tasks.firstWhere(
+                      (t) => t.id == _selectedTaskId,
+                      orElse: () => tasks.first,
+                    ),
             isExpanded: true,
             hint: Text(l10n.filterByTask),
-            items: allTasksOption.map((task) {
-              return DropdownMenuItem<Task?>(
-                value: task,
-                child: Text(
-                  task == null ? l10n.allTasks : task.name,
-                ),
-              );
-            }).toList(),
+            items:
+                allTasksOption.map((task) {
+                  return DropdownMenuItem<Task?>(
+                    value: task,
+                    child: Text(task == null ? l10n.allTasks : task.name),
+                  );
+                }).toList(),
             onChanged: (selectedTask) {
               setState(() {
                 _selectedTaskId = selectedTask?.id;
@@ -233,16 +260,18 @@ class _HistoryViewState extends ConsumerState<HistoryView> {
             },
           );
         },
-        loading: () => const SizedBox(
-          height: 48,
-          child: Center(child: CircularProgressIndicator()),
-        ),
-        error: (error, stack) => Text(
-          'Error: $error',
-          style: theme.textTheme.bodySmall?.copyWith(
-            color: theme.colorScheme.error,
-          ),
-        ),
+        loading:
+            () => const SizedBox(
+              height: 48,
+              child: Center(child: CircularProgressIndicator()),
+            ),
+        error:
+            (error, stack) => Text(
+              l10n.error(error.toString()),
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: theme.colorScheme.error,
+              ),
+            ),
       ),
     );
   }
@@ -259,10 +288,7 @@ class _HistoryViewState extends ConsumerState<HistoryView> {
             color: theme.colorScheme.onSurfaceVariant,
           ),
           const SizedBox(height: AppTheme.spacingM),
-          Text(
-            l10n.noSessions,
-            style: theme.textTheme.titleMedium,
-          ),
+          Text(l10n.noSessions, style: theme.textTheme.titleMedium),
           const SizedBox(height: AppTheme.spacingS),
           Text(
             _selectedPeriod == TimePeriod.all
@@ -278,32 +304,37 @@ class _HistoryViewState extends ConsumerState<HistoryView> {
     );
   }
 
-
   ({DateTime start, DateTime end})? _getDateRange(TimePeriod period) {
     final now = DateTime.now();
     switch (period) {
       case TimePeriod.day:
         final start = DateTime(now.year, now.month, now.day);
-        final end = start.add(const Duration(days: 1)).subtract(
-              const Duration(milliseconds: 1),
-            );
+        final end = start
+            .add(const Duration(days: 1))
+            .subtract(const Duration(milliseconds: 1));
         return (start: start, end: end);
       case TimePeriod.week:
         final start = now.subtract(Duration(days: now.weekday - 1));
         final weekStart = DateTime(start.year, start.month, start.day);
-        final end = weekStart.add(const Duration(days: 7)).subtract(
-              const Duration(milliseconds: 1),
-            );
+        final end = weekStart
+            .add(const Duration(days: 7))
+            .subtract(const Duration(milliseconds: 1));
         return (start: weekStart, end: end);
       case TimePeriod.month:
         final start = DateTime(now.year, now.month, 1);
-        final end = DateTime(now.year, now.month + 1, 1)
-            .subtract(const Duration(milliseconds: 1));
+        final end = DateTime(
+          now.year,
+          now.month + 1,
+          1,
+        ).subtract(const Duration(milliseconds: 1));
         return (start: start, end: end);
       case TimePeriod.year:
         final start = DateTime(now.year, 1, 1);
-        final end = DateTime(now.year + 1, 1, 1)
-            .subtract(const Duration(milliseconds: 1));
+        final end = DateTime(
+          now.year + 1,
+          1,
+          1,
+        ).subtract(const Duration(milliseconds: 1));
         return (start: start, end: end);
       case TimePeriod.all:
         return null;
@@ -312,11 +343,4 @@ class _HistoryViewState extends ConsumerState<HistoryView> {
 }
 
 /// Time period filter options
-enum TimePeriod {
-  day,
-  week,
-  month,
-  year,
-  all,
-}
-
+enum TimePeriod { day, week, month, year, all }

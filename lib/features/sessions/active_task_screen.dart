@@ -144,10 +144,10 @@ class _ActiveTaskScreenState extends ConsumerState<ActiveTaskScreen> {
               color: theme.colorScheme.onSurfaceVariant,
             ),
             const SizedBox(height: AppTheme.spacingL),
-            Text('No Active Task', style: theme.textTheme.headlineSmall),
+            Text(l10n.noActiveTask, style: theme.textTheme.headlineSmall),
             const SizedBox(height: AppTheme.spacingS),
             Text(
-              'Start a task from the List of Tasks to track your time.',
+              l10n.noActiveTaskMessage,
               style: theme.textTheme.bodyMedium?.copyWith(
                 color: theme.colorScheme.onSurfaceVariant,
               ),
@@ -182,6 +182,7 @@ class _ActiveTaskScreenState extends ConsumerState<ActiveTaskScreen> {
     // Calculate duration
     final duration = endDateTime.difference(session.startDateTime);
     final durationString = _formatDuration(duration);
+    final secondsDurationString = _formatSecondsDuration(duration);
 
     // Get task color
     final taskColor =
@@ -231,16 +232,42 @@ class _ActiveTaskScreenState extends ConsumerState<ActiveTaskScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         // Task duration (centered)
-                        Text(
-                          durationString,
-                          style: TextStyle(
-                            fontSize: 48,
-                            fontWeight: FontWeight.bold,
-                            color: contrastColor,
-                          ),
-                          textAlign: TextAlign.center,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.timer, size: 36, color: contrastColor),
+                            const SizedBox(width: AppTheme.spacingS),
+                            Text(
+                              durationString,
+                              style: TextStyle(
+                                fontSize: 48,
+                                fontWeight: FontWeight.bold,
+                                color: contrastColor,
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(top: 15),
+                              child: Row(
+                                children: [
+                                  Text(
+                                    ":",
+                                    style: TextStyle(
+                                      fontSize: 24,
+                                      color: contrastColor.withOpacity(0.7),
+                                    ),
+                                  ),
+                                  Text(
+                                    secondsDurationString,
+                                    style: TextStyle(
+                                      fontSize: 24,
+                                      color: contrastColor.withOpacity(0.7),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
                         ),
-
                         const SizedBox(height: AppTheme.spacingXL),
 
                         // Task icon and name (centered)
@@ -275,8 +302,9 @@ class _ActiveTaskScreenState extends ConsumerState<ActiveTaskScreen> {
                         // Start time (editable)
                         _buildTimeRow(
                           context,
+                          l10n: l10n,
                           icon: Icons.play_arrow,
-                          label: 'Start Time',
+                          label: l10n.startTime,
                           dateTime: session.startDateTime,
                           contrastColor: contrastColor,
                           onTap:
@@ -289,9 +317,10 @@ class _ActiveTaskScreenState extends ConsumerState<ActiveTaskScreen> {
                         _buildTimeRow(
                           context,
                           icon: Icons.stop,
-                          label: 'End Time',
+                          label: l10n.endTime,
                           dateTime: endDateTime,
                           contrastColor: contrastColor,
+                          l10n: l10n,
                           onTap:
                               _useCustomEndTime
                                   ? () => _showEndDateTimePicker(context)
@@ -331,12 +360,13 @@ class _ActiveTaskScreenState extends ConsumerState<ActiveTaskScreen> {
                               cancelText: l10n.cancel,
                             );
                         if (confirmed == true) {
-                          _handleDiscard(context);
+                          _handleDiscard(context, l10n);
                         }
                       },
                     ),
                   ],
-                  onSwipeRight: () => _handleStop(context, endDateTime, task),
+                  onSwipeRight:
+                      () => _handleStop(context, endDateTime, task, l10n),
                   rightSwipeIcon: Icons.stop, // Stop icon for right swipe
                   baseColor: taskColor, // Base color for gradual change
                   activationColor:
@@ -381,6 +411,7 @@ class _ActiveTaskScreenState extends ConsumerState<ActiveTaskScreen> {
     required Color contrastColor,
     VoidCallback? onTap,
     Widget? trailing,
+    required AppLocalizations l10n,
   }) {
     return InkWell(
       onTap: onTap,
@@ -403,7 +434,7 @@ class _ActiveTaskScreenState extends ConsumerState<ActiveTaskScreen> {
                   ),
                   const SizedBox(height: AppTheme.spacingXS),
                   Text(
-                    _formatDateTime(dateTime),
+                    _formatDateTime(dateTime, l10n),
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w500,
@@ -436,6 +467,15 @@ class _ActiveTaskScreenState extends ConsumerState<ActiveTaskScreen> {
     } else {
       return '00:${minutes.toString().padLeft(2, '0')}';
     }
+  }
+
+  String _formatSecondsDuration(Duration duration) {
+    final seconds = duration.inSeconds.remainder(60);
+
+    if (seconds > 0) {
+      return seconds.toString().padLeft(2, '0');
+    }
+    return '00';
   }
 
   Future<void> _showStartDateTimePicker(
@@ -511,6 +551,7 @@ class _ActiveTaskScreenState extends ConsumerState<ActiveTaskScreen> {
     BuildContext context,
     DateTime endDateTime,
     Task task,
+    AppLocalizations l10n,
   ) async {
     final activeSession = ref.read(activeSessionProvider);
     if (activeSession == null) return;
@@ -519,8 +560,8 @@ class _ActiveTaskScreenState extends ConsumerState<ActiveTaskScreen> {
     if (endDateTime.isBefore(activeSession.startDateTime)) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('End time must be after start time'),
+          SnackBar(
+            content: Text(l10n.endTimeAfterStart),
             backgroundColor: Colors.red,
           ),
         );
@@ -597,7 +638,7 @@ class _ActiveTaskScreenState extends ConsumerState<ActiveTaskScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error stopping session: $e'),
+            content: Text(l10n.errorStoppingSession(e.toString())),
             backgroundColor: Theme.of(context).colorScheme.error,
           ),
         );
@@ -609,7 +650,10 @@ class _ActiveTaskScreenState extends ConsumerState<ActiveTaskScreen> {
     }
   }
 
-  Future<void> _handleDiscard(BuildContext context) async {
+  Future<void> _handleDiscard(
+    BuildContext context,
+    AppLocalizations l10n,
+  ) async {
     // Confirmation is already shown by SwipeableItem, so just perform the discard
     final activeSession = ref.read(activeSessionProvider);
 
@@ -634,7 +678,7 @@ class _ActiveTaskScreenState extends ConsumerState<ActiveTaskScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error discarding session: $e'),
+            content: Text(l10n.errorDiscardingSession(e.toString())),
             backgroundColor: Theme.of(context).colorScheme.error,
           ),
         );
@@ -653,8 +697,8 @@ class _ActiveTaskScreenState extends ConsumerState<ActiveTaskScreen> {
     }
   }
 
-  String _formatDateTime(DateTime dateTime) {
-    return DateFormat('MMM d, yyyy • HH:mm').format(dateTime);
+  String _formatDateTime(DateTime dateTime, AppLocalizations l10n) {
+    return DateFormat(l10n.dateFormat, l10n.localeName).format(dateTime);
   }
 }
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:yudi_time_tracker/generated/l10n/app_localizations.dart';
 import '../../../app/theme/app_theme.dart';
 import '../../../core/models/criterion.dart';
 import '../../../core/models/criterion_config.dart';
@@ -135,7 +136,7 @@ class _AddEditCriterionWidgetState
     super.dispose();
   }
 
-  Future<void> _handleSave() async {
+  Future<void> _handleSave(AppLocalizations l10n) async {
     if (!_formKey.currentState!.validate()) {
       return;
     }
@@ -144,10 +145,8 @@ class _AddEditCriterionWidgetState
     if (_selectedType == CriterionType.discrete) {
       if (_discreteValues.isEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(
-              'At least one value is required for discrete criteria',
-            ),
+          SnackBar(
+            content: Text(l10n.atLeastOneValueForDiscreteCriteria),
             backgroundColor: Colors.red,
             duration: Duration(seconds: 2),
           ),
@@ -156,8 +155,8 @@ class _AddEditCriterionWidgetState
       }
       if (_selectionLimit <= 0) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Selection limit must be greater than 0'),
+          SnackBar(
+            content: Text(l10n.selectionLimitMustBeGreaterThanZero),
             backgroundColor: Colors.red,
             duration: Duration(seconds: 2),
           ),
@@ -167,8 +166,8 @@ class _AddEditCriterionWidgetState
     } else {
       if (_minValue >= _maxValue) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Min value must be less than max value'),
+          SnackBar(
+            content: Text(l10n.minValueMustBeLessThanMaxValue),
             backgroundColor: Colors.red,
             duration: Duration(seconds: 2),
           ),
@@ -177,8 +176,8 @@ class _AddEditCriterionWidgetState
       }
       if (_stepValue <= 0) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Step value must be greater than 0'),
+          SnackBar(
+            content: Text(l10n.stepValueMustBeGreaterThanZero),
             backgroundColor: Colors.red,
             duration: Duration(seconds: 2),
           ),
@@ -246,7 +245,7 @@ class _AddEditCriterionWidgetState
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error saving criterion: $e'),
+            content: Text(l10n.errorSavingCriterion(e.toString())),
             backgroundColor: Theme.of(context).colorScheme.error,
             duration: const Duration(seconds: 2),
           ),
@@ -323,6 +322,7 @@ class _AddEditCriterionWidgetState
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
     final screenHeight = MediaQuery.of(context).size.height;
     final keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
 
@@ -365,8 +365,8 @@ class _AddEditCriterionWidgetState
                   children: [
                     Text(
                       widget.criterion == null
-                          ? 'Add Criterion'
-                          : 'Edit Criterion',
+                          ? l10n.addCriterion
+                          : l10n.editCriterion,
                       style: theme.textTheme.titleLarge,
                     ),
                     const Spacer(),
@@ -390,15 +390,15 @@ class _AddEditCriterionWidgetState
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         // First Section: Icon/Emoji and Name
-                        _buildFirstSection(theme),
+                        _buildFirstSection(theme, l10n),
                         const SizedBox(height: AppTheme.spacingL),
 
                         // Second Section: Type Selector
-                        _buildSecondSection(theme),
+                        _buildSecondSection(theme, l10n),
                         const SizedBox(height: AppTheme.spacingL),
 
                         // Third Section: Configuration (Dynamic)
-                        _buildThirdSection(theme),
+                        _buildThirdSection(theme, l10n),
                       ],
                     ),
                   ),
@@ -426,14 +426,14 @@ class _AddEditCriterionWidgetState
                     Expanded(
                       child: OutlinedButton(
                         onPressed: _isSaving ? null : _handleDiscard,
-                        child: const Text('Discard'),
+                        child: Text(l10n.discard),
                       ),
                     ),
                     const SizedBox(width: AppTheme.spacingM),
                     Expanded(
                       flex: 2,
                       child: ElevatedButton(
-                        onPressed: _isSaving ? null : _handleSave,
+                        onPressed: _isSaving ? null : () => _handleSave(l10n),
                         child:
                             _isSaving
                                 ? const SizedBox(
@@ -444,7 +444,9 @@ class _AddEditCriterionWidgetState
                                   ),
                                 )
                                 : Text(
-                                  widget.criterion == null ? 'Add' : 'Update',
+                                  widget.criterion == null
+                                      ? l10n.addCriterion
+                                      : l10n.updateCriterion,
                                 ),
                       ),
                     ),
@@ -458,7 +460,7 @@ class _AddEditCriterionWidgetState
     );
   }
 
-  Widget _buildFirstSection(ThemeData theme) {
+  Widget _buildFirstSection(ThemeData theme, AppLocalizations l10n) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -472,13 +474,13 @@ class _AddEditCriterionWidgetState
                   context: context,
                   builder:
                       (context) => AlertDialog(
-                        title: const Text('Select Icon Type'),
+                        title: Text(l10n.selectIconType),
                         content: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             ListTile(
                               leading: const Icon(Icons.image),
-                              title: const Text('Icon'),
+                              title: Text(l10n.icon),
                               onTap: () => Navigator.of(context).pop('icon'),
                             ),
                             ListTile(
@@ -486,7 +488,7 @@ class _AddEditCriterionWidgetState
                                 '😀',
                                 style: TextStyle(fontSize: 24),
                               ),
-                              title: const Text('Emoji'),
+                              title: Text(l10n.emoji),
                               onTap: () => Navigator.of(context).pop('emoji'),
                             ),
                           ],
@@ -506,6 +508,7 @@ class _AddEditCriterionWidgetState
                   color: theme.colorScheme.primaryContainer,
                   borderRadius: BorderRadius.circular(AppTheme.radiusM),
                 ),
+                alignment: Alignment.center,
                 child:
                     _selectedIcon != null
                         ? Icon(
@@ -530,11 +533,11 @@ class _AddEditCriterionWidgetState
             Expanded(
               child: SpeechTextField(
                 controller: _nameController,
-                label: 'Name',
-                hint: 'Enter criterion name',
+                label: l10n.criterionName,
+                hint: l10n.enterCriterionName,
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
-                    return 'Name is required';
+                    return l10n.nameRequired;
                   }
                   return null;
                 },
@@ -546,21 +549,21 @@ class _AddEditCriterionWidgetState
     );
   }
 
-  Widget _buildSecondSection(ThemeData theme) {
+  Widget _buildSecondSection(ThemeData theme, AppLocalizations l10n) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Type', style: theme.textTheme.titleMedium),
+        Text(l10n.type, style: theme.textTheme.titleMedium),
         const SizedBox(height: AppTheme.spacingS),
         SegmentedButton<CriterionType>(
-          segments: const [
+          segments: [
             ButtonSegment(
               value: CriterionType.discrete,
-              label: Text('Discrete'),
+              label: Text(l10n.discrete),
             ),
             ButtonSegment(
               value: CriterionType.continuous,
-              label: Text('Continuous'),
+              label: Text(l10n.continuous),
             ),
           ],
           selected: {_selectedType},
@@ -574,34 +577,34 @@ class _AddEditCriterionWidgetState
     );
   }
 
-  Widget _buildThirdSection(ThemeData theme) {
+  Widget _buildThirdSection(ThemeData theme, AppLocalizations l10n) {
     if (_selectedType == CriterionType.discrete) {
-      return _buildDiscreteSection(theme);
+      return _buildDiscreteSection(theme, l10n);
     } else {
-      return _buildContinuousSection(theme);
+      return _buildContinuousSection(theme, l10n);
     }
   }
 
-  Widget _buildDiscreteSection(ThemeData theme) {
+  Widget _buildDiscreteSection(ThemeData theme, AppLocalizations l10n) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Discrete Configuration', style: theme.textTheme.titleMedium),
+        Text(l10n.discreteConfiguration, style: theme.textTheme.titleMedium),
         const SizedBox(height: AppTheme.spacingM),
 
         // Selection Limit
         SpeechTextField(
           controller: _selectionLimitController,
-          label: 'Selection Limit',
-          hint: 'How many values can be selected',
+          label: l10n.selectionLimit,
+          hint: l10n.howManyValuesCanBeSelected,
           keyboardType: TextInputType.number,
           validator: (value) {
             if (value == null || value.trim().isEmpty) {
-              return 'Selection limit is required';
+              return l10n.selectionLimitRequired;
             }
             final limit = int.tryParse(value);
             if (limit == null || limit <= 0) {
-              return 'Selection limit must be a positive number';
+              return l10n.selectionLimitMustBeAPositiveNumber;
             }
             _selectionLimit = limit;
             return null;
@@ -610,7 +613,7 @@ class _AddEditCriterionWidgetState
         const SizedBox(height: AppTheme.spacingM),
 
         // Values
-        Text('Values', style: theme.textTheme.titleSmall),
+        Text(l10n.values, style: theme.textTheme.titleSmall),
         const SizedBox(height: AppTheme.spacingS),
         ...List.generate(_valueControllers.length, (index) {
           return Padding(
@@ -620,11 +623,11 @@ class _AddEditCriterionWidgetState
                 Expanded(
                   child: SpeechTextField(
                     controller: _valueControllers[index],
-                    hint: 'Value ${index + 1}',
+                    hint: l10n.valueX(index + 1),
                     onChanged: (_) => _updateDiscreteValues(),
                     validator: (value) {
                       if (value == null || value.trim().isEmpty) {
-                        return 'Value cannot be empty';
+                        return l10n.valueCannotBeEmpty;
                       }
                       return null;
                     },
@@ -642,30 +645,30 @@ class _AddEditCriterionWidgetState
         OutlinedButton.icon(
           onPressed: _addDiscreteValue,
           icon: const Icon(Icons.add),
-          label: const Text('Add Value'),
+          label: Text(l10n.addValue),
         ),
       ],
     );
   }
 
-  Widget _buildContinuousSection(ThemeData theme) {
+  Widget _buildContinuousSection(ThemeData theme, AppLocalizations l10n) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Continuous Configuration', style: theme.textTheme.titleMedium),
+        Text(l10n.continuousConfiguration, style: theme.textTheme.titleMedium),
         const SizedBox(height: AppTheme.spacingM),
         SpeechTextField(
           controller: _minValueController,
-          label: 'Min Value',
-          hint: 'Minimum allowed value',
+          label: l10n.minValue,
+          hint: l10n.minimumAllowedValue,
           keyboardType: const TextInputType.numberWithOptions(decimal: true),
           validator: (value) {
             if (value == null || value.trim().isEmpty) {
-              return 'Min value is required';
+              return l10n.minValueRequired;
             }
             final min = double.tryParse(value);
             if (min == null) {
-              return 'Min value must be a number';
+              return l10n.minValueMustBeANumber;
             }
             _minValue = min;
             return null;
@@ -674,20 +677,20 @@ class _AddEditCriterionWidgetState
         const SizedBox(height: AppTheme.spacingM),
         SpeechTextField(
           controller: _maxValueController,
-          label: 'Max Value',
-          hint: 'Maximum allowed value',
+          label: l10n.maxValue,
+          hint: l10n.maximumAllowedValue,
           keyboardType: const TextInputType.numberWithOptions(decimal: true),
           validator: (value) {
             if (value == null || value.trim().isEmpty) {
-              return 'Max value is required';
+              return l10n.maxValueRequired;
             }
             final max = double.tryParse(value);
             if (max == null) {
-              return 'Max value must be a number';
+              return l10n.maxValueMustBeANumber;
             }
             _maxValue = max;
             if (_maxValue <= _minValue) {
-              return 'Max value must be greater than min value';
+              return l10n.maxValueMustBeGreaterThanMinValue;
             }
             return null;
           },
@@ -695,16 +698,16 @@ class _AddEditCriterionWidgetState
         const SizedBox(height: AppTheme.spacingM),
         SpeechTextField(
           controller: _stepValueController,
-          label: 'Step Value',
-          hint: 'Increment/decrement step',
+          label: l10n.stepValue,
+          hint: l10n.incrementDecrementStep,
           keyboardType: const TextInputType.numberWithOptions(decimal: true),
           validator: (value) {
             if (value == null || value.trim().isEmpty) {
-              return 'Step value is required';
+              return l10n.stepValueRequired;
             }
             final step = double.tryParse(value);
             if (step == null || step <= 0) {
-              return 'Step value must be a positive number';
+              return l10n.stepValueMustBeAPositiveNumber;
             }
             _stepValue = step;
             return null;

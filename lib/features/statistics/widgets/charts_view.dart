@@ -6,8 +6,13 @@ import 'package:intl/intl.dart';
 import '../../../app/theme/app_theme.dart';
 import '../../../core/models/models.dart';
 import 'time_period_filter.dart';
-import 'history_view.dart' show allTasksProvider, allCriteriaProvider, allSessionsProvider, sessionsByDateRangeProvider, TimePeriod;
-
+import 'history_view.dart'
+    show
+        allTasksProvider,
+        allCriteriaProvider,
+        allSessionsProvider,
+        sessionsByDateRangeProvider,
+        TimePeriod;
 
 /// Charts view showing various visualizations
 class ChartsView extends ConsumerStatefulWidget {
@@ -18,7 +23,7 @@ class ChartsView extends ConsumerStatefulWidget {
 }
 
 class _ChartsViewState extends ConsumerState<ChartsView> {
-  TimePeriod _selectedPeriod = TimePeriod.all;
+  TimePeriod _selectedPeriod = TimePeriod.week;
   String? _selectedTaskId;
   String? _selectedCriterionId;
 
@@ -32,44 +37,59 @@ class _ChartsViewState extends ConsumerState<ChartsView> {
     final dateRange = _getDateRange(_selectedPeriod);
 
     // Use provider for live updates
-    final sessionsAsync = dateRange != null
-        ? ref.watch(sessionsByDateRangeProvider(dateRange))
-        : ref.watch(allSessionsProvider);
-    
+    final sessionsAsync =
+        dateRange != null
+            ? ref.watch(sessionsByDateRangeProvider(dateRange))
+            : ref.watch(allSessionsProvider);
+
     // Always get all sessions for activity chart (not filtered by period)
     final allSessionsForActivityAsync = ref.watch(allSessionsProvider);
 
     return allSessionsForActivityAsync.when(
       data: (allSessionsForActivity) {
         // Filter out active sessions from activity chart as well
-        final filteredAllSessionsForActivity = allSessionsForActivity.where((session) {
-          final diff = session.endDateTime.difference(session.startDateTime).abs();
-          return diff.inSeconds >= 1; // Only include stopped sessions
-        }).toList();
-        
-        return sessionsAsync.when(
-          data: (sessions) {
-            // Filter out active sessions (where endDateTime equals startDateTime or difference < 1 second)
-            var filteredSessions = sessions.where((session) {
-              final diff = session.endDateTime.difference(session.startDateTime).abs();
+        final filteredAllSessionsForActivity =
+            allSessionsForActivity.where((session) {
+              final diff =
+                  session.endDateTime.difference(session.startDateTime).abs();
               return diff.inSeconds >= 1; // Only include stopped sessions
             }).toList();
 
+        return sessionsAsync.when(
+          data: (sessions) {
+            // Filter out active sessions (where endDateTime equals startDateTime or difference < 1 second)
+            var filteredSessions =
+                sessions.where((session) {
+                  final diff =
+                      session.endDateTime
+                          .difference(session.startDateTime)
+                          .abs();
+                  return diff.inSeconds >= 1; // Only include stopped sessions
+                }).toList();
+
             // Filter by selected task
             if (_selectedTaskId != null) {
-              filteredSessions = filteredSessions.where((s) => s.taskId == _selectedTaskId).toList();
+              filteredSessions =
+                  filteredSessions
+                      .where((s) => s.taskId == _selectedTaskId)
+                      .toList();
             }
 
-            if (filteredSessions.isEmpty && filteredAllSessionsForActivity.isEmpty) {
+            if (filteredSessions.isEmpty &&
+                filteredAllSessionsForActivity.isEmpty) {
               return _buildEmptyState(context, l10n);
             }
 
             return tasksAsync.when(
               data: (allTasks) {
-                final tasksMap = <String, Task>{for (var t in allTasks) t.id: t};
+                final tasksMap = <String, Task>{
+                  for (var t in allTasks) t.id: t,
+                };
                 return criteriaAsync.when(
                   data: (allCriteria) {
-                    final criteriaMap = <String, Criterion>{for (var c in allCriteria) c.id: c};
+                    final criteriaMap = <String, Criterion>{
+                      for (var c in allCriteria) c.id: c,
+                    };
 
                     return Column(
                       children: [
@@ -86,7 +106,12 @@ class _ChartsViewState extends ConsumerState<ChartsView> {
                               },
                             ),
                             // Task and criterion filters
-                            _buildChartFilters(context, l10n, tasksAsync, criteriaAsync),
+                            _buildChartFilters(
+                              context,
+                              l10n,
+                              tasksAsync,
+                              criteriaAsync,
+                            ),
                           ],
                         ),
 
@@ -97,64 +122,92 @@ class _ChartsViewState extends ConsumerState<ChartsView> {
                             children: [
                               // Activity chart uses all sessions (not filtered by period) to show full year view
                               // But still excludes active sessions
-                              _buildActivityChart(context, l10n, filteredAllSessionsForActivity, tasksMap),
-                          const SizedBox(height: AppTheme.spacingL),
-                          _buildTimeSpentPerTaskChart(
-                              context, l10n, filteredSessions, tasksMap),
-                          const SizedBox(height: AppTheme.spacingL),
-                          _buildTaskFrequencyChart(context, l10n, filteredSessions),
-                          const SizedBox(height: AppTheme.spacingL),
-                          if (filteredSessions.any((s) => s.ratings.isNotEmpty))
-                            _buildCriterionRatingsChart(
-                                context, l10n, filteredSessions, tasksMap, criteriaMap, _selectedCriterionId),
-                        ],
-                      ),
-                    ),
-                  ],
-                );
+                              // _buildActivityChart(
+                              //   context,
+                              //   l10n,
+                              //   filteredAllSessionsForActivity,
+                              //   tasksMap,
+                              // ),
+                              // const SizedBox(height: AppTheme.spacingL),
+                              _buildTimeSpentPerTaskChart(
+                                context,
+                                l10n,
+                                filteredSessions,
+                                tasksMap,
+                              ),
+                              const SizedBox(height: AppTheme.spacingL),
+                              _buildTaskFrequencyChart(
+                                context,
+                                l10n,
+                                filteredSessions,
+                              ),
+                              const SizedBox(height: AppTheme.spacingL),
+                              if (filteredSessions.any(
+                                (s) => s.ratings.isNotEmpty,
+                              ))
+                                _buildCriterionRatingsChart(
+                                  context,
+                                  l10n,
+                                  filteredSessions,
+                                  tasksMap,
+                                  criteriaMap,
+                                  _selectedCriterionId,
+                                ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    );
                   },
-                  loading: () => const Center(child: CircularProgressIndicator()),
-                  error: (error, stack) => Center(
-                    child: Text(
-                      'Error loading criteria: $error',
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  loading:
+                      () => const Center(child: CircularProgressIndicator()),
+                  error:
+                      (error, stack) => Center(
+                        child: Text(
+                          l10n.errorLoadingCriteria(error.toString()),
+                          style: Theme.of(
+                            context,
+                          ).textTheme.bodyMedium?.copyWith(
                             color: Theme.of(context).colorScheme.error,
                           ),
-                    ),
-                  ),
+                        ),
+                      ),
                 );
               },
               loading: () => const Center(child: CircularProgressIndicator()),
-              error: (error, stack) => Center(
-                child: Text(
-                  'Error loading tasks: $error',
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              error:
+                  (error, stack) => Center(
+                    child: Text(
+                      l10n.errorLoadingTasks(error.toString()),
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: Theme.of(context).colorScheme.error,
                       ),
-                ),
-              ),
+                    ),
+                  ),
             );
           },
           loading: () => const Center(child: CircularProgressIndicator()),
-          error: (error, stack) => Center(
-            child: Text(
-              'Error loading sessions: $error',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+          error:
+              (error, stack) => Center(
+                child: Text(
+                  l10n.errorLoadingSessions(error.toString()),
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     color: Theme.of(context).colorScheme.error,
                   ),
-            ),
-          ),
+                ),
+              ),
         );
       },
       loading: () => const Center(child: CircularProgressIndicator()),
-      error: (error, stack) => Center(
-        child: Text(
-          'Error loading all sessions: $error',
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+      error:
+          (error, stack) => Center(
+            child: Text(
+              l10n.errorLoadingAllSessions(error.toString()),
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 color: Theme.of(context).colorScheme.error,
               ),
-        ),
-      ),
+            ),
+          ),
     );
   }
 
@@ -187,20 +240,24 @@ class _ChartsViewState extends ConsumerState<ChartsView> {
               data: (tasks) {
                 final allTasksOption = <Task?>[null, ...tasks];
                 return DropdownButton<Task?>(
-                  value: _selectedTaskId == null
-                      ? null
-                      : (tasks.where((t) => t.id == _selectedTaskId).firstOrNull),
+                  value:
+                      _selectedTaskId == null
+                          ? null
+                          : (tasks
+                              .where((t) => t.id == _selectedTaskId)
+                              .firstOrNull),
                   isExpanded: true,
                   hint: Text(l10n.filterByTask),
-                  items: allTasksOption.map((task) {
-                    return DropdownMenuItem<Task?>(
-                      value: task,
-                      child: Text(
-                        task == null ? l10n.allTasks : task.name,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    );
-                  }).toList(),
+                  items:
+                      allTasksOption.map((task) {
+                        return DropdownMenuItem<Task?>(
+                          value: task,
+                          child: Text(
+                            task == null ? l10n.allTasks : task.name,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        );
+                      }).toList(),
                   onChanged: (selectedTask) {
                     setState(() {
                       _selectedTaskId = selectedTask?.id;
@@ -208,16 +265,18 @@ class _ChartsViewState extends ConsumerState<ChartsView> {
                   },
                 );
               },
-              loading: () => const SizedBox(
-                height: 48,
-                child: Center(child: CircularProgressIndicator()),
-              ),
-              error: (error, stack) => Text(
-                'Error',
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: theme.colorScheme.error,
-                ),
-              ),
+              loading:
+                  () => const SizedBox(
+                    height: 48,
+                    child: Center(child: CircularProgressIndicator()),
+                  ),
+              error:
+                  (error, stack) => Text(
+                    l10n.error(error.toString()),
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: theme.colorScheme.error,
+                    ),
+                  ),
             ),
           ),
           const SizedBox(width: AppTheme.spacingM),
@@ -227,20 +286,26 @@ class _ChartsViewState extends ConsumerState<ChartsView> {
               data: (criteria) {
                 final allCriteriaOption = <Criterion?>[null, ...criteria];
                 return DropdownButton<Criterion?>(
-                  value: _selectedCriterionId == null
-                      ? null
-                      : (criteria.where((c) => c.id == _selectedCriterionId).firstOrNull),
+                  value:
+                      _selectedCriterionId == null
+                          ? null
+                          : (criteria
+                              .where((c) => c.id == _selectedCriterionId)
+                              .firstOrNull),
                   isExpanded: true,
                   hint: Text(l10n.filterByCriterion),
-                  items: allCriteriaOption.map((criterion) {
-                    return DropdownMenuItem<Criterion?>(
-                      value: criterion,
-                      child: Text(
-                        criterion == null ? l10n.allCriteria : criterion.name,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    );
-                  }).toList(),
+                  items:
+                      allCriteriaOption.map((criterion) {
+                        return DropdownMenuItem<Criterion?>(
+                          value: criterion,
+                          child: Text(
+                            criterion == null
+                                ? l10n.allCriteria
+                                : criterion.name,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        );
+                      }).toList(),
                   onChanged: (selectedCriterion) {
                     setState(() {
                       _selectedCriterionId = selectedCriterion?.id;
@@ -248,16 +313,18 @@ class _ChartsViewState extends ConsumerState<ChartsView> {
                   },
                 );
               },
-              loading: () => const SizedBox(
-                height: 48,
-                child: Center(child: CircularProgressIndicator()),
-              ),
-              error: (error, stack) => Text(
-                'Error',
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: theme.colorScheme.error,
-                ),
-              ),
+              loading:
+                  () => const SizedBox(
+                    height: 48,
+                    child: Center(child: CircularProgressIndicator()),
+                  ),
+              error:
+                  (error, stack) => Text(
+                    l10n.error(error.toString()),
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: theme.colorScheme.error,
+                    ),
+                  ),
             ),
           ),
         ],
@@ -277,10 +344,7 @@ class _ChartsViewState extends ConsumerState<ChartsView> {
             color: theme.colorScheme.onSurfaceVariant,
           ),
           const SizedBox(height: AppTheme.spacingM),
-          Text(
-            l10n.noSessions,
-            style: theme.textTheme.titleMedium,
-          ),
+          Text(l10n.noSessions, style: theme.textTheme.titleMedium),
           const SizedBox(height: AppTheme.spacingS),
           Text(
             _selectedPeriod == TimePeriod.all
@@ -313,8 +377,9 @@ class _ChartsViewState extends ConsumerState<ChartsView> {
     }
 
     // Sort by duration (descending) and take top 10
-    final sortedTasks = taskDurations.entries.toList()
-      ..sort((a, b) => b.value.compareTo(a.value));
+    final sortedTasks =
+        taskDurations.entries.toList()
+          ..sort((a, b) => b.value.compareTo(a.value));
     final topTasks = sortedTasks.take(10).toList();
 
     if (topTasks.isEmpty) {
@@ -330,10 +395,7 @@ class _ChartsViewState extends ConsumerState<ChartsView> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              l10n.timeSpentPerTask,
-              style: theme.textTheme.titleLarge,
-            ),
+            Text(l10n.timeSpentPerTask, style: theme.textTheme.titleLarge),
             const SizedBox(height: AppTheme.spacingM),
             SizedBox(
               height: 300,
@@ -357,14 +419,18 @@ class _ChartsViewState extends ConsumerState<ChartsView> {
                           final index = value.toInt();
                           if (index >= 0 && index < topTasks.length) {
                             final task = tasks[topTasks[index].key];
-                            final name = task?.name ?? 'Unknown';
+                            final name = task?.name ?? l10n.unknownTask;
                             return Padding(
                               padding: const EdgeInsets.only(top: 8),
                               child: Transform.rotate(
                                 angle: -0.5,
                                 child: Text(
-                                  name.length > 8 ? '${name.substring(0, 8)}...' : name,
-                                  style: theme.textTheme.bodySmall?.copyWith(fontSize: 10),
+                                  name.length > 8
+                                      ? '${name.substring(0, 8)}...'
+                                      : name,
+                                  style: theme.textTheme.bodySmall?.copyWith(
+                                    fontSize: 10,
+                                  ),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                 ),
@@ -389,7 +455,9 @@ class _ChartsViewState extends ConsumerState<ChartsView> {
                               padding: const EdgeInsets.only(right: 4),
                               child: Text(
                                 '${hours}h${mins > 0 ? '${mins}m' : ''}',
-                                style: theme.textTheme.bodySmall?.copyWith(fontSize: 10),
+                                style: theme.textTheme.bodySmall?.copyWith(
+                                  fontSize: 10,
+                                ),
                                 textAlign: TextAlign.right,
                               ),
                             );
@@ -398,7 +466,9 @@ class _ChartsViewState extends ConsumerState<ChartsView> {
                             padding: const EdgeInsets.only(right: 4),
                             child: Text(
                               '${minutes}m',
-                              style: theme.textTheme.bodySmall?.copyWith(fontSize: 10),
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                fontSize: 10,
+                              ),
                               textAlign: TextAlign.right,
                             ),
                           );
@@ -425,23 +495,24 @@ class _ChartsViewState extends ConsumerState<ChartsView> {
                       );
                     },
                   ),
-                  barGroups: topTasks.asMap().entries.map((entry) {
-                    final index = entry.key;
-                    final taskEntry = entry.value;
-                    return BarChartGroupData(
-                      x: index,
-                      barRods: [
-                        BarChartRodData(
-                          toY: taskEntry.value.inMinutes.toDouble(),
-                          color: theme.colorScheme.primary,
-                          width: 20,
-                          borderRadius: const BorderRadius.vertical(
-                            top: Radius.circular(4),
-                          ),
-                        ),
-                      ],
-                    );
-                  }).toList(),
+                  barGroups:
+                      topTasks.asMap().entries.map((entry) {
+                        final index = entry.key;
+                        final taskEntry = entry.value;
+                        return BarChartGroupData(
+                          x: index,
+                          barRods: [
+                            BarChartRodData(
+                              toY: taskEntry.value.inMinutes.toDouble(),
+                              color: theme.colorScheme.primary,
+                              width: 20,
+                              borderRadius: const BorderRadius.vertical(
+                                top: Radius.circular(4),
+                              ),
+                            ),
+                          ],
+                        );
+                      }).toList(),
                 ),
               ),
             ),
@@ -475,12 +546,15 @@ class _ChartsViewState extends ConsumerState<ChartsView> {
     // Get last 52 weeks (1 year) starting from Monday
     final now = DateTime.now();
     final weeks = <List<int>>[];
-    
+
     // Find the Monday of the current week
     // DateTime.weekday: 1 = Monday, 7 = Sunday
     final daysFromMonday = (now.weekday - 1) % 7;
-    final currentWeekMonday = DateTime(now.year, now.month, now.day)
-        .subtract(Duration(days: daysFromMonday));
+    final currentWeekMonday = DateTime(
+      now.year,
+      now.month,
+      now.day,
+    ).subtract(Duration(days: daysFromMonday));
 
     // Generate 52 weeks of data (going back from current week)
     for (int week = 51; week >= 0; week--) {
@@ -495,14 +569,13 @@ class _ChartsViewState extends ConsumerState<ChartsView> {
       }
       weeks.add(weekData);
     }
-    
+
     // Calculate max count for color intensity
     final allCounts = weeks.expand((week) => week).toList();
     if (allCounts.isEmpty) {
       return const SizedBox.shrink();
     }
     final maxCount = allCounts.reduce((a, b) => a > b ? a : b);
-    
 
     return Card(
       child: Padding(
@@ -510,10 +583,7 @@ class _ChartsViewState extends ConsumerState<ChartsView> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              l10n.activityChart,
-              style: theme.textTheme.titleLarge,
-            ),
+            Text(l10n.activityChart, style: theme.textTheme.titleLarge),
             const SizedBox(height: AppTheme.spacingM),
             SizedBox(
               height: 200,
@@ -526,48 +596,129 @@ class _ChartsViewState extends ConsumerState<ChartsView> {
                     Column(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        SizedBox(height: (200 - 20) / 7, child: Center(child: Text('M', style: theme.textTheme.bodySmall?.copyWith(fontSize: 10)))),
-                        SizedBox(height: (200 - 20) / 7, child: Center(child: Text('T', style: theme.textTheme.bodySmall?.copyWith(fontSize: 10)))),
-                        SizedBox(height: (200 - 20) / 7, child: Center(child: Text('W', style: theme.textTheme.bodySmall?.copyWith(fontSize: 10)))),
-                        SizedBox(height: (200 - 20) / 7, child: Center(child: Text('T', style: theme.textTheme.bodySmall?.copyWith(fontSize: 10)))),
-                        SizedBox(height: (200 - 20) / 7, child: Center(child: Text('F', style: theme.textTheme.bodySmall?.copyWith(fontSize: 10)))),
-                        SizedBox(height: (200 - 20) / 7, child: Center(child: Text('S', style: theme.textTheme.bodySmall?.copyWith(fontSize: 10)))),
-                        SizedBox(height: (200 - 20) / 7, child: Center(child: Text('S', style: theme.textTheme.bodySmall?.copyWith(fontSize: 10)))),
+                        SizedBox(
+                          height: (200 - 20) / 7,
+                          child: Center(
+                            child: Text(
+                              'M',
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                fontSize: 10,
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: (200 - 20) / 7,
+                          child: Center(
+                            child: Text(
+                              'T',
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                fontSize: 10,
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: (200 - 20) / 7,
+                          child: Center(
+                            child: Text(
+                              'W',
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                fontSize: 10,
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: (200 - 20) / 7,
+                          child: Center(
+                            child: Text(
+                              'T',
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                fontSize: 10,
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: (200 - 20) / 7,
+                          child: Center(
+                            child: Text(
+                              'F',
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                fontSize: 10,
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: (200 - 20) / 7,
+                          child: Center(
+                            child: Text(
+                              'S',
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                fontSize: 10,
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: (200 - 20) / 7,
+                          child: Center(
+                            child: Text(
+                              'S',
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                fontSize: 10,
+                              ),
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                     const SizedBox(width: 4),
                     // Activity grid
                     Row(
-                      children: weeks.asMap().entries.map((weekEntry) {
-                        return Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: weekEntry.value.asMap().entries.map((dayEntry) {
-                            final count = dayEntry.value;
-                            final intensity = maxCount > 0 ? count / maxCount : 0.0;
-                            Color color;
-                            if (intensity == 0) {
-                              color = theme.colorScheme.surfaceContainerHighest;
-                            } else if (intensity < 0.25) {
-                              color = theme.colorScheme.primary.withValues(alpha: 0.3);
-                            } else if (intensity < 0.5) {
-                              color = theme.colorScheme.primary.withValues(alpha: 0.5);
-                            } else if (intensity < 0.75) {
-                              color = theme.colorScheme.primary.withValues(alpha: 0.7);
-                            } else {
-                              color = theme.colorScheme.primary;
-                            }
-                            return Container(
-                              width: 12,
-                              height: 12,
-                              margin: const EdgeInsets.all(1),
-                              decoration: BoxDecoration(
-                                color: color,
-                                borderRadius: BorderRadius.circular(2),
-                              ),
+                      children:
+                          weeks.asMap().entries.map((weekEntry) {
+                            return Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children:
+                                  weekEntry.value.asMap().entries.map((
+                                    dayEntry,
+                                  ) {
+                                    final count = dayEntry.value;
+                                    final intensity =
+                                        maxCount > 0 ? count / maxCount : 0.0;
+                                    Color color;
+                                    if (intensity == 0) {
+                                      color =
+                                          theme
+                                              .colorScheme
+                                              .surfaceContainerHighest;
+                                    } else if (intensity < 0.25) {
+                                      color = theme.colorScheme.primary
+                                          .withValues(alpha: 0.3);
+                                    } else if (intensity < 0.5) {
+                                      color = theme.colorScheme.primary
+                                          .withValues(alpha: 0.5);
+                                    } else if (intensity < 0.75) {
+                                      color = theme.colorScheme.primary
+                                          .withValues(alpha: 0.7);
+                                    } else {
+                                      color = theme.colorScheme.primary;
+                                    }
+                                    return Container(
+                                      width: 12,
+                                      height: 12,
+                                      margin: const EdgeInsets.all(1),
+                                      decoration: BoxDecoration(
+                                        color: color,
+                                        borderRadius: BorderRadius.circular(2),
+                                      ),
+                                    );
+                                  }).toList(),
                             );
                           }).toList(),
-                        );
-                      }).toList(),
                     ),
                   ],
                 ),
@@ -604,9 +755,10 @@ class _ChartsViewState extends ConsumerState<ChartsView> {
     }
 
     // Take last 30 days or all if less
-    final displayDates = sortedDates.length > 30
-        ? sortedDates.sublist(sortedDates.length - 30)
-        : sortedDates;
+    final displayDates =
+        sortedDates.length > 30
+            ? sortedDates.sublist(sortedDates.length - 30)
+            : sortedDates;
 
     return Card(
       child: Padding(
@@ -614,10 +766,7 @@ class _ChartsViewState extends ConsumerState<ChartsView> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              l10n.taskFrequencyOverTime,
-              style: theme.textTheme.titleLarge,
-            ),
+            Text(l10n.taskFrequencyOverTime, style: theme.textTheme.titleLarge),
             const SizedBox(height: AppTheme.spacingM),
             SizedBox(
               height: 300,
@@ -644,7 +793,10 @@ class _ChartsViewState extends ConsumerState<ChartsView> {
                     bottomTitles: AxisTitles(
                       sideTitles: SideTitles(
                         showTitles: true,
-                        interval: displayDates.length > 5 ? (displayDates.length / 5).ceil().toDouble() : 1.0,
+                        interval:
+                            displayDates.length > 5
+                                ? (displayDates.length / 5).ceil().toDouble()
+                                : 1.0,
                         getTitlesWidget: (value, meta) {
                           final index = value.toInt();
                           if (index >= 0 && index < displayDates.length) {
@@ -655,7 +807,9 @@ class _ChartsViewState extends ConsumerState<ChartsView> {
                                 angle: -0.5,
                                 child: Text(
                                   DateFormat('MMM d').format(date),
-                                  style: theme.textTheme.bodySmall?.copyWith(fontSize: 10),
+                                  style: theme.textTheme.bodySmall?.copyWith(
+                                    fontSize: 10,
+                                  ),
                                 ),
                               ),
                             );
@@ -674,7 +828,9 @@ class _ChartsViewState extends ConsumerState<ChartsView> {
                             padding: const EdgeInsets.only(right: 4),
                             child: Text(
                               value.toInt().toString(),
-                              style: theme.textTheme.bodySmall?.copyWith(fontSize: 10),
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                fontSize: 10,
+                              ),
                               textAlign: TextAlign.right,
                             ),
                           );
@@ -692,14 +848,15 @@ class _ChartsViewState extends ConsumerState<ChartsView> {
                   borderData: FlBorderData(show: false),
                   lineBarsData: [
                     LineChartBarData(
-                      spots: displayDates.asMap().entries.map((entry) {
-                        final index = entry.key;
-                        final date = entry.value;
-                        return FlSpot(
-                          index.toDouble(),
-                          sessionsByDate[date]!.toDouble(),
-                        );
-                      }).toList(),
+                      spots:
+                          displayDates.asMap().entries.map((entry) {
+                            final index = entry.key;
+                            final date = entry.value;
+                            return FlSpot(
+                              index.toDouble(),
+                              sessionsByDate[date]!.toDouble(),
+                            );
+                          }).toList(),
                       isCurved: true,
                       color: theme.colorScheme.primary,
                       barWidth: 3,
@@ -711,7 +868,9 @@ class _ChartsViewState extends ConsumerState<ChartsView> {
                     ),
                   ],
                   minY: 0,
-                  maxY: sessionsByDate.values.reduce((a, b) => a > b ? a : b)
+                  maxY:
+                      sessionsByDate.values
+                          .reduce((a, b) => a > b ? a : b)
                           .toDouble() +
                       1,
                 ),
@@ -773,8 +932,8 @@ class _ChartsViewState extends ConsumerState<ChartsView> {
     });
 
     // Sort by average (descending) and take top 5
-    final sortedCriteria = avgRatings.entries.toList()
-      ..sort((a, b) => b.value.compareTo(a.value));
+    final sortedCriteria =
+        avgRatings.entries.toList()..sort((a, b) => b.value.compareTo(a.value));
     final topCriteria = sortedCriteria.take(5).toList();
 
     return Card(
@@ -809,9 +968,8 @@ class _ChartsViewState extends ConsumerState<ChartsView> {
                         getTitlesWidget: (value, meta) {
                           final index = value.toInt();
                           if (index >= 0 && index < topCriteria.length) {
-                            final criterion =
-                                criteria[topCriteria[index].key];
-                            final name = criterion?.name ?? 'Unknown';
+                            final criterion = criteria[topCriteria[index].key];
+                            final name = criterion?.name ?? l10n.unknown;
                             return Padding(
                               padding: const EdgeInsets.only(top: 8),
                               child: Transform.rotate(
@@ -820,7 +978,9 @@ class _ChartsViewState extends ConsumerState<ChartsView> {
                                   name.length > 8
                                       ? '${name.substring(0, 8)}...'
                                       : name,
-                                  style: theme.textTheme.bodySmall?.copyWith(fontSize: 10),
+                                  style: theme.textTheme.bodySmall?.copyWith(
+                                    fontSize: 10,
+                                  ),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                 ),
@@ -835,13 +995,18 @@ class _ChartsViewState extends ConsumerState<ChartsView> {
                     leftTitles: AxisTitles(
                       sideTitles: SideTitles(
                         showTitles: true,
-                        interval: topCriteria.isNotEmpty ? (topCriteria.first.value * 1.2 / 5) : 1.0,
+                        interval:
+                            topCriteria.isNotEmpty
+                                ? (topCriteria.first.value * 1.2 / 5)
+                                : 1.0,
                         getTitlesWidget: (value, meta) {
                           return Padding(
                             padding: const EdgeInsets.only(right: 4),
                             child: Text(
                               value.toStringAsFixed(1),
-                              style: theme.textTheme.bodySmall?.copyWith(fontSize: 10),
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                fontSize: 10,
+                              ),
                               textAlign: TextAlign.right,
                             ),
                           );
@@ -867,23 +1032,24 @@ class _ChartsViewState extends ConsumerState<ChartsView> {
                       );
                     },
                   ),
-                  barGroups: topCriteria.asMap().entries.map((entry) {
-                    final index = entry.key;
-                    final criterionEntry = entry.value;
-                    return BarChartGroupData(
-                      x: index,
-                      barRods: [
-                        BarChartRodData(
-                          toY: criterionEntry.value,
-                          color: theme.colorScheme.secondary,
-                          width: 20,
-                          borderRadius: const BorderRadius.vertical(
-                            top: Radius.circular(4),
-                          ),
-                        ),
-                      ],
-                    );
-                  }).toList(),
+                  barGroups:
+                      topCriteria.asMap().entries.map((entry) {
+                        final index = entry.key;
+                        final criterionEntry = entry.value;
+                        return BarChartGroupData(
+                          x: index,
+                          barRods: [
+                            BarChartRodData(
+                              toY: criterionEntry.value,
+                              color: theme.colorScheme.secondary,
+                              width: 20,
+                              borderRadius: const BorderRadius.vertical(
+                                top: Radius.circular(4),
+                              ),
+                            ),
+                          ],
+                        );
+                      }).toList(),
                 ),
               ),
             ),
@@ -893,32 +1059,37 @@ class _ChartsViewState extends ConsumerState<ChartsView> {
     );
   }
 
-
   ({DateTime start, DateTime end})? _getDateRange(TimePeriod period) {
     final now = DateTime.now();
     switch (period) {
       case TimePeriod.day:
         final start = DateTime(now.year, now.month, now.day);
-        final end = start.add(const Duration(days: 1)).subtract(
-              const Duration(milliseconds: 1),
-            );
+        final end = start
+            .add(const Duration(days: 1))
+            .subtract(const Duration(milliseconds: 1));
         return (start: start, end: end);
       case TimePeriod.week:
         final start = now.subtract(Duration(days: now.weekday - 1));
         final weekStart = DateTime(start.year, start.month, start.day);
-        final end = weekStart.add(const Duration(days: 7)).subtract(
-              const Duration(milliseconds: 1),
-            );
+        final end = weekStart
+            .add(const Duration(days: 7))
+            .subtract(const Duration(milliseconds: 1));
         return (start: weekStart, end: end);
       case TimePeriod.month:
         final start = DateTime(now.year, now.month, 1);
-        final end = DateTime(now.year, now.month + 1, 1)
-            .subtract(const Duration(milliseconds: 1));
+        final end = DateTime(
+          now.year,
+          now.month + 1,
+          1,
+        ).subtract(const Duration(milliseconds: 1));
         return (start: start, end: end);
       case TimePeriod.year:
         final start = DateTime(now.year, 1, 1);
-        final end = DateTime(now.year + 1, 1, 1)
-            .subtract(const Duration(milliseconds: 1));
+        final end = DateTime(
+          now.year + 1,
+          1,
+          1,
+        ).subtract(const Duration(milliseconds: 1));
         return (start: start, end: end);
       case TimePeriod.all:
         return null;

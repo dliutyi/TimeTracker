@@ -39,15 +39,15 @@ class SettingsScreen extends ConsumerWidget {
                   // Dark Mode Section
                   _buildSection(
                     context,
-                    title: 'Dark Mode',
-                    children: [_buildDarkModeSelector(context, ref)],
+                    title: l10n.darkMode,
+                    children: [_buildDarkModeSelector(context, ref, l10n)],
                   ),
                   const SizedBox(height: AppTheme.spacingL),
 
                   // Localization Section
                   _buildSection(
                     context,
-                    title: 'Language',
+                    title: l10n.language,
                     children: [_buildLocalizationSelector(context, ref, l10n)],
                   ),
                   const SizedBox(height: AppTheme.spacingL),
@@ -55,8 +55,10 @@ class SettingsScreen extends ConsumerWidget {
                   // Data Management Section
                   _buildSection(
                     context,
-                    title: 'Data Management',
-                    children: [_buildDataManagementButtons(context, l10n)],
+                    title: l10n.dataManagement,
+                    children: [
+                      _buildDataManagementButtons(context, theme, l10n),
+                    ],
                   ),
                 ],
               ),
@@ -74,7 +76,7 @@ class SettingsScreen extends ConsumerWidget {
               ),
               child: Center(
                 child: Text(
-                  'Version $appVersion',
+                  '${l10n.version} $appVersion',
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: theme.colorScheme.onSurfaceVariant,
                   ),
@@ -114,14 +116,18 @@ class SettingsScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildDarkModeSelector(BuildContext context, WidgetRef ref) {
+  Widget _buildDarkModeSelector(
+    BuildContext context,
+    WidgetRef ref,
+    AppLocalizations l10n,
+  ) {
     final appThemeMode = ref.watch(themeModeProvider);
     final themeModeNotifier = ref.read(themeModeProvider.notifier);
 
     return Column(
       children: [
         RadioListTile<AppThemeMode>(
-          title: const Text('Light'),
+          title: Text(l10n.light),
           value: AppThemeMode.light,
           groupValue: appThemeMode,
           onChanged: (value) {
@@ -131,7 +137,7 @@ class SettingsScreen extends ConsumerWidget {
           },
         ),
         RadioListTile<AppThemeMode>(
-          title: const Text('Dark'),
+          title: Text(l10n.dark),
           value: AppThemeMode.dark,
           groupValue: appThemeMode,
           onChanged: (value) {
@@ -141,8 +147,8 @@ class SettingsScreen extends ConsumerWidget {
           },
         ),
         RadioListTile<AppThemeMode>(
-          title: const Text('Automatic'),
-          subtitle: const Text('Follow system setting'),
+          title: Text(l10n.automatic),
+          subtitle: Text(l10n.followSystemSetting),
           value: AppThemeMode.system,
           groupValue: appThemeMode,
           onChanged: (value) {
@@ -162,11 +168,13 @@ class SettingsScreen extends ConsumerWidget {
   ) {
     final currentLocale = ref.watch(localeProvider) ?? const Locale('en');
     final localeNotifier = ref.read(localeProvider.notifier);
-    final supportedLocales = AppLocalizations.supportedLocales;
-
+    var supportedLocales = AppLocalizations.supportedLocales.toList();
+    supportedLocales.sort(
+      (a, b) => _getLanguageName(a, l10n).compareTo(_getLanguageName(b, l10n)),
+    );
     return ListTile(
-      title: const Text('Language'),
-      subtitle: Text(_getLanguageName(currentLocale)),
+      title: Text(l10n.language),
+      subtitle: Text(_getLanguageName(currentLocale, l10n)),
       trailing: const Icon(Icons.arrow_forward_ios, size: 16),
       onTap: () {
         _showLanguagePicker(
@@ -175,6 +183,7 @@ class SettingsScreen extends ConsumerWidget {
           currentLocale,
           supportedLocales,
           localeNotifier,
+          l10n,
         );
       },
     );
@@ -186,12 +195,13 @@ class SettingsScreen extends ConsumerWidget {
     Locale currentLocale,
     List<Locale> supportedLocales,
     LocaleNotifier localeNotifier,
+    AppLocalizations l10n,
   ) {
     showDialog(
       context: context,
       builder:
           (context) => AlertDialog(
-            title: const Text('Select Language'),
+            title: Text(l10n.selectLanguage),
             content: SizedBox(
               width: double.maxFinite,
               child: ListView.builder(
@@ -203,7 +213,7 @@ class SettingsScreen extends ConsumerWidget {
                       locale.languageCode == currentLocale.languageCode;
 
                   return RadioListTile<Locale>(
-                    title: Text(_getLanguageName(locale)),
+                    title: Text(_getLanguageName(locale, l10n)),
                     value: locale,
                     groupValue: isSelected ? currentLocale : null,
                     onChanged: (selectedLocale) {
@@ -219,7 +229,7 @@ class SettingsScreen extends ConsumerWidget {
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(context).pop(),
-                child: const Text('Cancel'),
+                child: Text(l10n.cancel),
               ),
             ],
           ),
@@ -228,6 +238,7 @@ class SettingsScreen extends ConsumerWidget {
 
   Widget _buildDataManagementButtons(
     BuildContext context,
+    ThemeData theme,
     AppLocalizations l10n,
   ) {
     return Consumer(
@@ -236,16 +247,16 @@ class SettingsScreen extends ConsumerWidget {
           children: [
             ListTile(
               leading: const Icon(Icons.upload),
-              title: const Text('Export Data'),
-              subtitle: const Text('Export all app data to a file'),
-              onTap: () => _handleExport(context, ref),
+              title: Text(l10n.exportData),
+              subtitle: Text(l10n.exportAllAppDataToFile),
+              onTap: () => _handleExport(context, ref, l10n),
             ),
-            const Divider(height: 1),
+            Divider(thickness: 1, color: theme.colorScheme.surface),
             ListTile(
               leading: const Icon(Icons.download),
-              title: const Text('Import Data'),
-              subtitle: const Text('Import data from a file'),
-              onTap: () => _handleImport(context, ref),
+              title: Text(l10n.importData),
+              subtitle: Text(l10n.importDataFromFile),
+              onTap: () => _handleImport(context, ref, l10n),
             ),
           ],
         );
@@ -253,7 +264,11 @@ class SettingsScreen extends ConsumerWidget {
     );
   }
 
-  Future<void> _handleExport(BuildContext context, WidgetRef ref) async {
+  Future<void> _handleExport(
+    BuildContext context,
+    WidgetRef ref,
+    AppLocalizations l10n,
+  ) async {
     final exportService = ref.read(exportServiceProvider);
     final scaffoldMessenger = ScaffoldMessenger.of(context);
 
@@ -289,20 +304,20 @@ class SettingsScreen extends ConsumerWidget {
         context: context,
         builder:
             (context) => AlertDialog(
-              title: const Text('Export Data'),
-              content: const Text('Choose how you want to export the data:'),
+              title: Text(l10n.exportData),
+              content: Text(l10n.chooseHowToExportData),
               actions: [
                 TextButton(
                   onPressed: () => Navigator.of(context).pop('save'),
-                  child: const Text('Save to Device'),
+                  child: Text(l10n.saveToDevice),
                 ),
                 TextButton(
                   onPressed: () => Navigator.of(context).pop('share'),
-                  child: const Text('Share'),
+                  child: Text(l10n.share),
                 ),
                 TextButton(
                   onPressed: () => Navigator.of(context).pop(null),
-                  child: const Text('Cancel'),
+                  child: Text(l10n.cancel),
                 ),
               ],
             ),
@@ -321,7 +336,7 @@ class SettingsScreen extends ConsumerWidget {
         final bytes = Uint8List.fromList(utf8.encode(jsonData));
 
         final savePath = await FilePicker.platform.saveFile(
-          dialogTitle: 'Save Export File',
+          dialogTitle: l10n.saveExportFile,
           fileName: fileName,
           type: FileType.custom,
           allowedExtensions: ['json'],
@@ -331,7 +346,7 @@ class SettingsScreen extends ConsumerWidget {
         if (savePath != null && context.mounted) {
           scaffoldMessenger.showSnackBar(
             SnackBar(
-              content: Text('Data saved to: $savePath'),
+              content: Text(l10n.dataSavedTo(savePath)),
               backgroundColor: Colors.green,
               duration: const Duration(seconds: 3),
             ),
@@ -349,8 +364,8 @@ class SettingsScreen extends ConsumerWidget {
 
         if (result.status == ShareResultStatus.success) {
           scaffoldMessenger.showSnackBar(
-            const SnackBar(
-              content: Text('Data exported successfully'),
+            SnackBar(
+              content: Text(l10n.dataExportedSuccessfully),
               backgroundColor: Colors.green,
             ),
           );
@@ -370,7 +385,7 @@ class SettingsScreen extends ConsumerWidget {
       if (context.mounted) {
         scaffoldMessenger.showSnackBar(
           SnackBar(
-            content: Text('Failed to export data: $e'),
+            content: Text(l10n.errorExportingData(e.toString())),
             backgroundColor: Colors.red,
           ),
         );
@@ -378,20 +393,20 @@ class SettingsScreen extends ConsumerWidget {
     }
   }
 
-  Future<void> _handleImport(BuildContext context, WidgetRef ref) async {
+  Future<void> _handleImport(
+    BuildContext context,
+    WidgetRef ref,
+    AppLocalizations l10n,
+  ) async {
     final importService = ref.read(importServiceProvider);
 
     // Show confirmation dialog first
     final confirmed = await ConfirmationDialog.showImportConfirmation(
       context,
-      title: 'Import Data',
-      message:
-          'All existing data will be permanently deleted.\n\n'
-          'All current tasks, criteria, sessions, and settings will be lost.\n\n'
-          'Data will be replaced with imported data.\n\n'
-          'This action cannot be undone.',
-      importText: 'Import',
-      cancelText: 'Cancel',
+      title: l10n.importData,
+      message: l10n.allExistingDataWillBePermanentlyDeleted,
+      importText: l10n.import,
+      cancelText: l10n.cancel,
     );
 
     if (confirmed != true || !context.mounted) {
@@ -440,8 +455,8 @@ class SettingsScreen extends ConsumerWidget {
 
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Data imported successfully'),
+          SnackBar(
+            content: Text(l10n.dataImportedSuccessfully),
             backgroundColor: Colors.green,
           ),
         );
@@ -455,7 +470,7 @@ class SettingsScreen extends ConsumerWidget {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to import data: $e'),
+            content: Text(l10n.errorImportingData(e.toString())),
             backgroundColor: Colors.red,
             duration: const Duration(seconds: 5),
           ),
@@ -464,31 +479,31 @@ class SettingsScreen extends ConsumerWidget {
     }
   }
 
-  String _getLanguageName(Locale locale) {
+  String _getLanguageName(Locale locale, AppLocalizations l10n) {
     // Map of locale codes to language names
-    const languageNames = {
-      'en': 'English',
-      'es': 'Spanish',
-      'zh': 'Chinese',
-      'hi': 'Hindi',
-      'ar': 'Arabic',
-      'pt': 'Portuguese',
-      'bn': 'Bengali',
-      'ru': 'Russian',
-      'ja': 'Japanese',
-      'pa': 'Punjabi',
-      'de': 'German',
-      'jv': 'Javanese',
-      'ko': 'Korean',
-      'fr': 'French',
-      'te': 'Telugu',
-      'mr': 'Marathi',
-      'tr': 'Turkish',
-      'ta': 'Tamil',
-      'vi': 'Vietnamese',
-      'it': 'Italian',
-      'ur': 'Urdu',
-      'uk': 'Ukrainian',
+    final languageNames = {
+      'en': l10n.english,
+      'es': l10n.spanish,
+      'zh': l10n.chinese,
+      'hi': l10n.hindi,
+      'ar': l10n.arabic,
+      'pt': l10n.portuguese,
+      'bn': l10n.bengali,
+      'ru': l10n.russian,
+      'ja': l10n.japanese,
+      'pa': l10n.punjabi,
+      'de': l10n.german,
+      'jv': l10n.javanese,
+      'ko': l10n.korean,
+      'fr': l10n.french,
+      'te': l10n.telugu,
+      'mr': l10n.marathi,
+      'tr': l10n.turkish,
+      'ta': l10n.tamil,
+      'vi': l10n.vietnamese,
+      'it': l10n.italian,
+      'ur': l10n.urdu,
+      'uk': l10n.ukrainian,
     };
     return languageNames[locale.languageCode] ??
         locale.languageCode.toUpperCase();

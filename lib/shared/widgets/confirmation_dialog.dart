@@ -2,12 +2,7 @@ import 'package:flutter/material.dart';
 import '../../app/theme/app_theme.dart';
 
 /// Dialog types
-enum DialogType {
-  warning,
-  info,
-  confirmation,
-  error,
-}
+enum DialogType { warning, info, confirmation, error }
 
 /// Confirmation dialog widget
 class ConfirmationDialog extends StatelessWidget {
@@ -49,17 +44,18 @@ class ConfirmationDialog extends StatelessWidget {
   }) async {
     return showDialog<bool>(
       context: context,
-      builder: (context) => ConfirmationDialog(
-        title: title,
-        message: message,
-        type: type,
-        primaryButtonText: primaryButtonText,
-        secondaryButtonText: secondaryButtonText,
-        cancelButtonText: cancelButtonText,
-        onPrimary: onPrimary ?? () => Navigator.of(context).pop(true),
-        onSecondary: onSecondary ?? () => Navigator.of(context).pop(false),
-        onCancel: onCancel ?? () => Navigator.of(context).pop(null),
-      ),
+      builder:
+          (context) => ConfirmationDialog(
+            title: title,
+            message: message,
+            type: type,
+            primaryButtonText: primaryButtonText,
+            secondaryButtonText: secondaryButtonText,
+            cancelButtonText: cancelButtonText,
+            onPrimary: onPrimary ?? () => Navigator.of(context).pop(true),
+            onSecondary: onSecondary ?? () => Navigator.of(context).pop(false),
+            onCancel: onCancel ?? () => Navigator.of(context).pop(null),
+          ),
     );
   }
 
@@ -176,11 +172,7 @@ class ConfirmationDialog extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              _getIcon(),
-              color: iconColor,
-              size: 48,
-            ),
+            Icon(_getIcon(), color: iconColor, size: 48),
             const SizedBox(height: AppTheme.spacingM),
             Text(
               title,
@@ -198,27 +190,45 @@ class ConfirmationDialog extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 if (cancelButtonText != null || onCancel != null)
-                  TextButton(
-                    onPressed: onCancel ?? () => Navigator.of(context).pop(null),
-                    child: Text(_getCancelButtonText()),
+                  Flexible(
+                    child: TextButton(
+                      onPressed:
+                          onCancel ?? () => Navigator.of(context).pop(null),
+                      child: Text(
+                        _getCancelButtonText(),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
                   ),
                 if (secondaryButtonText != null && onSecondary != null) ...[
                   const SizedBox(width: AppTheme.spacingS),
-                  OutlinedButton(
-                    onPressed: onSecondary,
-                    child: Text(secondaryButtonText!),
+                  Flexible(
+                    child: OutlinedButton(
+                      onPressed: onSecondary,
+                      child: Text(
+                        secondaryButtonText!,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
                   ),
                 ],
                 const SizedBox(width: AppTheme.spacingS),
-                ElevatedButton(
-                  onPressed: onPrimary ?? () => Navigator.of(context).pop(true),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: type == DialogType.error
-                        ? theme.colorScheme.error
-                        : iconColor,
-                    foregroundColor: Colors.white,
+                Flexible(
+                  child: ElevatedButton(
+                    onPressed:
+                        onPrimary ?? () => Navigator.of(context).pop(true),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor:
+                          type == DialogType.error
+                              ? theme.colorScheme.error
+                              : iconColor,
+                      foregroundColor: Colors.white,
+                    ),
+                    child: Text(
+                      _getPrimaryButtonText(),
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
-                  child: Text(_getPrimaryButtonText()),
                 ),
               ],
             ),
@@ -228,4 +238,3 @@ class ConfirmationDialog extends StatelessWidget {
     );
   }
 }
-

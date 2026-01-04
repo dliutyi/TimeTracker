@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:yudi_time_tracker/generated/l10n/app_localizations.dart';
 import '../../core/constants/icons.dart';
 import '../../app/theme/app_theme.dart';
 
@@ -29,13 +30,14 @@ class IconPicker extends StatefulWidget {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => _IconPickerSheet(
-        selectedIcon: selectedIcon,
-        onIconSelected: (icon) {
-          result = icon;
-          Navigator.of(context).pop();
-        },
-      ),
+      builder:
+          (context) => _IconPickerSheet(
+            selectedIcon: selectedIcon,
+            onIconSelected: (icon) {
+              result = icon;
+              Navigator.of(context).pop();
+            },
+          ),
     );
     return result;
   }
@@ -50,13 +52,14 @@ class IconPicker extends StatefulWidget {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => _EmojiPickerSheet(
-        selectedEmoji: selectedEmoji,
-        onEmojiSelected: (emoji) {
-          result = emoji;
-          Navigator.of(context).pop();
-        },
-      ),
+      builder:
+          (context) => _EmojiPickerSheet(
+            selectedEmoji: selectedEmoji,
+            onEmojiSelected: (emoji) {
+              result = emoji;
+              Navigator.of(context).pop();
+            },
+          ),
     );
     return result;
   }
@@ -65,7 +68,8 @@ class IconPicker extends StatefulWidget {
   State<IconPicker> createState() => _IconPickerState();
 }
 
-class _IconPickerState extends State<IconPicker> with SingleTickerProviderStateMixin {
+class _IconPickerState extends State<IconPicker>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
   @override
@@ -85,16 +89,14 @@ class _IconPickerState extends State<IconPicker> with SingleTickerProviderStateM
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         if (widget.allowEmoji)
           TabBar(
             controller: _tabController,
-            tabs: const [
-              Tab(text: 'Icons'),
-              Tab(text: 'Emojis'),
-            ],
+            tabs: [Tab(text: l10n.icons), Tab(text: l10n.emojis)],
           ),
         SizedBox(
           height: 400,
@@ -129,6 +131,7 @@ class _IconPickerSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     return Container(
       decoration: BoxDecoration(
@@ -151,10 +154,7 @@ class _IconPickerSheet extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.all(AppTheme.spacingM),
-            child: Text(
-              'Select Icon',
-              style: theme.textTheme.titleLarge,
-            ),
+            child: Text(l10n.selectIcon, style: theme.textTheme.titleLarge),
           ),
           SizedBox(
             height: 400,
@@ -181,6 +181,7 @@ class _EmojiPickerSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
     return Container(
       decoration: BoxDecoration(
         color: theme.scaffoldBackgroundColor,
@@ -202,10 +203,7 @@ class _EmojiPickerSheet extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.all(AppTheme.spacingM),
-            child: Text(
-              'Select Emoji',
-              style: theme.textTheme.titleLarge,
-            ),
+            child: Text(l10n.selectEmoji, style: theme.textTheme.titleLarge),
           ),
           SizedBox(
             height: 400,
@@ -224,10 +222,7 @@ class _IconGrid extends StatelessWidget {
   final IconData? selectedIcon;
   final ValueChanged<IconData?> onIconSelected;
 
-  const _IconGrid({
-    required this.selectedIcon,
-    required this.onIconSelected,
-  });
+  const _IconGrid({required this.selectedIcon, required this.onIconSelected});
 
   @override
   Widget build(BuildContext context) {
@@ -242,7 +237,8 @@ class _IconGrid extends StatelessWidget {
       itemCount: AppIcons.defaultIcons.length,
       itemBuilder: (context, index) {
         final icon = AppIcons.defaultIcons[index];
-        final isSelected = selectedIcon != null &&
+        final isSelected =
+            selectedIcon != null &&
             icon.codePoint == selectedIcon!.codePoint &&
             icon.fontFamily == selectedIcon!.fontFamily;
 
@@ -253,22 +249,22 @@ class _IconGrid extends StatelessWidget {
             borderRadius: BorderRadius.circular(AppTheme.radiusM),
             child: Container(
               decoration: BoxDecoration(
-                color: isSelected
-                    ? theme.colorScheme.primary.withOpacity(0.2)
-                    : Colors.transparent,
+                color:
+                    isSelected
+                        ? theme.colorScheme.primary.withOpacity(0.2)
+                        : Colors.transparent,
                 borderRadius: BorderRadius.circular(AppTheme.radiusM),
-                border: isSelected
-                    ? Border.all(
-                        color: theme.colorScheme.primary,
-                        width: 2,
-                      )
-                    : null,
+                border:
+                    isSelected
+                        ? Border.all(color: theme.colorScheme.primary, width: 2)
+                        : null,
               ),
               child: Icon(
                 icon,
-                color: isSelected
-                    ? theme.colorScheme.primary
-                    : theme.colorScheme.onSurface,
+                color:
+                    isSelected
+                        ? theme.colorScheme.primary
+                        : theme.colorScheme.onSurface,
               ),
             ),
           ),
@@ -309,22 +305,18 @@ class _EmojiGrid extends StatelessWidget {
             borderRadius: BorderRadius.circular(AppTheme.radiusM),
             child: Container(
               decoration: BoxDecoration(
-                color: isSelected
-                    ? theme.colorScheme.primary.withOpacity(0.2)
-                    : Colors.transparent,
+                color:
+                    isSelected
+                        ? theme.colorScheme.primary.withOpacity(0.2)
+                        : Colors.transparent,
                 borderRadius: BorderRadius.circular(AppTheme.radiusM),
-                border: isSelected
-                    ? Border.all(
-                        color: theme.colorScheme.primary,
-                        width: 2,
-                      )
-                    : null,
+                border:
+                    isSelected
+                        ? Border.all(color: theme.colorScheme.primary, width: 2)
+                        : null,
               ),
               alignment: Alignment.center,
-              child: Text(
-                emoji,
-                style: const TextStyle(fontSize: 24),
-              ),
+              child: Text(emoji, style: const TextStyle(fontSize: 24)),
             ),
           ),
         );
@@ -332,4 +324,3 @@ class _EmojiGrid extends StatelessWidget {
     );
   }
 }
-

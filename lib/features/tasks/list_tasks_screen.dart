@@ -69,8 +69,8 @@ class _ListTasksScreenState extends ConsumerState<ListTasksScreen> {
     setState(() {
       _currentDateTime = DateTime.now();
     });
-    // Schedule next update in 1 minute
-    Future.delayed(const Duration(minutes: 1), _updateDateTime);
+    // Schedule next update in 10 seconds
+    Future.delayed(const Duration(seconds: 10), _updateDateTime);
   }
 
   @override
@@ -139,7 +139,9 @@ class _ListTasksScreenState extends ConsumerState<ListTasksScreen> {
                   );
                 },
                 loading: () => const Center(child: CircularProgressIndicator()),
-                error: (error, stack) => Center(child: Text('Error: $error')),
+                error:
+                    (error, stack) =>
+                        Center(child: Text(l10n.error(error.toString()))),
               ),
             ),
           ],
@@ -166,6 +168,17 @@ class _ListTasksScreenState extends ConsumerState<ListTasksScreen> {
     AppLocalizations l10n,
     String motto,
   ) {
+    final dayOfWeek = DateFormat(
+      'EEEE',
+      Localizations.localeOf(context).toString(),
+    ).format(_currentDateTime);
+    final formattedDayOfWeek =
+        dayOfWeek[0].toUpperCase() + dayOfWeek.substring(1);
+
+    if (mounted && _mottoController.text != motto) {
+      _mottoController.text = motto;
+    }
+
     return Container(
       padding: const EdgeInsets.all(AppTheme.spacingM),
       decoration: BoxDecoration(
@@ -185,6 +198,7 @@ class _ListTasksScreenState extends ConsumerState<ListTasksScreen> {
               // Calendar icon and day of week
               Expanded(
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Icon(
                       Icons.calendar_today,
@@ -193,10 +207,7 @@ class _ListTasksScreenState extends ConsumerState<ListTasksScreen> {
                     ),
                     const SizedBox(width: AppTheme.spacingS),
                     Text(
-                      DateFormat(
-                        'EEEE',
-                        Localizations.localeOf(context).toString(),
-                      ).format(_currentDateTime),
+                      formattedDayOfWeek,
                       style: theme.textTheme.titleMedium,
                     ),
                   ],
@@ -205,6 +216,7 @@ class _ListTasksScreenState extends ConsumerState<ListTasksScreen> {
               // Clock icon and current time
               Expanded(
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Icon(
                       Icons.access_time,

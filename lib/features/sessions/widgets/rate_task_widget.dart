@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:yudi_time_tracker/generated/l10n/app_localizations.dart';
 import '../../../app/theme/app_theme.dart';
 import '../../../core/models/session.dart';
 import '../../../core/models/task.dart';
@@ -15,11 +16,7 @@ class RateTaskWidget extends ConsumerStatefulWidget {
   final Session session;
   final Task task;
 
-  const RateTaskWidget({
-    super.key,
-    required this.session,
-    required this.task,
-  });
+  const RateTaskWidget({super.key, required this.session, required this.task});
 
   /// Show the widget as a modal
   static Future<void> show(
@@ -32,10 +29,7 @@ class RateTaskWidget extends ConsumerStatefulWidget {
       isScrollControlled: true,
       isDismissible: false,
       backgroundColor: Colors.transparent,
-      builder: (context) => RateTaskWidget(
-        session: session,
-        task: task,
-      ),
+      builder: (context) => RateTaskWidget(session: session, task: task),
     );
   }
 
@@ -54,7 +48,7 @@ class _RateTaskWidgetState extends ConsumerState<RateTaskWidget> {
     _ratings.addAll(widget.session.ratings);
   }
 
-  Future<void> _handleSave() async {
+  Future<void> _handleSave(AppLocalizations l10n) async {
     setState(() {
       _isSaving = true;
     });
@@ -79,7 +73,7 @@ class _RateTaskWidgetState extends ConsumerState<RateTaskWidget> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error saving ratings: $e'),
+            content: Text(l10n.errorSavingRatings(e.toString())),
             backgroundColor: Theme.of(context).colorScheme.error,
           ),
         );
@@ -93,7 +87,7 @@ class _RateTaskWidgetState extends ConsumerState<RateTaskWidget> {
     }
   }
 
-  Future<void> _handleSkip() async {
+  Future<void> _handleSkip(AppLocalizations l10n) async {
     try {
       final activeSessionNotifier = ref.read(activeSessionProvider.notifier);
       activeSessionNotifier.clearActiveSession();
@@ -105,7 +99,7 @@ class _RateTaskWidgetState extends ConsumerState<RateTaskWidget> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error: $e'),
+            content: Text(l10n.error(e.toString())),
             backgroundColor: Theme.of(context).colorScheme.error,
           ),
         );
@@ -116,12 +110,15 @@ class _RateTaskWidgetState extends ConsumerState<RateTaskWidget> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
     final screenHeight = MediaQuery.of(context).size.height;
-    final criteriaAsync = ref.watch(_criteriaProvider(widget.task.criterionIds));
+    final criteriaAsync = ref.watch(
+      _criteriaProvider(widget.task.criterionIds),
+    );
 
     final isTablet = Responsive.isTablet(context);
     final maxWidth = Responsive.getMaxContentWidth(context);
-    
+
     return Align(
       alignment: Alignment.bottomCenter,
       child: Container(
@@ -134,122 +131,129 @@ class _RateTaskWidgetState extends ConsumerState<RateTaskWidget> {
           color: theme.scaffoldBackgroundColor,
           borderRadius: BorderRadius.vertical(
             top: const Radius.circular(AppTheme.radiusXL),
-            bottom: isTablet ? const Radius.circular(AppTheme.radiusXL) : Radius.zero,
+            bottom:
+                isTablet
+                    ? const Radius.circular(AppTheme.radiusXL)
+                    : Radius.zero,
           ),
         ),
-      child: SafeArea(
-        child: Column(
-          children: [
-            // Header
-            Padding(
-              padding: const EdgeInsets.all(AppTheme.spacingM),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Rate Task: ${widget.task.name}',
-                    style: theme.textTheme.headlineSmall,
-                  ),
-                ],
+        child: SafeArea(
+          child: Column(
+            children: [
+              // Header
+              Padding(
+                padding: const EdgeInsets.all(AppTheme.spacingM),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      l10n.rateTask(widget.task.name),
+                      style: theme.textTheme.headlineSmall,
+                    ),
+                  ],
+                ),
               ),
-            ),
 
-            // Criteria List
-            Expanded(
-              child: criteriaAsync.when(
-                data: (criteria) {
-                  if (criteria.isEmpty) {
-                    return Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.check_circle_outline,
-                            size: 64,
-                            color: theme.colorScheme.primary,
-                          ),
-                          const SizedBox(height: AppTheme.spacingM),
-                          Text(
-                            'No criteria to rate',
-                            style: theme.textTheme.titleMedium,
-                          ),
-                          const SizedBox(height: AppTheme.spacingS),
-                          Text(
-                            'This task has no criteria assigned.',
-                            style: theme.textTheme.bodyMedium?.copyWith(
-                              color: theme.colorScheme.onSurfaceVariant,
+              // Criteria List
+              Expanded(
+                child: criteriaAsync.when(
+                  data: (criteria) {
+                    if (criteria.isEmpty) {
+                      return Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.check_circle_outline,
+                              size: 64,
+                              color: theme.colorScheme.primary,
                             ),
-                          ),
-                        ],
-                      ),
-                    );
-                  }
-
-                  return ListView.builder(
-                    padding: const EdgeInsets.all(AppTheme.spacingM),
-                    itemCount: criteria.length,
-                    itemBuilder: (context, index) {
-                      final criterion = criteria[index];
-                      return _buildCriterionRating(criterion);
-                    },
-                  );
-                },
-                loading: () => const Center(
-                  child: CircularProgressIndicator(),
-                ),
-                error: (error, stack) => Center(
-                  child: Text('Error loading criteria: $error'),
-                ),
-              ),
-            ),
-
-            // Action Buttons
-            Container(
-              padding: const EdgeInsets.all(AppTheme.spacingM),
-              decoration: BoxDecoration(
-                color: theme.colorScheme.surfaceContainerHighest,
-                border: Border(
-                  top: BorderSide(
-                    color: theme.colorScheme.outline.withValues(alpha: 0.2),
-                  ),
-                ),
-              ),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: OutlinedButton(
-                      onPressed: _isSaving ? null : _handleSkip,
-                      child: const Text('Skip'),
-                    ),
-                  ),
-                  const SizedBox(width: AppTheme.spacingM),
-                  Expanded(
-                    flex: 2,
-                    child: ElevatedButton(
-                      onPressed: _isSaving ? null : _handleSave,
-                      child: _isSaving
-                          ? const SizedBox(
-                              width: 20,
-                              height: 20,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
+                            const SizedBox(height: AppTheme.spacingM),
+                            Text(
+                              l10n.noCriteriaToRate,
+                              style: theme.textTheme.titleMedium,
+                            ),
+                            const SizedBox(height: AppTheme.spacingS),
+                            Text(
+                              l10n.thisTaskHasNoCriteriaAssigned,
+                              style: theme.textTheme.bodyMedium?.copyWith(
+                                color: theme.colorScheme.onSurfaceVariant,
                               ),
-                            )
-                          : const Text('Save'),
+                            ),
+                          ],
+                        ),
+                      );
+                    }
+
+                    return ListView.builder(
+                      padding: const EdgeInsets.all(AppTheme.spacingM),
+                      itemCount: criteria.length,
+                      itemBuilder: (context, index) {
+                        final criterion = criteria[index];
+                        return _buildCriterionRating(criterion);
+                      },
+                    );
+                  },
+                  loading:
+                      () => const Center(child: CircularProgressIndicator()),
+                  error:
+                      (error, stack) => Center(
+                        child: Text(
+                          l10n.errorLoadingCriteria(error.toString()),
+                        ),
+                      ),
+                ),
+              ),
+
+              // Action Buttons
+              Container(
+                padding: const EdgeInsets.all(AppTheme.spacingM),
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.surfaceContainerHighest,
+                  border: Border(
+                    top: BorderSide(
+                      color: theme.colorScheme.outline.withValues(alpha: 0.2),
                     ),
                   ),
-                ],
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: OutlinedButton(
+                        onPressed: _isSaving ? null : () => _handleSkip(l10n),
+                        child: Text(l10n.skip, overflow: TextOverflow.ellipsis),
+                      ),
+                    ),
+                    const SizedBox(width: AppTheme.spacingM),
+                    Expanded(
+                      flex: 2,
+                      child: ElevatedButton(
+                        onPressed: _isSaving ? null : () => _handleSave(l10n),
+                        child:
+                            _isSaving
+                                ? const SizedBox(
+                                  width: 20,
+                                  height: 20,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                  ),
+                                )
+                                : Text(l10n.save),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
-      ),
       ),
     );
   }
 
   Widget _buildCriterionRating(Criterion criterion) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
     final currentRating = _ratings[criterion.id];
 
     return Card(
@@ -279,6 +283,7 @@ class _RateTaskWidgetState extends ConsumerState<RateTaskWidget> {
                   selectionLimit,
                   values,
                   currentRating,
+                  l10n,
                 );
               },
               continuous: (minValue, maxValue, stepValue) {
@@ -288,6 +293,7 @@ class _RateTaskWidgetState extends ConsumerState<RateTaskWidget> {
                   maxValue,
                   stepValue,
                   currentRating,
+                  l10n,
                 );
               },
             ),
@@ -302,47 +308,53 @@ class _RateTaskWidgetState extends ConsumerState<RateTaskWidget> {
     int selectionLimit,
     List<String> values,
     RatingValue? currentRating,
+    AppLocalizations l10n,
   ) {
     final theme = Theme.of(context);
-    final selectedValues = currentRating?.when(
-      discrete: (vals) => Set<String>.from(vals),
-      continuous: (_) => <String>{},
-    ) ?? <String>{};
+    final selectedValues =
+        currentRating?.when(
+          discrete: (vals) => Set<String>.from(vals),
+          continuous: (_) => <String>{},
+        ) ??
+        <String>{};
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Select up to $selectionLimit value(s)',
+          l10n.selectUpToXValues(selectionLimit),
           style: theme.textTheme.bodySmall,
         ),
         const SizedBox(height: AppTheme.spacingS),
         Wrap(
           spacing: AppTheme.spacingS,
           runSpacing: AppTheme.spacingS,
-          children: values.map((value) {
-            final isSelected = selectedValues.contains(value);
-            final canSelect = selectedValues.length < selectionLimit || isSelected;
+          children:
+              values.map((value) {
+                final isSelected = selectedValues.contains(value);
+                final canSelect =
+                    selectedValues.length < selectionLimit || isSelected;
 
-            return FilterChip(
-              label: Text(value),
-              selected: isSelected,
-              onSelected: canSelect
-                  ? (selected) {
-                      setState(() {
-                        if (selected) {
-                          selectedValues.add(value);
-                        } else {
-                          selectedValues.remove(value);
-                        }
-                        _ratings[criterion.id] = RatingValue.discrete(
-                          values: selectedValues.toList(),
-                        );
-                      });
-                    }
-                  : null,
-            );
-          }).toList(),
+                return FilterChip(
+                  label: Text(value),
+                  selected: isSelected,
+                  onSelected:
+                      canSelect
+                          ? (selected) {
+                            setState(() {
+                              if (selected) {
+                                selectedValues.add(value);
+                              } else {
+                                selectedValues.remove(value);
+                              }
+                              _ratings[criterion.id] = RatingValue.discrete(
+                                values: selectedValues.toList(),
+                              );
+                            });
+                          }
+                          : null,
+                );
+              }).toList(),
         ),
       ],
     );
@@ -354,12 +366,15 @@ class _RateTaskWidgetState extends ConsumerState<RateTaskWidget> {
     double maxValue,
     double stepValue,
     RatingValue? currentRating,
+    AppLocalizations l10n,
   ) {
     final theme = Theme.of(context);
-    final currentValue = currentRating?.when(
-      discrete: (_) => minValue,
-      continuous: (val) => val,
-    ) ?? minValue;
+    final currentValue =
+        currentRating?.when(
+          discrete: (_) => minValue,
+          continuous: (val) => val,
+        ) ??
+        minValue;
 
     final textController = TextEditingController(
       text: currentValue.toStringAsFixed(1),
@@ -418,7 +433,7 @@ class _RateTaskWidgetState extends ConsumerState<RateTaskWidget> {
           ],
         ),
         Text(
-          'Range: $minValue - $maxValue (step: $stepValue)',
+          l10n.rangeXToXStepY(minValue, maxValue, stepValue),
           style: theme.textTheme.bodySmall,
         ),
       ],
@@ -440,19 +455,16 @@ class _RateTaskWidgetState extends ConsumerState<RateTaskWidget> {
     }
 
     // Treat as emoji
-    return Text(
-      criterion.icon,
-      style: const TextStyle(fontSize: 24),
-    );
+    return Text(criterion.icon, style: const TextStyle(fontSize: 24));
   }
 }
 
 /// Provider for criteria by IDs
-final _criteriaProvider = FutureProvider.family<List<Criterion>, List<String>>(
-  (ref, criterionIds) async {
-    if (criterionIds.isEmpty) return [];
-    final criterionRepository = ref.watch(criterionRepositoryProvider);
-    return await criterionRepository.getCriteriaByIds(criterionIds);
-  },
-);
-
+final _criteriaProvider = FutureProvider.family<List<Criterion>, List<String>>((
+  ref,
+  criterionIds,
+) async {
+  if (criterionIds.isEmpty) return [];
+  final criterionRepository = ref.watch(criterionRepositoryProvider);
+  return await criterionRepository.getCriteriaByIds(criterionIds);
+});

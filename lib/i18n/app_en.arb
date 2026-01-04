@@ -1,6 +1,6 @@
 {
   "@@locale": "en",
-  "appName": "YuDi Time Tracker",
+  "appName": "YuDi\nTime Tracker",
   "@appName": {
     "description": "The application name"
   },
@@ -276,6 +276,664 @@
   "all": "All",
   "@all": {
     "description": "All time period label"
+  },
+  "listening": "Listening...",
+  "@listening": {
+    "description": "Listening text"
+  },
+  "taskName": "Task Name",
+  "@taskName": {
+    "description": "Task name field label"
+  },
+  "mottoOptional": "Motto (optional)",
+  "@mottoOptional": {
+    "description": "Motto field label"
+  },
+  "criteria": "Criteria",
+  "@criteria": {
+    "description": "Criteria field label"
+  },
+  "noCriteriaAvailable": "No criteria available. Create criteria first.",
+  "@noCriteriaAvailable": {
+    "description": "Message when no criteria are available"
+  },
+  "updateTask": "Update Task",
+  "@updateTask": {
+    "description": "Update task button label"
+  },
+  "nameTooLong": "Task name must be 32 characters or less",
+  "@nameTooLong": {
+    "description": "Validation error for task name"
+  },
+  "mottoTooLong": "Motto must be 128 characters or less",
+  "@mottoTooLong": {
+    "description": "Validation error for motto"
+  },
+  "editTask": "Edit Task",
+  "@editTask": {
+    "description": "Edit task button label"
+  },
+  "enable": "Enable",
+  "@enable": {
+    "description": "Enable button label"
+  },
+  "disable": "Disable",
+  "@disable": {
+    "description": "Disable button label"
+  },
+  "enableTask": "Enable Task",
+  "@enableTask": {
+    "description": "Enable task button label"
+  },
+  "disableTask": "Disable Task",
+  "@disableTask": {
+    "description": "Disable task button label"
+  },
+  "enableTaskMessage": "This will enable the task and make it available again.",
+  "@enableTaskMessage": {
+    "description": "Message for enabling task"
+  },
+  "disableTaskMessage": "This will disable the task. It will be moved to the bottom of the list. You can enable it again later.",
+  "@disableTaskMessage": {
+    "description": "Message for disabling task"
+  },
+  "taskEnabled": "Task enabled",
+  "@taskEnabled": {
+    "description": "Message for task enabled"
+  },
+  "taskDisabled": "Task disabled",
+  "@taskDisabled": {
+    "description": "Message for task disabled"
+  },
+  "deleteTask": "Delete Task",
+  "@deleteTask": {
+    "description": "Delete task button label"
+  },
+  "deleteTaskMessage": "This will permanently delete the task and all associated sessions. This action cannot be undone.\n\nConsider disabling the task instead if you're not sure.",
+  "@deleteTaskMessage": {
+    "description": "Message for deleting task"
+  },
+  "taskDeleted": "Task deleted",
+  "@taskDeleted": {
+    "description": "Message for task deleted"
+  },
+  "anotherTaskActive": "Another task is already active. Stop it first.",
+  "@anotherTaskActive": {
+    "description": "Message when another task is active"
+  },
+  "errorActivatingTask": "Error activating task: {error}",
+  "@errorActivatingTask": {
+    "description": "Message for error activating task",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "settings": "Settings",
+  "@settings": {
+    "description": "Settings button label"
+  },
+  "delete": "Delete",
+  "@delete": {
+    "description": "Delete button label"
+  },
+  "error": "Error: {error}",
+  "@error": {
+    "description": "Error message",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "errorStoppingSession": "Error stopping session: {error}",
+  "@errorStoppingSession": {
+    "description": "Message for error stopping session",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "errorDiscardingSession": "Error discarding session: {error}",
+  "@errorDiscardingSession": {
+    "description": "Message for error discarding session",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "noActiveTaskMessage": "Start a task from the List of Tasks to track your time.",
+  "@noActiveTaskMessage": {
+    "description": "Message when no task is active"
+  },
+  "dateFormat": "MMMM d • HH:mm",
+  "@dateFormat": {
+    "description": "Date format"
+  },
+  "unknownTask": "Unknown Task",
+  "@unknownTask": {
+    "description": "Message when task is unknown"
+  },
+  "dateFormatInSessionHistory": "MMM d, HH:mm",
+  "@dateFormatInSessionHistory": {
+    "description": "Date format in session history"
+  },
+  "errorLoadingTasks": "Error loading tasks: {error}",
+  "@errorLoadingTasks": {
+    "description": "Message for error loading tasks",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "errorLoadingCriteria": "Error loading criteria: {error}",
+  "@errorLoadingCriteria": {
+    "description": "Message for error loading criteria",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "errorLoadingSessions": "Error loading sessions: {error}",
+  "@errorLoadingSessions": {
+    "description": "Message for error loading sessions",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "errorLoadingAllSessions": "Error loading all sessions: {error}",
+  "@errorLoadingAllSessions": {
+    "description": "Message for error loading all sessions",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "unknown": "Unknown",
+  "@unknown": {
+    "description": "Message when unknown"
+  },
+  "exportData": "Export Data",
+  "@exportData": {
+    "description": "Export data button label"
+  },
+  "exportAllAppDataToFile": "Export all app data to a file",
+  "@exportAllAppDataToFile": {
+    "description": "Export all app data to a file label"
+  },
+  "importData": "Import Data",
+  "@importData": {
+    "description": "Import data button label"
+  },
+  "importDataFromFile": "Import data from a file",
+  "@importDataFromFile": {
+    "description": "Import data from a file label"
+  },
+  "chooseHowToExportData": "Choose how you want to export the data:",
+  "@chooseHowToExportData": {
+    "description": "Choose how to export data label"
+  },
+  "saveToDevice": "Save to Device",
+  "@saveToDevice": {
+    "description": "Save to device button label"
+  },
+  "share": "Share",
+  "@share": {
+    "description": "Share button label"
+  },
+  "saveExportFile": "Save Export File",
+  "@saveExportFile": {
+    "description": "Save export file dialog title"
+  },
+  "dataSavedTo": "Data saved to: {path}",
+  "@dataSavedTo": {
+    "description": "Data saved to label",
+    "placeholders": {
+      "path": {
+        "type": "String"
+      }
+    }
+  },
+  "dataExportedSuccessfully": "Data exported successfully",
+  "@dataExportedSuccessfully": {
+    "description": "Message for data exported successfully"
+  },
+  "errorExportingData": "Error exporting data: {error}",
+  "@errorExportingData": {
+    "description": "Message for error exporting data",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "dataImportedSuccessfully": "Data imported successfully",
+  "@dataImportedSuccessfully": {
+    "description": "Message for data imported successfully"
+  },
+  "errorImportingData": "Error importing data: {error}",
+  "@errorImportingData": {
+    "description": "Message for error importing data",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "allExistingDataWillBePermanentlyDeleted": "All existing data will be permanently deleted.",
+  "@allExistingDataWillBePermanentlyDeleted": {
+    "description": "Message for all existing data will be permanently deleted"
+  },
+  "import": "Import",
+  "@import": {
+    "description": "Import button label"
+  },
+  "language": "Language",
+  "@language": {
+    "description": "Language label"
+  },
+  "selectLanguage": "Select Language",
+  "@selectLanguage": {
+    "description": "Select language dialog title"
+  },
+  "english": "English",
+  "@english": {
+    "description": "English language name"
+  },
+  "spanish": "Spanish",
+  "@spanish": {
+    "description": "Spanish language name"
+  },
+  "chinese": "Chinese",
+  "@chinese": {
+    "description": "Chinese language name"
+  },
+  "hindi": "Hindi",
+  "@hindi": {
+    "description": "Hindi language name"
+  },
+  "arabic": "Arabic",
+  "@arabic": {
+    "description": "Arabic language name"
+  },
+  "portuguese": "Portuguese",
+  "@portuguese": {
+    "description": "Portuguese language name"
+  },
+  "bengali": "Bengali",
+  "@bengali": {
+    "description": "Bengali language name"
+  },
+  "japanese": "Japanese",
+  "@japanese": {
+    "description": "Japanese language name"
+  },
+  "punjabi": "Punjabi",
+  "@punjabi": {
+    "description": "Punjabi language name"
+  },
+  "german": "German",
+  "@german": {
+    "description": "German language name"
+  },
+  "javanese": "Javanese",
+  "@javanese": {
+    "description": "Javanese language name"
+  },
+  "korean": "Korean",
+  "@korean": {
+    "description": "Korean language name"
+  },
+  "french": "French",
+  "@french": {
+    "description": "French language name"
+  },
+  "telugu": "Telugu",
+  "@telugu": {
+    "description": "Telugu language name"
+  },
+  "marathi": "Marathi",
+  "@marathi": {
+    "description": "Marathi language name"
+  },
+  "turkish": "Turkish",
+  "@turkish": {
+    "description": "Turkish language name"
+  },
+  "tamil": "Tamil",
+  "@tamil": {
+    "description": "Tamil language name"
+  },
+  "vietnamese": "Vietnamese",
+  "@vietnamese": {
+    "description": "Vietnamese language name"
+  },
+  "urdu": "Urdu",
+  "@urdu": {
+    "description": "Urdu language name"
+  },
+  "ukrainian": "Ukrainian",
+  "@ukrainian": {
+    "description": "Ukrainian language name"
+  },
+  "italian": "Italian",
+  "@italian": {
+    "description": "Italian language name"
+  },
+  "russian": "Russian",
+  "@russian": {
+    "description": "Russian language name"
+  },
+  "darkMode": "Dark Mode",
+  "@darkMode": {
+    "description": "Dark mode label"
+  },
+  "light": "Light",
+  "@light": {
+    "description": "Light mode label"
+  },
+  "dark": "Dark",
+  "@dark": {
+    "description": "Dark mode label"
+  },
+  "automatic": "Automatic",
+  "@automatic": {
+    "description": "Automatic mode label"
+  },
+  "followSystemSetting": "Follow system setting",
+  "@followSystemSetting": {
+    "description": "Follow system setting label"
+  },
+  "dataManagement": "Data Management",
+  "@dataManagement": {
+    "description": "Data management label"
+  },
+  "version": "Version",
+  "@version": {
+    "description": "Version label"
+  },
+  "errorSavingTask": "Error saving task: {error}",
+  "@errorSavingTask": {
+    "description": "Message for error saving task",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "errorDeletingCriterion": "Error deleting criterion: {error}",
+  "@errorDeletingCriterion": {
+    "description": "Message for error deleting criterion",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "criterionDeleted": "Criterion \"{name}\" deleted",
+  "@criterionDeleted": {
+    "description": "Message for criterion deleted",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "discreteCriterion": "Discrete: {selectionLimit, plural, =1{1 selection} other{{selectionLimit} selections}}, {values, plural, =1{1 value} other{{values} values}}",
+  "@discreteCriterion": {
+    "description": "Message for discrete criterion with pluralized words",
+    "placeholders": {
+      "selectionLimit": { "type": "int" },
+      "values": { "type": "int" }
+    }
+  },
+  "continuousCriterion": "Continuous: {minValue}-{maxValue}, step {stepValue}",
+  "@continuousCriterion": {
+    "description": "Message for continuous criterion",
+    "placeholders": {
+      "minValue": {
+        "type": "double"
+      },
+      "maxValue": {
+        "type": "double"
+      },
+      "stepValue": {
+        "type": "double"
+      }
+    }
+  },
+  "deleteCriterionWarningWithName": "Are you sure you want to delete this criterion \"{name}\"? This action cannot be undone.",
+  "@deleteCriterionWarningWithName": {
+    "description": "Message for delete criterion warning",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "valueX": "Value {index}",
+  "@valueX": {
+    "description": "Value label for discrete criteria",
+    "placeholders": {
+      "index": {
+        "type": "int"
+      }
+    }
+  },
+  "minValueRequired": "Min value is required",
+  "@minValueRequired": {
+    "description": "Validation error for required min value"
+  },
+  "maxValueRequired": "Max value is required",
+  "@maxValueRequired": {
+    "description": "Validation error for required max value"
+  },
+  "stepValueRequired": "Step value is required",
+  "@stepValueRequired": {
+    "description": "Validation error for required step value"
+  },
+  "minValueMustBeANumber": "Min value must be a number",
+  "@minValueMustBeANumber": {
+    "description": "Validation error for min value must be a number"
+  },
+  "maxValueMustBeANumber": "Max value must be a number",
+  "@maxValueMustBeANumber": {
+    "description": "Validation error for max value must be a number"
+  },
+  "stepValueMustBeAPositiveNumber": "Step value must be a positive number",
+  "@stepValueMustBeAPositiveNumber": {
+    "description": "Validation error for step value must be a positive number"
+  },
+  "minValueMustBeLessThanMaxValue": "Min value must be less than max value",
+  "@minValueMustBeLessThanMaxValue": {
+    "description": "Validation error for min value must be less than max value"
+  },
+  "maxValueMustBeGreaterThanMinValue": "Max value must be greater than min value",
+  "@maxValueMustBeGreaterThanMinValue": {
+    "description": "Validation error for max value must be greater than min value"
+  },
+  "stepValueMustBeGreaterThanZero": "Step value must be greater than 0",
+  "@stepValueMustBeGreaterThanZero": {
+    "description": "Validation error for step value must be greater than 0"
+  },
+  "valueCannotBeEmpty": "Value cannot be empty",
+  "@valueCannotBeEmpty": {
+    "description": "Validation error for value cannot be empty"
+  },
+  "selectionLimitMustBeGreaterThanZero": "Selection limit must be greater than 0",
+  "@selectionLimitMustBeGreaterThanZero": {
+    "description": "Validation error for selection limit must be greater than 0"
+  },
+  "selectionLimitMustBeAPositiveNumber": "Selection limit must be a positive number",
+  "@selectionLimitMustBeAPositiveNumber": {
+    "description": "Validation error for selection limit must be a positive number"
+  },
+  "atLeastOneValueForDiscreteCriteria": "At least one value is required for discrete criteria",
+  "@atLeastOneValueForDiscreteCriteria": {
+    "description": "Validation error for at least one value is required for discrete criteria"
+  },
+  "selectionLimitMustBeGreaterThanZero": "Selection limit must be greater than 0",
+  "@selectionLimitMustBeGreaterThanZero": {
+    "description": "Validation error for selection limit must be greater than 0"
+  },
+  "selectionLimitMustBeAPositiveNumber": "Selection limit must be a positive number",
+  "@selectionLimitMustBeAPositiveNumber": {
+    "description": "Validation error for selection limit must be a positive number"
+  },
+  "selectIconType": "Select Icon Type",
+  "@selectIconType": {
+    "description": "Select icon type label"
+  },
+  "icon": "Icon",
+  "@icon": {
+    "description": "Icon label"
+  },
+  "emoji": "Emoji",
+  "@emoji": {
+    "description": "Emoji label"
+  },
+  "enterCriterionName": "Enter criterion name",
+  "@enterCriterionName": {
+    "description": "Enter criterion name label"
+  },
+  "type": "Type",
+  "@type": {
+    "description": "Type label"
+  },
+  "discreteConfiguration": "Discrete Configuration",
+  "@discreteConfiguration": {
+    "description": "Discrete configuration label"
+  },
+  "howManyValuesCanBeSelected": "How many values can be selected",
+  "@howManyValuesCanBeSelected": {
+    "description": "How many values can be selected label"
+  },
+  "continuousConfiguration": "Continuous Configuration",
+  "@continuousConfiguration": {
+    "description": "Continuous configuration label"
+  },
+  "minimumAllowedValue": "Minimum allowed value",
+  "@minimumAllowedValue": {
+    "description": "Minimum allowed value label"
+  },
+  "maximumAllowedValue": "Maximum allowed value",
+  "@maximumAllowedValue": {
+    "description": "Maximum allowed value label"
+  },
+  "incrementDecrementStep": "Increment/decrement step",
+  "@incrementDecrementStep": {
+    "description": "Increment/decrement step label"
+  },
+  "errorSavingCriterion": "Error saving criterion: {error}",
+  "@errorSavingCriterion": {
+    "description": "Message for error saving criterion",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "editCriterion": "Edit Criterion",
+  "@editCriterion": {
+    "description": "Edit criterion button label"
+  },
+  "selectIcon": "Select Icon",
+  "@selectIcon": {
+    "description": "Select icon label"
+  },
+  "selectEmoji": "Select Emoji",
+  "@selectEmoji": {
+    "description": "Select emoji label"
+  },
+  "icons": "Icons",
+  "@icons": {
+    "description": "Icons label"
+  },
+  "emojis": "Emojis",
+  "@emojis": {
+    "description": "Emojis label"
+  },
+  "selectColor": "Select Color",
+  "@selectColor": {
+    "description": "Select color label"
+  },
+  "noCriteriaToRate": "No criteria to rate",
+  "@noCriteriaToRate": {
+    "description": "No criteria to rate label"
+  },
+  "thisTaskHasNoCriteriaAssigned": "This task has no criteria assigned.",
+  "@thisTaskHasNoCriteriaAssigned": {
+    "description": "This task has no criteria assigned label"
+  },
+  "errorLoadingCriteria": "Error loading criteria: {error}",
+  "@errorLoadingCriteria": {
+    "description": "Message for error loading criteria",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "errorSavingRatings": "Error saving ratings: {error}",
+  "@errorSavingRatings": {
+    "description": "Message for error saving ratings",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "skip": "Skip",
+  "@skip": {
+    "description": "Skip button label"
+  },
+  "save": "Save",
+  "@save": {
+    "description": "Save button label"
+  },
+  "rangeXToXStepY": "Range: {minValue} - {maxValue} (step: {stepValue})",
+  "@rangeXToXStepY": {
+    "description": "Range label for continuous criteria",
+    "placeholders": {
+      "minValue": {
+        "type": "double"
+      },
+      "maxValue": {
+        "type": "double"
+      },
+      "stepValue": {
+        "type": "double"
+      }
+    }
+  },
+  "rateTask": "Rate Task: {taskName}",
+  "@rateTask": {
+    "description": "Rate task label",
+    "placeholders": {
+      "taskName": {
+        "type": "String"
+      }
+    }
+  },
+  "selectUpToXValues": "Select up to {selectionLimit} value(s)",
+  "@selectUpToXValues": {
+    "description": "Select up to x values label",
+    "placeholders": {
+      "selectionLimit": {
+        "type": "int"
+      }
+    }
+  },
+  "swipeToStart": "Swipe to start",
+  "@swipeToStart": {
+    "description": "Swipe to start label"
   }
 }
-

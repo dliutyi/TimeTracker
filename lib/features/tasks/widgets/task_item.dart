@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:yudi_time_tracker/generated/l10n/app_localizations.dart';
 import '../../../app/theme/app_theme.dart';
 import '../../../core/models/task.dart';
 import '../../../core/models/criterion.dart';
@@ -15,22 +16,21 @@ import '../list_tasks_screen.dart';
 import 'add_edit_task_widget.dart';
 
 /// Provider for criteria by IDs
-final _taskCriteriaProvider = FutureProvider.family<List<Criterion>, List<String>>(
-  (ref, criterionIds) async {
-    if (criterionIds.isEmpty) return [];
-    final criterionRepository = ref.watch(criterionRepositoryProvider);
-    return await criterionRepository.getCriteriaByIds(criterionIds);
-  },
-);
+final _taskCriteriaProvider =
+    FutureProvider.family<List<Criterion>, List<String>>((
+      ref,
+      criterionIds,
+    ) async {
+      if (criterionIds.isEmpty) return [];
+      final criterionRepository = ref.watch(criterionRepositoryProvider);
+      return await criterionRepository.getCriteriaByIds(criterionIds);
+    });
 
 /// Task item widget for the list
 class TaskItem extends ConsumerStatefulWidget {
   final Task task;
 
-  const TaskItem({
-    super.key,
-    required this.task,
-  });
+  const TaskItem({super.key, required this.task});
 
   @override
   ConsumerState<TaskItem> createState() => _TaskItemState();
@@ -81,7 +81,8 @@ class _TaskItemState extends ConsumerState<TaskItem> {
     final activeSession = ref.watch(activeSessionProvider);
     final isActive = activeSession?.taskId == widget.task.id;
     final hasActiveSession = activeSession != null;
-    
+    final l10n = AppLocalizations.of(context)!;
+
     // Get icon - task.icon is a string identifier, try to parse as int index
     IconData iconData = Icons.task;
     try {
@@ -95,7 +96,8 @@ class _TaskItemState extends ConsumerState<TaskItem> {
     }
 
     // Get task color
-    final taskColor = TaskColors.hexToColor(widget.task.color) ?? theme.colorScheme.primary;
+    final taskColor =
+        TaskColors.hexToColor(widget.task.color) ?? theme.colorScheme.primary;
 
     final isDisabled = widget.task.disabledAt != null;
     final canActivate = !isDisabled && !hasActiveSession;
@@ -109,34 +111,41 @@ class _TaskItemState extends ConsumerState<TaskItem> {
     }
 
     // Load criteria for enumeration
-    final criteriaAsync = ref.watch(_taskCriteriaProvider(widget.task.criterionIds));
+    final criteriaAsync = ref.watch(
+      _taskCriteriaProvider(widget.task.criterionIds),
+    );
 
     return SwipeableItem(
-      onSwipeRight: canActivate ? () => _handleActivate(context, ref) : null,
-      baseColor: isActive
-          ? taskColor.withOpacity(0.2)
-          : theme.colorScheme.surfaceContainerHighest,
+      onSwipeRight:
+          canActivate ? () => _handleActivate(context, ref, l10n) : null,
+      baseColor:
+          isActive
+              ? taskColor.withOpacity(0.2)
+              : theme.colorScheme.surfaceContainerHighest,
       activationColor: taskColor,
-      rightActions: buttonsDisabled ? [] : [
-        SwipeAction(
-          label: 'Settings',
-          icon: Icons.settings,
-          color: theme.colorScheme.primary,
-          onTap: () => _handleEdit(context, ref),
-        ),
-        SwipeAction(
-          label: isDisabled ? 'Enable' : 'Disable',
-          icon: isDisabled ? Icons.check_circle : Icons.block,
-          color: Colors.orange,
-          onTap: () => _handleDisable(context, ref, isDisabled),
-        ),
-        SwipeAction(
-          label: 'Delete',
-          icon: Icons.delete,
-          color: theme.colorScheme.error,
-          onTap: () => _handleDelete(context, ref),
-        ),
-      ],
+      rightActions:
+          buttonsDisabled
+              ? []
+              : [
+                SwipeAction(
+                  label: l10n.settings,
+                  icon: Icons.settings,
+                  color: theme.colorScheme.primary,
+                  onTap: () => _handleEdit(context, ref),
+                ),
+                SwipeAction(
+                  label: isDisabled ? l10n.enable : l10n.disable,
+                  icon: isDisabled ? Icons.check_circle : Icons.block,
+                  color: Colors.orange,
+                  onTap: () => _handleDisable(context, ref, isDisabled, l10n),
+                ),
+                SwipeAction(
+                  label: l10n.delete,
+                  icon: Icons.delete,
+                  color: theme.colorScheme.error,
+                  onTap: () => _handleDelete(context, ref, l10n),
+                ),
+              ],
       child: Container(
         decoration: BoxDecoration(
           color: Colors.transparent, // Let SwipeableItem handle background
@@ -145,18 +154,16 @@ class _TaskItemState extends ConsumerState<TaskItem> {
         child: ListTile(
           leading: CircleAvatar(
             backgroundColor: taskColor,
-            child: Icon(
-              iconData,
-              color: _getContrastColor(taskColor),
-            ),
+            child: Icon(iconData, color: _getContrastColor(taskColor)),
           ),
           title: Text(
             widget.task.name,
             style: theme.textTheme.titleMedium?.copyWith(
               decoration: isDisabled ? TextDecoration.lineThrough : null,
-              color: isDisabled
-                  ? theme.colorScheme.onSurfaceVariant
-                  : isActive
+              color:
+                  isDisabled
+                      ? theme.colorScheme.onSurfaceVariant
+                      : isActive
                       ? taskColor
                       : null,
               fontWeight: isActive ? FontWeight.bold : null,
@@ -194,17 +201,9 @@ class _TaskItemState extends ConsumerState<TaskItem> {
             mainAxisSize: MainAxisSize.min,
             children: [
               if (isActive)
-                Icon(
-                  Icons.play_circle_filled,
-                  color: taskColor,
-                  size: 24,
-                ),
+                Icon(Icons.play_circle_filled, color: taskColor, size: 24),
               if (isDisabled)
-                Icon(
-                  Icons.block,
-                  color: theme.colorScheme.error,
-                  size: 20,
-                ),
+                Icon(Icons.block, color: theme.colorScheme.error, size: 20),
             ],
           ),
         ),
@@ -217,14 +216,18 @@ class _TaskItemState extends ConsumerState<TaskItem> {
     return luminance > 0.5 ? Colors.black : Colors.white;
   }
 
-  Future<void> _handleActivate(BuildContext context, WidgetRef ref) async {
+  Future<void> _handleActivate(
+    BuildContext context,
+    WidgetRef ref,
+    AppLocalizations l10n,
+  ) async {
     // Check if there's already an active session
     final activeSession = ref.read(activeSessionProvider);
     if (activeSession != null) {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Another task is already active. Stop it first.'),
+          SnackBar(
+            content: Text(l10n.anotherTaskActive),
             duration: Duration(seconds: 2),
           ),
         );
@@ -247,7 +250,7 @@ class _TaskItemState extends ConsumerState<TaskItem> {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error activating task: $e'),
+            content: Text(l10n.errorActivatingTask(e.toString())),
             backgroundColor: Theme.of(context).colorScheme.error,
             duration: const Duration(seconds: 2),
           ),
@@ -267,16 +270,15 @@ class _TaskItemState extends ConsumerState<TaskItem> {
     BuildContext context,
     WidgetRef ref,
     bool isDisabled,
+    AppLocalizations l10n,
   ) async {
     final confirmed = await ConfirmationDialog.show(
       context,
-      title: isDisabled ? 'Enable Task' : 'Disable Task',
-      message: isDisabled
-          ? 'This will enable the task and make it available again.'
-          : 'This will disable the task. It will be moved to the bottom of the list. You can enable it again later.',
+      title: isDisabled ? l10n.enableTask : l10n.disableTask,
+      message: isDisabled ? l10n.enableTaskMessage : l10n.disableTaskMessage,
       type: DialogType.warning, // Orange color scheme
-      primaryButtonText: isDisabled ? 'Enable' : 'Disable',
-      cancelButtonText: 'Cancel',
+      primaryButtonText: isDisabled ? l10n.enable : l10n.disable,
+      cancelButtonText: l10n.cancel,
     );
 
     if (confirmed == true && context.mounted) {
@@ -289,20 +291,12 @@ class _TaskItemState extends ConsumerState<TaskItem> {
         }
         if (context.mounted) {
           ref.invalidate(tasksProvider);
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                isDisabled ? 'Task enabled' : 'Task disabled',
-              ),
-              duration: const Duration(seconds: 2),
-            ),
-          );
         }
       } catch (e) {
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Error: $e'),
+              content: Text(l10n.error(e.toString())),
               backgroundColor: Theme.of(context).colorScheme.error,
               duration: const Duration(seconds: 2),
             ),
@@ -312,18 +306,22 @@ class _TaskItemState extends ConsumerState<TaskItem> {
     }
   }
 
-  Future<void> _handleDelete(BuildContext context, WidgetRef ref) async {
+  Future<void> _handleDelete(
+    BuildContext context,
+    WidgetRef ref,
+    AppLocalizations l10n,
+  ) async {
     final confirmed = await ConfirmationDialog.show(
       context,
-      title: 'Delete Task',
-      message: 'This will permanently delete the task and all associated sessions. This action cannot be undone.\n\nConsider disabling the task instead if you\'re not sure.',
+      title: l10n.deleteTask,
+      message: l10n.deleteTaskMessage,
       type: DialogType.error, // Red color scheme
-      primaryButtonText: 'Delete',
-      secondaryButtonText: 'Disable',
-      cancelButtonText: 'Cancel',
+      primaryButtonText: l10n.delete,
+      secondaryButtonText: l10n.disable,
+      cancelButtonText: l10n.cancel,
       onSecondary: () {
         Navigator.of(context).pop(false);
-        _handleDisable(context, ref, false);
+        _handleDisable(context, ref, false, l10n);
       },
     );
 
@@ -333,18 +331,12 @@ class _TaskItemState extends ConsumerState<TaskItem> {
         await taskRepository.deleteTask(widget.task.id);
         if (context.mounted) {
           ref.invalidate(tasksProvider);
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Task deleted'),
-              duration: Duration(seconds: 2),
-            ),
-          );
         }
       } catch (e) {
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Error: $e'),
+              content: Text(l10n.error(e.toString())),
               backgroundColor: Theme.of(context).colorScheme.error,
               duration: const Duration(seconds: 2),
             ),
@@ -354,4 +346,3 @@ class _TaskItemState extends ConsumerState<TaskItem> {
     }
   }
 }
-

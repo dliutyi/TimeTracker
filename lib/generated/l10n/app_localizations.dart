@@ -138,7 +138,7 @@ abstract class AppLocalizations {
   /// The application name
   ///
   /// In en, this message translates to:
-  /// **'YuDi Time Tracker'**
+  /// **'YuDi\nTime Tracker'**
   String get appName;
 
   /// Welcome screen title
@@ -183,7 +183,7 @@ abstract class AppLocalizations {
   /// **'List of Criteria'**
   String get listOfCriteria;
 
-  /// Settings tab label
+  /// Settings button label
   ///
   /// In en, this message translates to:
   /// **'Settings'**
@@ -536,6 +536,774 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'All'**
   String get all;
+
+  /// Listening text
+  ///
+  /// In en, this message translates to:
+  /// **'Listening...'**
+  String get listening;
+
+  /// Task name field label
+  ///
+  /// In en, this message translates to:
+  /// **'Task Name'**
+  String get taskName;
+
+  /// Motto field label
+  ///
+  /// In en, this message translates to:
+  /// **'Motto (optional)'**
+  String get mottoOptional;
+
+  /// Criteria field label
+  ///
+  /// In en, this message translates to:
+  /// **'Criteria'**
+  String get criteria;
+
+  /// Message when no criteria are available
+  ///
+  /// In en, this message translates to:
+  /// **'No criteria available. Create criteria first.'**
+  String get noCriteriaAvailable;
+
+  /// Update task button label
+  ///
+  /// In en, this message translates to:
+  /// **'Update Task'**
+  String get updateTask;
+
+  /// Validation error for task name
+  ///
+  /// In en, this message translates to:
+  /// **'Task name must be 32 characters or less'**
+  String get nameTooLong;
+
+  /// Validation error for motto
+  ///
+  /// In en, this message translates to:
+  /// **'Motto must be 128 characters or less'**
+  String get mottoTooLong;
+
+  /// Edit task button label
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Task'**
+  String get editTask;
+
+  /// Enable button label
+  ///
+  /// In en, this message translates to:
+  /// **'Enable'**
+  String get enable;
+
+  /// Disable button label
+  ///
+  /// In en, this message translates to:
+  /// **'Disable'**
+  String get disable;
+
+  /// Enable task button label
+  ///
+  /// In en, this message translates to:
+  /// **'Enable Task'**
+  String get enableTask;
+
+  /// Disable task button label
+  ///
+  /// In en, this message translates to:
+  /// **'Disable Task'**
+  String get disableTask;
+
+  /// Message for enabling task
+  ///
+  /// In en, this message translates to:
+  /// **'This will enable the task and make it available again.'**
+  String get enableTaskMessage;
+
+  /// Message for disabling task
+  ///
+  /// In en, this message translates to:
+  /// **'This will disable the task. It will be moved to the bottom of the list. You can enable it again later.'**
+  String get disableTaskMessage;
+
+  /// Message for task enabled
+  ///
+  /// In en, this message translates to:
+  /// **'Task enabled'**
+  String get taskEnabled;
+
+  /// Message for task disabled
+  ///
+  /// In en, this message translates to:
+  /// **'Task disabled'**
+  String get taskDisabled;
+
+  /// Delete task button label
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Task'**
+  String get deleteTask;
+
+  /// Message for deleting task
+  ///
+  /// In en, this message translates to:
+  /// **'This will permanently delete the task and all associated sessions. This action cannot be undone.\n\nConsider disabling the task instead if you\'re not sure.'**
+  String get deleteTaskMessage;
+
+  /// Message for task deleted
+  ///
+  /// In en, this message translates to:
+  /// **'Task deleted'**
+  String get taskDeleted;
+
+  /// Message when another task is active
+  ///
+  /// In en, this message translates to:
+  /// **'Another task is already active. Stop it first.'**
+  String get anotherTaskActive;
+
+  /// Message for error activating task
+  ///
+  /// In en, this message translates to:
+  /// **'Error activating task: {error}'**
+  String errorActivatingTask(String error);
+
+  /// Delete button label
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get delete;
+
+  /// Error message
+  ///
+  /// In en, this message translates to:
+  /// **'Error: {error}'**
+  String error(String error);
+
+  /// Message for error stopping session
+  ///
+  /// In en, this message translates to:
+  /// **'Error stopping session: {error}'**
+  String errorStoppingSession(String error);
+
+  /// Message for error discarding session
+  ///
+  /// In en, this message translates to:
+  /// **'Error discarding session: {error}'**
+  String errorDiscardingSession(String error);
+
+  /// Message when no task is active
+  ///
+  /// In en, this message translates to:
+  /// **'Start a task from the List of Tasks to track your time.'**
+  String get noActiveTaskMessage;
+
+  /// Date format
+  ///
+  /// In en, this message translates to:
+  /// **'MMMM d • HH:mm'**
+  String get dateFormat;
+
+  /// Message when task is unknown
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown Task'**
+  String get unknownTask;
+
+  /// Date format in session history
+  ///
+  /// In en, this message translates to:
+  /// **'MMM d, HH:mm'**
+  String get dateFormatInSessionHistory;
+
+  /// Message for error loading tasks
+  ///
+  /// In en, this message translates to:
+  /// **'Error loading tasks: {error}'**
+  String errorLoadingTasks(String error);
+
+  /// Message for error loading criteria
+  ///
+  /// In en, this message translates to:
+  /// **'Error loading criteria: {error}'**
+  String errorLoadingCriteria(String error);
+
+  /// Message for error loading sessions
+  ///
+  /// In en, this message translates to:
+  /// **'Error loading sessions: {error}'**
+  String errorLoadingSessions(String error);
+
+  /// Message for error loading all sessions
+  ///
+  /// In en, this message translates to:
+  /// **'Error loading all sessions: {error}'**
+  String errorLoadingAllSessions(String error);
+
+  /// Message when unknown
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown'**
+  String get unknown;
+
+  /// Export data button label
+  ///
+  /// In en, this message translates to:
+  /// **'Export Data'**
+  String get exportData;
+
+  /// Export all app data to a file label
+  ///
+  /// In en, this message translates to:
+  /// **'Export all app data to a file'**
+  String get exportAllAppDataToFile;
+
+  /// Import data button label
+  ///
+  /// In en, this message translates to:
+  /// **'Import Data'**
+  String get importData;
+
+  /// Import data from a file label
+  ///
+  /// In en, this message translates to:
+  /// **'Import data from a file'**
+  String get importDataFromFile;
+
+  /// Choose how to export data label
+  ///
+  /// In en, this message translates to:
+  /// **'Choose how you want to export the data:'**
+  String get chooseHowToExportData;
+
+  /// Save to device button label
+  ///
+  /// In en, this message translates to:
+  /// **'Save to Device'**
+  String get saveToDevice;
+
+  /// Share button label
+  ///
+  /// In en, this message translates to:
+  /// **'Share'**
+  String get share;
+
+  /// Save export file dialog title
+  ///
+  /// In en, this message translates to:
+  /// **'Save Export File'**
+  String get saveExportFile;
+
+  /// Data saved to label
+  ///
+  /// In en, this message translates to:
+  /// **'Data saved to: {path}'**
+  String dataSavedTo(String path);
+
+  /// Message for data exported successfully
+  ///
+  /// In en, this message translates to:
+  /// **'Data exported successfully'**
+  String get dataExportedSuccessfully;
+
+  /// Message for error exporting data
+  ///
+  /// In en, this message translates to:
+  /// **'Error exporting data: {error}'**
+  String errorExportingData(String error);
+
+  /// Message for data imported successfully
+  ///
+  /// In en, this message translates to:
+  /// **'Data imported successfully'**
+  String get dataImportedSuccessfully;
+
+  /// Message for error importing data
+  ///
+  /// In en, this message translates to:
+  /// **'Error importing data: {error}'**
+  String errorImportingData(String error);
+
+  /// Message for all existing data will be permanently deleted
+  ///
+  /// In en, this message translates to:
+  /// **'All existing data will be permanently deleted.'**
+  String get allExistingDataWillBePermanentlyDeleted;
+
+  /// Import button label
+  ///
+  /// In en, this message translates to:
+  /// **'Import'**
+  String get import;
+
+  /// Language label
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get language;
+
+  /// Select language dialog title
+  ///
+  /// In en, this message translates to:
+  /// **'Select Language'**
+  String get selectLanguage;
+
+  /// English language name
+  ///
+  /// In en, this message translates to:
+  /// **'English'**
+  String get english;
+
+  /// Spanish language name
+  ///
+  /// In en, this message translates to:
+  /// **'Spanish'**
+  String get spanish;
+
+  /// Chinese language name
+  ///
+  /// In en, this message translates to:
+  /// **'Chinese'**
+  String get chinese;
+
+  /// Hindi language name
+  ///
+  /// In en, this message translates to:
+  /// **'Hindi'**
+  String get hindi;
+
+  /// Arabic language name
+  ///
+  /// In en, this message translates to:
+  /// **'Arabic'**
+  String get arabic;
+
+  /// Portuguese language name
+  ///
+  /// In en, this message translates to:
+  /// **'Portuguese'**
+  String get portuguese;
+
+  /// Bengali language name
+  ///
+  /// In en, this message translates to:
+  /// **'Bengali'**
+  String get bengali;
+
+  /// Japanese language name
+  ///
+  /// In en, this message translates to:
+  /// **'Japanese'**
+  String get japanese;
+
+  /// Punjabi language name
+  ///
+  /// In en, this message translates to:
+  /// **'Punjabi'**
+  String get punjabi;
+
+  /// German language name
+  ///
+  /// In en, this message translates to:
+  /// **'German'**
+  String get german;
+
+  /// Javanese language name
+  ///
+  /// In en, this message translates to:
+  /// **'Javanese'**
+  String get javanese;
+
+  /// Korean language name
+  ///
+  /// In en, this message translates to:
+  /// **'Korean'**
+  String get korean;
+
+  /// French language name
+  ///
+  /// In en, this message translates to:
+  /// **'French'**
+  String get french;
+
+  /// Telugu language name
+  ///
+  /// In en, this message translates to:
+  /// **'Telugu'**
+  String get telugu;
+
+  /// Marathi language name
+  ///
+  /// In en, this message translates to:
+  /// **'Marathi'**
+  String get marathi;
+
+  /// Turkish language name
+  ///
+  /// In en, this message translates to:
+  /// **'Turkish'**
+  String get turkish;
+
+  /// Tamil language name
+  ///
+  /// In en, this message translates to:
+  /// **'Tamil'**
+  String get tamil;
+
+  /// Vietnamese language name
+  ///
+  /// In en, this message translates to:
+  /// **'Vietnamese'**
+  String get vietnamese;
+
+  /// Urdu language name
+  ///
+  /// In en, this message translates to:
+  /// **'Urdu'**
+  String get urdu;
+
+  /// Ukrainian language name
+  ///
+  /// In en, this message translates to:
+  /// **'Ukrainian'**
+  String get ukrainian;
+
+  /// Italian language name
+  ///
+  /// In en, this message translates to:
+  /// **'Italian'**
+  String get italian;
+
+  /// Russian language name
+  ///
+  /// In en, this message translates to:
+  /// **'Russian'**
+  String get russian;
+
+  /// Dark mode label
+  ///
+  /// In en, this message translates to:
+  /// **'Dark Mode'**
+  String get darkMode;
+
+  /// Light mode label
+  ///
+  /// In en, this message translates to:
+  /// **'Light'**
+  String get light;
+
+  /// Dark mode label
+  ///
+  /// In en, this message translates to:
+  /// **'Dark'**
+  String get dark;
+
+  /// Automatic mode label
+  ///
+  /// In en, this message translates to:
+  /// **'Automatic'**
+  String get automatic;
+
+  /// Follow system setting label
+  ///
+  /// In en, this message translates to:
+  /// **'Follow system setting'**
+  String get followSystemSetting;
+
+  /// Data management label
+  ///
+  /// In en, this message translates to:
+  /// **'Data Management'**
+  String get dataManagement;
+
+  /// Version label
+  ///
+  /// In en, this message translates to:
+  /// **'Version'**
+  String get version;
+
+  /// Message for error saving task
+  ///
+  /// In en, this message translates to:
+  /// **'Error saving task: {error}'**
+  String errorSavingTask(String error);
+
+  /// Message for error deleting criterion
+  ///
+  /// In en, this message translates to:
+  /// **'Error deleting criterion: {error}'**
+  String errorDeletingCriterion(String error);
+
+  /// Message for criterion deleted
+  ///
+  /// In en, this message translates to:
+  /// **'Criterion \"{name}\" deleted'**
+  String criterionDeleted(String name);
+
+  /// Message for discrete criterion with pluralized words
+  ///
+  /// In en, this message translates to:
+  /// **'Discrete: {selectionLimit, plural, =1{1 selection} other{{selectionLimit} selections}}, {values, plural, =1{1 value} other{{values} values}}'**
+  String discreteCriterion(int selectionLimit, int values);
+
+  /// Message for continuous criterion
+  ///
+  /// In en, this message translates to:
+  /// **'Continuous: {minValue}-{maxValue}, step {stepValue}'**
+  String continuousCriterion(double minValue, double maxValue, double stepValue);
+
+  /// Message for delete criterion warning
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this criterion \"{name}\"? This action cannot be undone.'**
+  String deleteCriterionWarningWithName(String name);
+
+  /// Value label for discrete criteria
+  ///
+  /// In en, this message translates to:
+  /// **'Value {index}'**
+  String valueX(int index);
+
+  /// Validation error for required min value
+  ///
+  /// In en, this message translates to:
+  /// **'Min value is required'**
+  String get minValueRequired;
+
+  /// Validation error for required max value
+  ///
+  /// In en, this message translates to:
+  /// **'Max value is required'**
+  String get maxValueRequired;
+
+  /// Validation error for required step value
+  ///
+  /// In en, this message translates to:
+  /// **'Step value is required'**
+  String get stepValueRequired;
+
+  /// Validation error for min value must be a number
+  ///
+  /// In en, this message translates to:
+  /// **'Min value must be a number'**
+  String get minValueMustBeANumber;
+
+  /// Validation error for max value must be a number
+  ///
+  /// In en, this message translates to:
+  /// **'Max value must be a number'**
+  String get maxValueMustBeANumber;
+
+  /// Validation error for step value must be a positive number
+  ///
+  /// In en, this message translates to:
+  /// **'Step value must be a positive number'**
+  String get stepValueMustBeAPositiveNumber;
+
+  /// Validation error for min value must be less than max value
+  ///
+  /// In en, this message translates to:
+  /// **'Min value must be less than max value'**
+  String get minValueMustBeLessThanMaxValue;
+
+  /// Validation error for max value must be greater than min value
+  ///
+  /// In en, this message translates to:
+  /// **'Max value must be greater than min value'**
+  String get maxValueMustBeGreaterThanMinValue;
+
+  /// Validation error for step value must be greater than 0
+  ///
+  /// In en, this message translates to:
+  /// **'Step value must be greater than 0'**
+  String get stepValueMustBeGreaterThanZero;
+
+  /// Validation error for value cannot be empty
+  ///
+  /// In en, this message translates to:
+  /// **'Value cannot be empty'**
+  String get valueCannotBeEmpty;
+
+  /// Validation error for selection limit must be greater than 0
+  ///
+  /// In en, this message translates to:
+  /// **'Selection limit must be greater than 0'**
+  String get selectionLimitMustBeGreaterThanZero;
+
+  /// Validation error for selection limit must be a positive number
+  ///
+  /// In en, this message translates to:
+  /// **'Selection limit must be a positive number'**
+  String get selectionLimitMustBeAPositiveNumber;
+
+  /// Validation error for at least one value is required for discrete criteria
+  ///
+  /// In en, this message translates to:
+  /// **'At least one value is required for discrete criteria'**
+  String get atLeastOneValueForDiscreteCriteria;
+
+  /// Select icon type label
+  ///
+  /// In en, this message translates to:
+  /// **'Select Icon Type'**
+  String get selectIconType;
+
+  /// Icon label
+  ///
+  /// In en, this message translates to:
+  /// **'Icon'**
+  String get icon;
+
+  /// Emoji label
+  ///
+  /// In en, this message translates to:
+  /// **'Emoji'**
+  String get emoji;
+
+  /// Enter criterion name label
+  ///
+  /// In en, this message translates to:
+  /// **'Enter criterion name'**
+  String get enterCriterionName;
+
+  /// Type label
+  ///
+  /// In en, this message translates to:
+  /// **'Type'**
+  String get type;
+
+  /// Discrete configuration label
+  ///
+  /// In en, this message translates to:
+  /// **'Discrete Configuration'**
+  String get discreteConfiguration;
+
+  /// How many values can be selected label
+  ///
+  /// In en, this message translates to:
+  /// **'How many values can be selected'**
+  String get howManyValuesCanBeSelected;
+
+  /// Continuous configuration label
+  ///
+  /// In en, this message translates to:
+  /// **'Continuous Configuration'**
+  String get continuousConfiguration;
+
+  /// Minimum allowed value label
+  ///
+  /// In en, this message translates to:
+  /// **'Minimum allowed value'**
+  String get minimumAllowedValue;
+
+  /// Maximum allowed value label
+  ///
+  /// In en, this message translates to:
+  /// **'Maximum allowed value'**
+  String get maximumAllowedValue;
+
+  /// Increment/decrement step label
+  ///
+  /// In en, this message translates to:
+  /// **'Increment/decrement step'**
+  String get incrementDecrementStep;
+
+  /// Message for error saving criterion
+  ///
+  /// In en, this message translates to:
+  /// **'Error saving criterion: {error}'**
+  String errorSavingCriterion(String error);
+
+  /// Edit criterion button label
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Criterion'**
+  String get editCriterion;
+
+  /// Select icon label
+  ///
+  /// In en, this message translates to:
+  /// **'Select Icon'**
+  String get selectIcon;
+
+  /// Select emoji label
+  ///
+  /// In en, this message translates to:
+  /// **'Select Emoji'**
+  String get selectEmoji;
+
+  /// Icons label
+  ///
+  /// In en, this message translates to:
+  /// **'Icons'**
+  String get icons;
+
+  /// Emojis label
+  ///
+  /// In en, this message translates to:
+  /// **'Emojis'**
+  String get emojis;
+
+  /// Select color label
+  ///
+  /// In en, this message translates to:
+  /// **'Select Color'**
+  String get selectColor;
+
+  /// No criteria to rate label
+  ///
+  /// In en, this message translates to:
+  /// **'No criteria to rate'**
+  String get noCriteriaToRate;
+
+  /// This task has no criteria assigned label
+  ///
+  /// In en, this message translates to:
+  /// **'This task has no criteria assigned.'**
+  String get thisTaskHasNoCriteriaAssigned;
+
+  /// Message for error saving ratings
+  ///
+  /// In en, this message translates to:
+  /// **'Error saving ratings: {error}'**
+  String errorSavingRatings(String error);
+
+  /// Skip button label
+  ///
+  /// In en, this message translates to:
+  /// **'Skip'**
+  String get skip;
+
+  /// Save button label
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get save;
+
+  /// Range label for continuous criteria
+  ///
+  /// In en, this message translates to:
+  /// **'Range: {minValue} - {maxValue} (step: {stepValue})'**
+  String rangeXToXStepY(double minValue, double maxValue, double stepValue);
+
+  /// Rate task label
+  ///
+  /// In en, this message translates to:
+  /// **'Rate Task: {taskName}'**
+  String rateTask(String taskName);
+
+  /// Select up to x values label
+  ///
+  /// In en, this message translates to:
+  /// **'Select up to {selectionLimit} value(s)'**
+  String selectUpToXValues(int selectionLimit);
+
+  /// Swipe to start label
+  ///
+  /// In en, this message translates to:
+  /// **'Swipe to start'**
+  String get swipeToStart;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

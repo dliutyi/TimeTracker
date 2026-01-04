@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:yudi_time_tracker/generated/l10n/app_localizations.dart';
 import '../../app/theme/app_theme.dart';
 
 /// Predefined color palette for task colors (slightly darker)
@@ -64,13 +65,14 @@ class ColorPicker extends StatelessWidget {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => _ColorPickerSheet(
-        selectedColor: selectedColor,
-        onColorSelected: (color) {
-          result = color;
-          Navigator.of(context).pop();
-        },
-      ),
+      builder:
+          (context) => _ColorPickerSheet(
+            selectedColor: selectedColor,
+            onColorSelected: (color) {
+              result = color;
+              Navigator.of(context).pop();
+            },
+          ),
     );
     return result;
   }
@@ -78,6 +80,7 @@ class ColorPicker extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
     return Container(
       decoration: BoxDecoration(
         color: theme.scaffoldBackgroundColor,
@@ -99,10 +102,7 @@ class ColorPicker extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.all(AppTheme.spacingM),
-            child: Text(
-              'Select Color',
-              style: theme.textTheme.titleLarge,
-            ),
+            child: Text(l10n.selectColor, style: theme.textTheme.titleLarge),
           ),
           Padding(
             padding: const EdgeInsets.all(AppTheme.spacingM),
@@ -129,22 +129,24 @@ class ColorPicker extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: color,
                         borderRadius: BorderRadius.circular(AppTheme.radiusM),
-                        border: isSelected
-                            ? Border.all(
-                                color: theme.colorScheme.onSurface,
-                                width: 3,
-                              )
-                            : Border.all(
-                                color: theme.colorScheme.outline,
-                                width: 1,
-                              ),
+                        border:
+                            isSelected
+                                ? Border.all(
+                                  color: theme.colorScheme.onSurface,
+                                  width: 3,
+                                )
+                                : Border.all(
+                                  color: theme.colorScheme.outline,
+                                  width: 1,
+                                ),
                       ),
-                      child: isSelected
-                          ? Icon(
-                              Icons.check,
-                              color: _getContrastColor(color),
-                            )
-                          : null,
+                      child:
+                          isSelected
+                              ? Icon(
+                                Icons.check,
+                                color: _getContrastColor(color),
+                              )
+                              : null,
                     ),
                   ),
                 );
@@ -182,4 +184,3 @@ class _ColorPickerSheet extends StatelessWidget {
     );
   }
 }
-

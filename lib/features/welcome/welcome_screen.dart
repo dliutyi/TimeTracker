@@ -104,7 +104,8 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen>
                           l10n.appName,
                           style: theme.textTheme.displayMedium?.copyWith(
                             color: theme.colorScheme.onPrimary,
-                            fontWeight: FontWeight.bold,
+                            fontWeight: FontWeight.w800,
+                            fontFamily: 'ShantellSans',
                             shadows: [
                               Shadow(
                                 offset: const Offset(-2, 2),
@@ -168,10 +169,11 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen>
                       ),
                       alignment: Alignment.center,
                       child: Text(
-                        l10n.swipeToStop,
+                        l10n.swipeToStart,
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
+                          fontFamily: 'ShantellSans',
                           color: theme.colorScheme.onPrimary,
                         ),
                       ),

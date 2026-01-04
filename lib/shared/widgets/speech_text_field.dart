@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:yudi_time_tracker/generated/l10n/app_localizations.dart';
 import '../services/speech_service.dart';
 import '../../app/theme/app_theme.dart';
 
@@ -58,7 +59,8 @@ class _SpeechTextFieldState extends ConsumerState<SpeechTextField>
   @override
   void initState() {
     super.initState();
-    _controller = widget.controller ?? TextEditingController(text: widget.initialValue);
+    _controller =
+        widget.controller ?? TextEditingController(text: widget.initialValue);
     _isControllerExternal = widget.controller != null;
     _focusNode = widget.focusNode ?? FocusNode();
     _isFocusNodeExternal = widget.focusNode != null;
@@ -69,10 +71,7 @@ class _SpeechTextFieldState extends ConsumerState<SpeechTextField>
     );
 
     _scaleAnimation = Tween<double>(begin: 1.0, end: 1.2).animate(
-      CurvedAnimation(
-        parent: _animationController,
-        curve: Curves.easeInOut,
-      ),
+      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
     );
 
     if (widget.initialValue != null && !_isControllerExternal) {
@@ -102,9 +101,9 @@ class _SpeechTextFieldState extends ConsumerState<SpeechTextField>
     super.dispose();
   }
 
-  Future<void> _handleMicrophonePress() async {
+  Future<void> _handleMicrophonePress(AppLocalizations l10n) async {
     final speechService = ref.read(speechServiceProvider);
-    
+
     // Set recording state immediately for UI feedback
     setState(() {
       _isRecording = true;
@@ -135,9 +134,9 @@ class _SpeechTextFieldState extends ConsumerState<SpeechTextField>
     // Store original text and show "Listening"
     _originalText = _controller.text;
     _accumulatedText = '';
-    _controller.text = 'Listening...';
+    _controller.text = l10n.listening;
     _focusNode.unfocus(); // Ensure no focus during recording
-    
+
     // Listen to text stream BEFORE starting (to catch any errors)
     _speechSubscription?.cancel();
     _speechSubscription = speechService.textStream.listen(
@@ -178,7 +177,9 @@ class _SpeechTextFieldState extends ConsumerState<SpeechTextField>
         _speechSubscription = null;
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Failed to start speech recognition. Please check microphone permissions.'),
+            content: Text(
+              'Failed to start speech recognition. Please check microphone permissions.',
+            ),
             duration: Duration(seconds: 3),
           ),
         );
@@ -191,15 +192,15 @@ class _SpeechTextFieldState extends ConsumerState<SpeechTextField>
 
   void _handleMicrophoneRelease() async {
     final speechService = ref.read(speechServiceProvider);
-    
+
     // Wait a bit to allow any final text to come through the stream
     await Future.delayed(const Duration(milliseconds: 300));
-    
+
     await speechService.stopListening();
-    
+
     // Wait a bit more after stopping to catch any final recognized text
     await Future.delayed(const Duration(milliseconds: 200));
-    
+
     // Cancel subscription after we've given time for final text
     _speechSubscription?.cancel();
     _speechSubscription = null;
@@ -210,7 +211,7 @@ class _SpeechTextFieldState extends ConsumerState<SpeechTextField>
       });
       _animationController.stop();
       _animationController.reset();
-      
+
       // Process accumulated text
       if (_originalText != null) {
         final originalText = _originalText!;
@@ -224,7 +225,7 @@ class _SpeechTextFieldState extends ConsumerState<SpeechTextField>
               finalText = finalText[0].toUpperCase() + finalText.substring(1);
             }
           }
-          
+
           // Replace existing text (don't append)
           _controller.text = finalText;
           _controller.selection = TextSelection.collapsed(
@@ -244,6 +245,7 @@ class _SpeechTextFieldState extends ConsumerState<SpeechTextField>
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
     return TextFormField(
       controller: _controller,
@@ -258,6 +260,12 @@ class _SpeechTextFieldState extends ConsumerState<SpeechTextField>
       onChanged: widget.onChanged,
       onFieldSubmitted: widget.onSubmitted,
       readOnly: _isRecording, // Make read-only while recording
+      onTapOutside: (event) {
+        if (_isRecording) {
+          _handleMicrophoneRelease();
+        }
+        _focusNode.unfocus();
+      },
       decoration: InputDecoration(
         labelText: widget.label,
         hintText: widget.hint,
@@ -266,7 +274,7 @@ class _SpeechTextFieldState extends ConsumerState<SpeechTextField>
             // Prevent text field from getting focus
             _focusNode.unfocus();
             // Stop event propagation to prevent text field from handling it
-            _handleMicrophonePress();
+            _handleMicrophonePress(l10n);
           },
           onPointerUp: (event) {
             _handleMicrophoneRelease();
@@ -285,9 +293,10 @@ class _SpeechTextFieldState extends ConsumerState<SpeechTextField>
                   padding: const EdgeInsets.all(12),
                   child: Icon(
                     _isRecording ? Icons.mic : Icons.mic_none,
-                    color: _isRecording
-                        ? theme.colorScheme.error
-                        : theme.colorScheme.onSurfaceVariant,
+                    color:
+                        _isRecording
+                            ? theme.colorScheme.error
+                            : theme.colorScheme.onSurfaceVariant,
                   ),
                 ),
               );
@@ -298,4 +307,3 @@ class _SpeechTextFieldState extends ConsumerState<SpeechTextField>
     );
   }
 }
-

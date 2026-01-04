@@ -12,7 +12,8 @@ import '../../../shared/widgets/color_picker.dart';
 import '../../../core/utils/responsive.dart';
 import '../list_tasks_screen.dart';
 import '../../criteria/list_criteria_screen.dart';
-import '../../statistics/widgets/history_view.dart' show allTasksProvider, allCriteriaProvider;
+import '../../statistics/widgets/history_view.dart'
+    show allTasksProvider, allCriteriaProvider;
 
 /// Provider for criteria list sorted by usage frequency
 /// Made public so it can be invalidated from other screens
@@ -25,16 +26,10 @@ final criteriaForTaskProvider = FutureProvider<List<Criterion>>((ref) async {
 class AddEditTaskWidget extends ConsumerStatefulWidget {
   final Task? task; // If null, create mode; if not null, edit mode
 
-  const AddEditTaskWidget({
-    super.key,
-    this.task,
-  });
+  const AddEditTaskWidget({super.key, this.task});
 
   /// Show the widget as a modal
-  static Future<Task?> show(
-    BuildContext context, {
-    Task? task,
-  }) async {
+  static Future<Task?> show(BuildContext context, {Task? task}) async {
     return await showModalBottomSheet<Task?>(
       context: context,
       isScrollControlled: true,
@@ -62,7 +57,7 @@ class _AddEditTaskWidgetState extends ConsumerState<AddEditTaskWidget> {
     super.initState();
     _nameController = TextEditingController(text: widget.task?.name ?? '');
     _mottoController = TextEditingController(text: widget.task?.motto ?? '');
-    
+
     // Set initial icon
     if (widget.task != null) {
       try {
@@ -77,12 +72,12 @@ class _AddEditTaskWidgetState extends ConsumerState<AddEditTaskWidget> {
       _selectedColor = widget.task!.color;
     }
     _selectedIcon ??= AppIcons.defaultIcons[0];
-    
+
     // Set initial color
     if (widget.task != null) {
       _selectedColor = widget.task!.color;
     }
-    
+
     // Set initial selected criteria
     if (widget.task != null) {
       _selectedCriterionIds = Set.from(widget.task!.criterionIds);
@@ -96,7 +91,7 @@ class _AddEditTaskWidgetState extends ConsumerState<AddEditTaskWidget> {
     super.dispose();
   }
 
-  Future<void> _handleSave() async {
+  Future<void> _handleSave(AppLocalizations l10n) async {
     if (!_formKey.currentState!.validate()) {
       return;
     }
@@ -115,9 +110,10 @@ class _AddEditTaskWidgetState extends ConsumerState<AddEditTaskWidget> {
         id: widget.task?.id ?? DateTime.now().millisecondsSinceEpoch.toString(),
         icon: iconString,
         name: _nameController.text.trim(),
-        motto: _mottoController.text.trim().isEmpty
-            ? null
-            : _mottoController.text.trim(),
+        motto:
+            _mottoController.text.trim().isEmpty
+                ? null
+                : _mottoController.text.trim(),
         color: _selectedColor,
         criterionIds: _selectedCriterionIds.toList(),
         createdAt: widget.task?.createdAt ?? now,
@@ -125,9 +121,10 @@ class _AddEditTaskWidgetState extends ConsumerState<AddEditTaskWidget> {
         disabledAt: widget.task?.disabledAt,
       );
 
-      final savedTask = widget.task == null
-          ? await taskRepository.createTask(task)
-          : await taskRepository.updateTask(task);
+      final savedTask =
+          widget.task == null
+              ? await taskRepository.createTask(task)
+              : await taskRepository.updateTask(task);
 
       // Update criteria associations
       await taskRepository.updateTaskCriteria(
@@ -149,7 +146,7 @@ class _AddEditTaskWidgetState extends ConsumerState<AddEditTaskWidget> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error saving task: $e'),
+            content: Text(l10n.errorSavingTask(e.toString())),
             backgroundColor: Theme.of(context).colorScheme.error,
             duration: const Duration(seconds: 2),
           ),
@@ -230,7 +227,7 @@ class _AddEditTaskWidgetState extends ConsumerState<AddEditTaskWidget> {
 
     final isTablet = Responsive.isTablet(context);
     final maxWidth = Responsive.getMaxContentWidth(context);
-    
+
     return Align(
       alignment: Alignment.bottomCenter,
       child: Container(
@@ -243,244 +240,262 @@ class _AddEditTaskWidgetState extends ConsumerState<AddEditTaskWidget> {
           color: theme.scaffoldBackgroundColor,
           borderRadius: BorderRadius.vertical(
             top: const Radius.circular(AppTheme.radiusXL),
-            bottom: isTablet ? const Radius.circular(AppTheme.radiusXL) : Radius.zero,
+            bottom:
+                isTablet
+                    ? const Radius.circular(AppTheme.radiusXL)
+                    : Radius.zero,
           ),
         ),
-      child: SafeArea(
-        child: Column(
-          children: [
-            // Header
-            Padding(
-              padding: const EdgeInsets.all(AppTheme.spacingM),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    widget.task == null ? l10n.addTask : 'Edit Task',
-                    style: theme.textTheme.headlineSmall,
-                  ),
-                  IconButton(
-                    onPressed: _handleDiscard,
-                    icon: const Icon(Icons.close),
-                  ),
-                ],
-              ),
-            ),
-
-            // Content
-            Expanded(
-              child: Form(
-                key: _formKey,
-                child: Column(
+        child: SafeArea(
+          child: Column(
+            children: [
+              // Header
+              Padding(
+                padding: const EdgeInsets.all(AppTheme.spacingM),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    // First Section: Icon and Name
-                    Padding(
-                      padding: const EdgeInsets.all(AppTheme.spacingM),
-                      child: Row(
-                        children: [
-                          // Icon with color background
-                          GestureDetector(
-                            onTap: _handleIconTap,
-                            child: Container(
-                              width: 64,
-                              height: 64,
-                              decoration: BoxDecoration(
-                                color: _getColorFromHex(_selectedColor),
-                                borderRadius: BorderRadius.circular(
-                                  AppTheme.radiusM,
-                                ),
-                              ),
-                              child: Icon(
-                                _selectedIcon,
-                                color: _getContrastColor(_getColorFromHex(_selectedColor)),
-                                size: 32,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: AppTheme.spacingM),
-                          // Color picker button
-                          GestureDetector(
-                            onTap: _handleColorTap,
-                            child: Container(
-                              width: 48,
-                              height: 48,
-                              decoration: BoxDecoration(
-                                color: _getColorFromHex(_selectedColor),
-                                borderRadius: BorderRadius.circular(
-                                  AppTheme.radiusM,
-                                ),
-                                border: Border.all(
-                                  color: theme.colorScheme.outline,
-                                  width: 2,
-                                ),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: AppTheme.spacingM),
-                          // Name
-                          Expanded(
-                            child: SpeechTextField(
-                              label: 'Task Name',
-                              controller: _nameController,
-                              maxLength: 32,
-                              validator: (value) {
-                                if (value == null || value.trim().isEmpty) {
-                                  return 'Task name is required';
-                                }
-                                if (value.trim().length > 32) {
-                                  return 'Task name must be 32 characters or less';
-                                }
-                                return null;
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
+                    Text(
+                      widget.task == null ? l10n.addTask : l10n.editTask,
+                      style: theme.textTheme.headlineSmall,
                     ),
-
-                    // Second Section: Motto
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: AppTheme.spacingM,
-                      ),
-                      child: SpeechTextField(
-                        label: 'Motto (optional)',
-                        controller: _mottoController,
-                        maxLines: 2,
-                        maxLength: 128,
-                        validator: (value) {
-                          if (value != null && value.trim().length > 128) {
-                            return 'Motto must be 128 characters or less';
-                          }
-                          return null;
-                        },
-                      ),
-                    ),
-
-                    const SizedBox(height: AppTheme.spacingM),
-
-                    // Third Section: Criteria Selection
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: AppTheme.spacingM,
-                            ),
-                            child: Text(
-                              'Criteria',
-                              style: theme.textTheme.titleMedium,
-                            ),
-                          ),
-                          const SizedBox(height: AppTheme.spacingS),
-                          Expanded(
-                            child: criteriaAsync.when(
-                              data: (criteria) {
-                                // Sort: selected first, then by frequency (already sorted)
-                                final sortedCriteria = [
-                                  ...criteria.where(
-                                    (c) => _selectedCriterionIds.contains(c.id),
-                                  ),
-                                  ...criteria.where(
-                                    (c) => !_selectedCriterionIds.contains(c.id),
-                                  ),
-                                ];
-
-                                if (sortedCriteria.isEmpty) {
-                                  return Center(
-                                    child: Text(
-                                      'No criteria available. Create criteria first.',
-                                      style: theme.textTheme.bodyMedium?.copyWith(
-                                        color: theme.colorScheme.onSurfaceVariant,
-                                      ),
-                                    ),
-                                  );
-                                }
-
-                                return ListView.builder(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: AppTheme.spacingM,
-                                  ),
-                                  itemCount: sortedCriteria.length,
-                                  itemBuilder: (context, index) {
-                                    final criterion = sortedCriteria[index];
-                                    final isSelected = _selectedCriterionIds
-                                        .contains(criterion.id);
-
-                                    return CheckboxListTile(
-                                      value: isSelected,
-                                      onChanged: (_) =>
-                                          _toggleCriterion(criterion.id),
-                                      title: Text(criterion.name),
-                                      secondary: _buildCriterionIcon(criterion),
-                                    );
-                                  },
-                                );
-                              },
-                              loading: () => const Center(
-                                child: CircularProgressIndicator(),
-                              ),
-                              error: (error, stack) => Center(
-                                child: Text('Error: $error'),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    // Fourth Section: Action Buttons (docked at bottom)
-                    Container(
-                      padding: const EdgeInsets.all(AppTheme.spacingM),
-                      decoration: BoxDecoration(
-                        color: theme.colorScheme.surfaceContainerHighest,
-                        border: Border(
-                          top: BorderSide(
-                            color: theme.colorScheme.outline.withValues(
-                              alpha: 0.2,
-                            ),
-                          ),
-                        ),
-                      ),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: OutlinedButton(
-                              onPressed: _isSaving ? null : _handleDiscard,
-                              child: const Text('Discard'),
-                            ),
-                          ),
-                          const SizedBox(width: AppTheme.spacingM),
-                          Expanded(
-                            flex: 2,
-                            child: ElevatedButton(
-                              onPressed: _isSaving ? null : _handleSave,
-                              child: _isSaving
-                                  ? const SizedBox(
-                                      width: 20,
-                                      height: 20,
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 2,
-                                      ),
-                                    )
-                                  : Text(
-                                      widget.task == null
-                                          ? 'Add Task'
-                                          : 'Update Task',
-                                    ),
-                            ),
-                          ),
-                        ],
-                      ),
+                    IconButton(
+                      onPressed: _handleDiscard,
+                      icon: const Icon(Icons.close),
                     ),
                   ],
                 ),
               ),
-            ),
-          ],
+
+              // Content
+              Expanded(
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    children: [
+                      // First Section: Icon and Name
+                      Padding(
+                        padding: const EdgeInsets.all(AppTheme.spacingM),
+                        child: Row(
+                          children: [
+                            // Icon with color background
+                            GestureDetector(
+                              onTap: _handleIconTap,
+                              child: Container(
+                                width: 64,
+                                height: 64,
+                                decoration: BoxDecoration(
+                                  color: _getColorFromHex(_selectedColor),
+                                  borderRadius: BorderRadius.circular(
+                                    AppTheme.radiusM,
+                                  ),
+                                ),
+                                child: Icon(
+                                  _selectedIcon,
+                                  color: _getContrastColor(
+                                    _getColorFromHex(_selectedColor),
+                                  ),
+                                  size: 32,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: AppTheme.spacingM),
+                            // Color picker button
+                            GestureDetector(
+                              onTap: _handleColorTap,
+                              child: Container(
+                                width: 48,
+                                height: 48,
+                                decoration: BoxDecoration(
+                                  color: _getColorFromHex(_selectedColor),
+                                  borderRadius: BorderRadius.circular(
+                                    AppTheme.radiusM,
+                                  ),
+                                  border: Border.all(
+                                    color: theme.colorScheme.outline,
+                                    width: 2,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: AppTheme.spacingM),
+                            // Name
+                            Expanded(
+                              child: SpeechTextField(
+                                label: l10n.taskName,
+                                controller: _nameController,
+                                maxLength: 32,
+                                validator: (value) {
+                                  if (value == null || value.trim().isEmpty) {
+                                    return l10n.nameRequired;
+                                  }
+                                  if (value.trim().length > 32) {
+                                    return l10n.nameTooLong;
+                                  }
+                                  return null;
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      // Second Section: Motto
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: AppTheme.spacingM,
+                        ),
+                        child: SpeechTextField(
+                          label: l10n.mottoOptional,
+                          controller: _mottoController,
+                          maxLines: 2,
+                          maxLength: 128,
+                          validator: (value) {
+                            if (value != null && value.trim().length > 128) {
+                              return l10n.mottoTooLong;
+                            }
+                            return null;
+                          },
+                        ),
+                      ),
+
+                      const SizedBox(height: AppTheme.spacingM),
+
+                      // Third Section: Criteria Selection
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: AppTheme.spacingM,
+                              ),
+                              child: Text(
+                                l10n.criteria,
+                                style: theme.textTheme.titleMedium,
+                              ),
+                            ),
+                            const SizedBox(height: AppTheme.spacingS),
+                            Expanded(
+                              child: criteriaAsync.when(
+                                data: (criteria) {
+                                  // Sort: selected first, then by frequency (already sorted)
+                                  final sortedCriteria = [
+                                    ...criteria.where(
+                                      (c) =>
+                                          _selectedCriterionIds.contains(c.id),
+                                    ),
+                                    ...criteria.where(
+                                      (c) =>
+                                          !_selectedCriterionIds.contains(c.id),
+                                    ),
+                                  ];
+
+                                  if (sortedCriteria.isEmpty) {
+                                    return Center(
+                                      child: Text(
+                                        l10n.noCriteriaAvailable,
+                                        style: theme.textTheme.bodyMedium
+                                            ?.copyWith(
+                                              color:
+                                                  theme
+                                                      .colorScheme
+                                                      .onSurfaceVariant,
+                                            ),
+                                      ),
+                                    );
+                                  }
+
+                                  return ListView.builder(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: AppTheme.spacingM,
+                                    ),
+                                    itemCount: sortedCriteria.length,
+                                    itemBuilder: (context, index) {
+                                      final criterion = sortedCriteria[index];
+                                      final isSelected = _selectedCriterionIds
+                                          .contains(criterion.id);
+
+                                      return CheckboxListTile(
+                                        value: isSelected,
+                                        onChanged:
+                                            (_) =>
+                                                _toggleCriterion(criterion.id),
+                                        title: Text(criterion.name),
+                                        secondary: _buildCriterionIcon(
+                                          criterion,
+                                        ),
+                                      );
+                                    },
+                                  );
+                                },
+                                loading:
+                                    () => const Center(
+                                      child: CircularProgressIndicator(),
+                                    ),
+                                error:
+                                    (error, stack) => Center(
+                                      child: Text(l10n.error(error.toString())),
+                                    ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      // Fourth Section: Action Buttons (docked at bottom)
+                      Container(
+                        padding: const EdgeInsets.all(AppTheme.spacingM),
+                        decoration: BoxDecoration(
+                          color: theme.colorScheme.surfaceContainerHighest,
+                          border: Border(
+                            top: BorderSide(
+                              color: theme.colorScheme.outline.withValues(
+                                alpha: 0.2,
+                              ),
+                            ),
+                          ),
+                        ),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: OutlinedButton(
+                                onPressed: _isSaving ? null : _handleDiscard,
+                                child: Text(l10n.discard),
+                              ),
+                            ),
+                            const SizedBox(width: AppTheme.spacingM),
+                            Expanded(
+                              flex: 2,
+                              child: ElevatedButton(
+                                onPressed:
+                                    _isSaving ? null : () => _handleSave(l10n),
+                                child:
+                                    _isSaving
+                                        ? const SizedBox(
+                                          width: 20,
+                                          height: 20,
+                                          child: CircularProgressIndicator(
+                                            strokeWidth: 2,
+                                          ),
+                                        )
+                                        : Text(
+                                          widget.task == null
+                                              ? l10n.addTask
+                                              : l10n.updateTask,
+                                        ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
-      ),
       ),
     );
   }
@@ -500,10 +515,6 @@ class _AddEditTaskWidgetState extends ConsumerState<AddEditTaskWidget> {
     }
 
     // Treat as emoji
-    return Text(
-      criterion.icon,
-      style: const TextStyle(fontSize: 24),
-    );
+    return Text(criterion.icon, style: const TextStyle(fontSize: 24));
   }
 }
-
