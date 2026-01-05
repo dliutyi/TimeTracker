@@ -120,7 +120,9 @@ class AppLocalizationsUk extends AppLocalizations {
   String get deleteCriterion => 'Видалити критерій';
 
   @override
-  String get deleteCriterionWarning => 'Ви впевнені, що хочете видалити цей критерій? Цю дію неможливо скасувати.';
+  String deleteCriterionWarning(Object name) {
+    return 'Ви впевнені, що хочете видалити цей критерій? Цю дію неможливо скасувати.';
+  }
 
   @override
   String criterionUsedInTasks(int count) {
@@ -257,10 +259,14 @@ class AppLocalizationsUk extends AppLocalizations {
   String get disableTaskMessage => 'Це вимкне завдання. Воно буде переміщене вниз списку. Ви можете увімкнути його знову пізніше.';
 
   @override
-  String get taskEnabled => 'Завдання увімкнено';
+  String taskEnabled(Object name) {
+    return 'Завдання увімкнено';
+  }
 
   @override
-  String get taskDisabled => 'Завдання вимкнено';
+  String taskDisabled(Object name) {
+    return 'Завдання вимкнено';
+  }
 
   @override
   String get deleteTask => 'Видалити завдання';
@@ -269,7 +275,9 @@ class AppLocalizationsUk extends AppLocalizations {
   String get deleteTaskMessage => 'Це видалить завдання і всі пов\'язані сесії. Цю дію неможливо скасувати.\n\nРозгляньте можливість вимкнення завдання, якщо ви не впевнені.';
 
   @override
-  String get taskDeleted => 'Завдання видалено';
+  String taskDeleted(Object name) {
+    return 'Завдання видалено';
+  }
 
   @override
   String get anotherTaskActive => 'Інше завдання вже активне. Зупиніть його спочатку.';

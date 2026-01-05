@@ -120,7 +120,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get deleteCriterion => 'Delete Criterion';
 
   @override
-  String get deleteCriterionWarning => 'Are you sure you want to delete this criterion? This action cannot be undone.';
+  String deleteCriterionWarning(Object name) {
+    return 'Are you sure you want to delete this criterion? This action cannot be undone.';
+  }
 
   @override
   String criterionUsedInTasks(int count) {
@@ -257,10 +259,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get disableTaskMessage => 'This will disable the task. It will be moved to the bottom of the list. You can enable it again later.';
 
   @override
-  String get taskEnabled => 'Task enabled';
+  String taskEnabled(Object name) {
+    return 'Task enabled';
+  }
 
   @override
-  String get taskDisabled => 'Task disabled';
+  String taskDisabled(Object name) {
+    return 'Task disabled';
+  }
 
   @override
   String get deleteTask => 'Delete Task';
@@ -269,7 +275,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get deleteTaskMessage => 'This will permanently delete the task and all associated sessions. This action cannot be undone.\n\nConsider disabling the task instead if you\'re not sure.';
 
   @override
-  String get taskDeleted => 'Task deleted';
+  String taskDeleted(Object name) {
+    return 'Task deleted';
+  }
 
   @override
   String get anotherTaskActive => 'Another task is already active. Stop it first.';

@@ -9,7 +9,7 @@ class AppLocalizationsJa extends AppLocalizations {
   AppLocalizationsJa([String locale = 'ja']) : super(locale);
 
   @override
-  String get appName => 'YuDi Time Tracker';
+  String get appName => 'YuDi\nTime Tracker';
 
   @override
   String get welcomeTitle => 'YuDi Time Trackerへようこそ';
@@ -45,7 +45,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get noTasks => 'まだタスクがありません';
 
   @override
-  String get createFirstTask => '始めるには最初のタスクを作成してください';
+  String get createFirstTask => '最初のタスクを作成して開始してください';
 
   @override
   String get addCriterion => '基準を追加';
@@ -54,13 +54,13 @@ class AppLocalizationsJa extends AppLocalizations {
   String get noCriteria => 'まだ基準がありません';
 
   @override
-  String get createFirstCriterion => '始めるには最初の基準を作成してください';
+  String get createFirstCriterion => '最初の基準を作成して開始してください';
 
   @override
-  String get discrete => '離散的';
+  String get discrete => '離散';
 
   @override
-  String get continuous => '連続的';
+  String get continuous => '連続';
 
   @override
   String get selections => '選択';
@@ -108,10 +108,10 @@ class AppLocalizationsJa extends AppLocalizations {
   String get atLeastOneValue => '少なくとも1つの値が必要です';
 
   @override
-  String get selectionLimitRequired => '選択制限は0より大きい必要があります';
+  String get selectionLimitRequired => '選択制限は必須です';
 
   @override
-  String get minMustBeLessThanMax => '最小値は最大値より小さくする必要があります';
+  String get minMustBeLessThanMax => '最小値は最大値より小さい必要があります';
 
   @override
   String get stepMustBeGreaterThanZero => 'ステップ値は0より大きい必要があります';
@@ -120,7 +120,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String get deleteCriterion => '基準を削除';
 
   @override
-  String get deleteCriterionWarning => 'この基準を削除してもよろしいですか？この操作は元に戻せません。';
+  String deleteCriterionWarning(Object name) {
+    return 'この基準を削除してもよろしいですか？この操作は元に戻せません。';
+  }
 
   @override
   String criterionUsedInTasks(int count) {
@@ -212,283 +214,289 @@ class AppLocalizationsJa extends AppLocalizations {
   String get all => 'すべて';
 
   @override
-  String get listening => 'Listening...';
+  String get listening => 'リスニング';
 
   @override
-  String get taskName => 'Task Name';
+  String get taskName => 'タスク名';
 
   @override
-  String get mottoOptional => 'Motto (optional)';
+  String get mottoOptional => 'モットー(オプション)';
 
   @override
-  String get criteria => 'Criteria';
+  String get criteria => '基準';
 
   @override
-  String get noCriteriaAvailable => 'No criteria available. Create criteria first.';
+  String get noCriteriaAvailable => 'まだ基準がありません';
 
   @override
-  String get updateTask => 'Update Task';
+  String get updateTask => 'タスクを更新';
 
   @override
-  String get nameTooLong => 'Task name must be 32 characters or less';
+  String get nameTooLong => '名前は32文字以内である必要があります';
 
   @override
-  String get mottoTooLong => 'Motto must be 128 characters or less';
+  String get mottoTooLong => 'モットーは128文字以内である必要があります';
 
   @override
-  String get editTask => 'Edit Task';
+  String get editTask => 'タスクを編集';
 
   @override
-  String get enable => 'Enable';
+  String get enable => '有効化';
 
   @override
-  String get disable => 'Disable';
+  String get disable => '無効化';
 
   @override
-  String get enableTask => 'Enable Task';
+  String get enableTask => 'タスクを有効化';
 
   @override
-  String get disableTask => 'Disable Task';
+  String get disableTask => 'タスクを無効化';
 
   @override
-  String get enableTaskMessage => 'This will enable the task and make it available again.';
+  String get enableTaskMessage => 'このタスクを有効化してもよろしいですか？この操作は元に戻せません。';
 
   @override
-  String get disableTaskMessage => 'This will disable the task. It will be moved to the bottom of the list. You can enable it again later.';
+  String get disableTaskMessage => 'このタスクを無効化してもよろしいですか？この操作は元に戻せません。';
 
   @override
-  String get taskEnabled => 'Task enabled';
-
-  @override
-  String get taskDisabled => 'Task disabled';
-
-  @override
-  String get deleteTask => 'Delete Task';
-
-  @override
-  String get deleteTaskMessage => 'This will permanently delete the task and all associated sessions. This action cannot be undone.\n\nConsider disabling the task instead if you\'re not sure.';
-
-  @override
-  String get taskDeleted => 'Task deleted';
-
-  @override
-  String get anotherTaskActive => 'Another task is already active. Stop it first.';
-
-  @override
-  String errorActivatingTask(String error) {
-    return 'Error activating task: $error';
+  String taskEnabled(Object name) {
+    return 'タスクが有効化されました';
   }
 
   @override
-  String get delete => 'Delete';
+  String taskDisabled(Object name) {
+    return 'タスクが無効化されました';
+  }
+
+  @override
+  String get deleteTask => 'タスクを削除';
+
+  @override
+  String get deleteTaskMessage => 'このタスクを削除してもよろしいですか？この操作は元に戻せません。';
+
+  @override
+  String taskDeleted(Object name) {
+    return 'タスクが削除されました';
+  }
+
+  @override
+  String get anotherTaskActive => '別のタスクがアクティブです。最初に停止してください。';
+
+  @override
+  String errorActivatingTask(String error) {
+    return 'タスクを有効化する際にエラーが発生しました: $error';
+  }
+
+  @override
+  String get delete => '削除';
 
   @override
   String error(String error) {
-    return 'Error: $error';
+    return 'エラー: $error';
   }
 
   @override
   String errorStoppingSession(String error) {
-    return 'Error stopping session: $error';
+    return 'セッションを停止する際にエラーが発生しました: $error';
   }
 
   @override
   String errorDiscardingSession(String error) {
-    return 'Error discarding session: $error';
+    return 'セッションを破棄する際にエラーが発生しました: $error';
   }
 
   @override
-  String get noActiveTaskMessage => 'Start a task from the List of Tasks to track your time.';
+  String get noActiveTaskMessage => 'アクティブなタスクがありません';
 
   @override
-  String get dateFormat => 'MMMM d • HH:mm';
+  String get dateFormat => 'MMM d, HH:mm';
 
   @override
-  String get unknownTask => 'Unknown Task';
+  String get unknownTask => '不明なタスク';
 
   @override
   String get dateFormatInSessionHistory => 'MMM d, HH:mm';
 
   @override
   String errorLoadingTasks(String error) {
-    return 'Error loading tasks: $error';
+    return 'タスクを読み込む際にエラーが発生しました: $error';
   }
 
   @override
   String errorLoadingCriteria(String error) {
-    return 'Error loading criteria: $error';
+    return '基準を読み込む際にエラーが発生しました: $error';
   }
 
   @override
   String errorLoadingSessions(String error) {
-    return 'Error loading sessions: $error';
+    return 'セッションを読み込む際にエラーが発生しました: $error';
   }
 
   @override
   String errorLoadingAllSessions(String error) {
-    return 'Error loading all sessions: $error';
+    return 'すべてのセッションを読み込む際にエラーが発生しました: $error';
   }
 
   @override
-  String get unknown => 'Unknown';
+  String get unknown => '不明';
 
   @override
-  String get exportData => 'Export Data';
+  String get exportData => 'データをエクスポート';
 
   @override
-  String get exportAllAppDataToFile => 'Export all app data to a file';
+  String get exportAllAppDataToFile => 'すべてのアプリデータをファイルにエクスポートします';
 
   @override
-  String get importData => 'Import Data';
+  String get importData => 'データをインポート';
 
   @override
-  String get importDataFromFile => 'Import data from a file';
+  String get importDataFromFile => 'ファイルからデータをインポート';
 
   @override
-  String get chooseHowToExportData => 'Choose how you want to export the data:';
+  String get chooseHowToExportData => 'データのエクスポート方法を選択してください';
 
   @override
-  String get saveToDevice => 'Save to Device';
+  String get saveToDevice => 'デバイスに保存';
 
   @override
-  String get share => 'Share';
+  String get share => '共有';
 
   @override
-  String get saveExportFile => 'Save Export File';
+  String get saveExportFile => 'エクスポートファイルを保存';
 
   @override
   String dataSavedTo(String path) {
-    return 'Data saved to: $path';
+    return 'データが正常に保存されました';
   }
 
   @override
-  String get dataExportedSuccessfully => 'Data exported successfully';
+  String get dataExportedSuccessfully => 'データが正常にエクスポートされました';
 
   @override
   String errorExportingData(String error) {
-    return 'Error exporting data: $error';
+    return 'データをエクスポートする際にエラーが発生しました: $error';
   }
 
   @override
-  String get dataImportedSuccessfully => 'Data imported successfully';
+  String get dataImportedSuccessfully => 'データが正常にインポートされました';
 
   @override
   String errorImportingData(String error) {
-    return 'Error importing data: $error';
+    return 'データをインポートする際にエラーが発生しました: $error';
   }
 
   @override
-  String get allExistingDataWillBePermanentlyDeleted => 'All existing data will be permanently deleted.';
+  String get allExistingDataWillBePermanentlyDeleted => 'すべての既存データが永続的に削除されます。';
 
   @override
-  String get import => 'Import';
+  String get import => 'インポート';
 
   @override
-  String get language => 'Language';
+  String get language => '言語';
 
   @override
-  String get selectLanguage => 'Select Language';
+  String get selectLanguage => '言語を選択';
 
   @override
-  String get english => 'English';
+  String get english => '英語';
 
   @override
-  String get spanish => 'Spanish';
+  String get spanish => 'スペイン語';
 
   @override
-  String get chinese => 'Chinese';
+  String get chinese => '中国語';
 
   @override
-  String get hindi => 'Hindi';
+  String get hindi => 'ヒンディー語';
 
   @override
-  String get arabic => 'Arabic';
+  String get arabic => 'アラビア語';
 
   @override
-  String get portuguese => 'Portuguese';
+  String get portuguese => 'ポルトガル語';
 
   @override
-  String get bengali => 'Bengali';
+  String get bengali => 'ベンガル語';
 
   @override
-  String get japanese => 'Japanese';
+  String get japanese => '日本語';
 
   @override
-  String get punjabi => 'Punjabi';
+  String get punjabi => 'パンジャブ語';
 
   @override
-  String get german => 'German';
+  String get german => 'ドイツ語';
 
   @override
-  String get javanese => 'Javanese';
+  String get javanese => 'ジャワ語';
 
   @override
-  String get korean => 'Korean';
+  String get korean => '韓国語';
 
   @override
-  String get french => 'French';
+  String get french => 'フランス語';
 
   @override
-  String get telugu => 'Telugu';
+  String get telugu => 'テルグ語';
 
   @override
-  String get marathi => 'Marathi';
+  String get marathi => 'マラーティ語';
 
   @override
-  String get turkish => 'Turkish';
+  String get turkish => 'トルコ語';
 
   @override
-  String get tamil => 'Tamil';
+  String get tamil => 'タミル語';
 
   @override
-  String get vietnamese => 'Vietnamese';
+  String get vietnamese => 'ベトナム語';
 
   @override
-  String get urdu => 'Urdu';
+  String get urdu => 'ウルドゥー語';
 
   @override
-  String get ukrainian => 'Ukrainian';
+  String get ukrainian => 'ウクライナ語';
 
   @override
-  String get italian => 'Italian';
+  String get italian => 'イタリア語';
 
   @override
-  String get russian => 'Russian';
+  String get russian => 'ロシア語';
 
   @override
-  String get darkMode => 'Dark Mode';
+  String get darkMode => 'ダークモード';
 
   @override
-  String get light => 'Light';
+  String get light => 'ライト';
 
   @override
-  String get dark => 'Dark';
+  String get dark => 'ダーク';
 
   @override
-  String get automatic => 'Automatic';
+  String get automatic => '自動';
 
   @override
-  String get followSystemSetting => 'Follow system setting';
+  String get followSystemSetting => 'システム設定に従う';
 
   @override
-  String get dataManagement => 'Data Management';
+  String get dataManagement => 'データ管理';
 
   @override
-  String get version => 'Version';
+  String get version => 'バージョン';
 
   @override
   String errorSavingTask(String error) {
-    return 'Error saving task: $error';
+    return 'タスクを保存する際にエラーが発生しました: $error';
   }
 
   @override
   String errorDeletingCriterion(String error) {
-    return 'Error deleting criterion: $error';
+    return '基準を削除する際にエラーが発生しました: $error';
   }
 
   @override
   String criterionDeleted(String name) {
-    return 'Criterion \"$name\" deleted';
+    return '基準\"$name\"が削除されました';
   }
 
   @override
@@ -496,160 +504,160 @@ class AppLocalizationsJa extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       selectionLimit,
       locale: localeName,
-      other: '$selectionLimit selections',
-      one: '1 selection',
+      other: '$selectionLimit 値',
+      one: '1 値',
     );
     String _temp1 = intl.Intl.pluralLogic(
       values,
       locale: localeName,
-      other: '$values values',
-      one: '1 value',
+      other: '$values 値',
+      one: '1 値',
     );
-    return 'Discrete: $_temp0, $_temp1';
+    return '離散基準: $_temp0, $_temp1';
   }
 
   @override
   String continuousCriterion(double minValue, double maxValue, double stepValue) {
-    return 'Continuous: $minValue-$maxValue, step $stepValue';
+    return '連続基準';
   }
 
   @override
   String deleteCriterionWarningWithName(String name) {
-    return 'Are you sure you want to delete this criterion \"$name\"? This action cannot be undone.';
+    return '基準\"$name\"を削除してもよろしいですか？この操作は元に戻せません。';
   }
 
   @override
   String valueX(int index) {
-    return 'Value $index';
+    return '値$index';
   }
 
   @override
-  String get minValueRequired => 'Min value is required';
+  String get minValueRequired => '最小値は必須です';
 
   @override
-  String get maxValueRequired => 'Max value is required';
+  String get maxValueRequired => '最大値は必須です';
 
   @override
-  String get stepValueRequired => 'Step value is required';
+  String get stepValueRequired => 'ステップ値は必須です';
 
   @override
-  String get minValueMustBeANumber => 'Min value must be a number';
+  String get minValueMustBeANumber => '最小値は数値である必要があります';
 
   @override
-  String get maxValueMustBeANumber => 'Max value must be a number';
+  String get maxValueMustBeANumber => '最大値は数値である必要があります';
 
   @override
-  String get stepValueMustBeAPositiveNumber => 'Step value must be a positive number';
+  String get stepValueMustBeAPositiveNumber => 'ステップ値は正の数である必要があります';
 
   @override
-  String get minValueMustBeLessThanMaxValue => 'Min value must be less than max value';
+  String get minValueMustBeLessThanMaxValue => '最小値は最大値より小さい必要があります';
 
   @override
-  String get maxValueMustBeGreaterThanMinValue => 'Max value must be greater than min value';
+  String get maxValueMustBeGreaterThanMinValue => '最大値は最小値より大きい必要があります';
 
   @override
-  String get stepValueMustBeGreaterThanZero => 'Step value must be greater than 0';
+  String get stepValueMustBeGreaterThanZero => 'ステップ値は0より大きい必要があります';
 
   @override
-  String get valueCannotBeEmpty => 'Value cannot be empty';
+  String get valueCannotBeEmpty => '値は空にすることはできません';
 
   @override
-  String get selectionLimitMustBeGreaterThanZero => 'Selection limit must be greater than 0';
+  String get selectionLimitMustBeGreaterThanZero => '選択制限は0より大きい必要があります';
 
   @override
-  String get selectionLimitMustBeAPositiveNumber => 'Selection limit must be a positive number';
+  String get selectionLimitMustBeAPositiveNumber => '選択制限は正の数である必要があります';
 
   @override
-  String get atLeastOneValueForDiscreteCriteria => 'At least one value is required for discrete criteria';
+  String get atLeastOneValueForDiscreteCriteria => '離散基準には少なくとも1つの値が必要です';
 
   @override
-  String get selectIconType => 'Select Icon Type';
+  String get selectIconType => 'アイコンタイプを選択';
 
   @override
-  String get icon => 'Icon';
+  String get icon => 'アイコン';
 
   @override
-  String get emoji => 'Emoji';
+  String get emoji => '絵文字';
 
   @override
-  String get enterCriterionName => 'Enter criterion name';
+  String get enterCriterionName => '基準名を入力してください';
 
   @override
-  String get type => 'Type';
+  String get type => 'タイプ';
 
   @override
-  String get discreteConfiguration => 'Discrete Configuration';
+  String get discreteConfiguration => '離散設定';
 
   @override
-  String get howManyValuesCanBeSelected => 'How many values can be selected';
+  String get howManyValuesCanBeSelected => 'いくつの値を選択できますか';
 
   @override
-  String get continuousConfiguration => 'Continuous Configuration';
+  String get continuousConfiguration => '連続設定';
 
   @override
-  String get minimumAllowedValue => 'Minimum allowed value';
+  String get minimumAllowedValue => '最小値';
 
   @override
-  String get maximumAllowedValue => 'Maximum allowed value';
+  String get maximumAllowedValue => '最大値';
 
   @override
-  String get incrementDecrementStep => 'Increment/decrement step';
+  String get incrementDecrementStep => '増減ステップ';
 
   @override
   String errorSavingCriterion(String error) {
-    return 'Error saving criterion: $error';
+    return '基準を保存する際にエラーが発生しました: $error';
   }
 
   @override
-  String get editCriterion => 'Edit Criterion';
+  String get editCriterion => '基準を編集';
 
   @override
-  String get selectIcon => 'Select Icon';
+  String get selectIcon => 'アイコンを選択';
 
   @override
-  String get selectEmoji => 'Select Emoji';
+  String get selectEmoji => '絵文字を選択';
 
   @override
-  String get icons => 'Icons';
+  String get icons => 'アイコン';
 
   @override
-  String get emojis => 'Emojis';
+  String get emojis => '絵文字';
 
   @override
-  String get selectColor => 'Select Color';
+  String get selectColor => '色を選択';
 
   @override
-  String get noCriteriaToRate => 'No criteria to rate';
+  String get noCriteriaToRate => 'まだ基準がありません';
 
   @override
-  String get thisTaskHasNoCriteriaAssigned => 'This task has no criteria assigned.';
+  String get thisTaskHasNoCriteriaAssigned => 'このタスクには基準が割り当てられていません。';
 
   @override
   String errorSavingRatings(String error) {
-    return 'Error saving ratings: $error';
+    return '評価を保存する際にエラーが発生しました: $error';
   }
 
   @override
-  String get skip => 'Skip';
+  String get skip => 'スキップ';
 
   @override
-  String get save => 'Save';
+  String get save => '保存';
 
   @override
   String rangeXToXStepY(double minValue, double maxValue, double stepValue) {
-    return 'Range: $minValue - $maxValue (step: $stepValue)';
+    return '範囲: $minValue - $maxValue (ステップ: $stepValue)';
   }
 
   @override
   String rateTask(String taskName) {
-    return 'Rate Task: $taskName';
+    return 'タスクを評価: $taskName';
   }
 
   @override
   String selectUpToXValues(int selectionLimit) {
-    return 'Select up to $selectionLimit value(s)';
+    return '最大$selectionLimit個の値を選択';
   }
 
   @override
-  String get swipeToStart => 'Swipe to start';
+  String get swipeToStart => 'スワイプして開始';
 }

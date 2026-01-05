@@ -9,13 +9,13 @@ class AppLocalizationsTa extends AppLocalizations {
   AppLocalizationsTa([String locale = 'ta']) : super(locale);
 
   @override
-  String get appName => 'YuDi Time Tracker';
+  String get appName => 'YuDi\nTime Tracker';
 
   @override
   String get welcomeTitle => 'YuDi Time Tracker-க்கு வரவேற்கிறோம்';
 
   @override
-  String get welcomeDescription => 'உங்கள் நேரத்தை கண்காணிக்கவும், பணிகளை நிர்வகிக்கவும் மற்றும் உங்கள் உற்பத்தித்திறனை எளிதாக பகுப்பாய்வு செய்யவும்।';
+  String get welcomeDescription => 'நேரத்தை கண்காணிக்கவும், பணிகளை நிர்வகிக்கவும், உதபாக்கத்தை எளிதாக விவரிக்கவும்.';
 
   @override
   String get continueButton => 'தொடரவும்';
@@ -24,13 +24,13 @@ class AppLocalizationsTa extends AppLocalizations {
   String get activeTask => 'செயலில் உள்ள பணி';
 
   @override
-  String get listOfTasks => 'பணிகளின் பட்டியல்';
+  String get listOfTasks => 'பணிகள் பட்டியல்';
 
   @override
   String get statistics => 'புள்ளிவிவரங்கள்';
 
   @override
-  String get listOfCriteria => 'அளவுகோல்களின் பட்டியல்';
+  String get listOfCriteria => 'அளவுகோல்கள் பட்டியல்';
 
   @override
   String get settings => 'அமைப்புகள்';
@@ -39,10 +39,10 @@ class AppLocalizationsTa extends AppLocalizations {
   String get addTask => 'பணியைச் சேர்';
 
   @override
-  String get generalMotto => 'பொதுவான குறிக்கோள்';
+  String get generalMotto => 'பொதுவான முக்கியம்';
 
   @override
-  String get noTasks => 'இன்னும் பணிகள் இல்லை';
+  String get noTasks => 'பணிகள் இல்லை';
 
   @override
   String get createFirstTask => 'தொடங்க உங்கள் முதல் பணியை உருவாக்கவும்';
@@ -51,7 +51,7 @@ class AppLocalizationsTa extends AppLocalizations {
   String get addCriterion => 'அளவுகோலைச் சேர்';
 
   @override
-  String get noCriteria => 'இன்னும் அளவுகோல்கள் இல்லை';
+  String get noCriteria => 'அளவுகோல்கள் இல்லை';
 
   @override
   String get createFirstCriterion => 'தொடங்க உங்கள் முதல் அளவுகோலை உருவாக்கவும்';
@@ -81,7 +81,7 @@ class AppLocalizationsTa extends AppLocalizations {
   String get addValue => 'மதிப்பைச் சேர்';
 
   @override
-  String get selectionLimit => 'தேர்வு வரம்பு';
+  String get selectionLimit => 'தேர்ந்தெடுக்கப்பட்ட அளவு';
 
   @override
   String get minValue => 'குறைந்தபட்ச மதிப்பு';
@@ -96,22 +96,22 @@ class AppLocalizationsTa extends AppLocalizations {
   String get value => 'மதிப்பு';
 
   @override
-  String get updateCriterion => 'அளவுகோலைப் புதுப்பி';
+  String get updateCriterion => 'அளவுகோலை புதுப்பிக்கவும்';
 
   @override
   String get discard => 'நிராகரி';
 
   @override
-  String get nameRequired => 'பெயர் தேவையானது';
+  String get nameRequired => 'பெயர் தேவை';
 
   @override
   String get atLeastOneValue => 'குறைந்தபட்சம் ஒரு மதிப்பு தேவை';
 
   @override
-  String get selectionLimitRequired => 'தேர்வு வரம்பு 0 ஐ விட அதிகமாக இருக்க வேண்டும்';
+  String get selectionLimitRequired => 'தேர்ந்தெடுக்கப்பட்ட அளவு தேவை';
 
   @override
-  String get minMustBeLessThanMax => 'குறைந்தபட்ச மதிப்பு அதிகபட்ச மதிப்பை விட குறைவாக இருக்க வேண்டும்';
+  String get minMustBeLessThanMax => 'குறைந்தபட்ச மதிப்பு அதிகபட்ச மதிப்பை விட குறைந்ததாக இருக்க வேண்டும்';
 
   @override
   String get stepMustBeGreaterThanZero => 'படி மதிப்பு 0 ஐ விட அதிகமாக இருக்க வேண்டும்';
@@ -120,7 +120,9 @@ class AppLocalizationsTa extends AppLocalizations {
   String get deleteCriterion => 'அளவுகோலை நீக்கு';
 
   @override
-  String get deleteCriterionWarning => 'இந்த அளவுகோலை நீக்க விரும்புகிறீர்களா? இந்த செயலை திரும்பப் பெற முடியாது.';
+  String deleteCriterionWarning(Object name) {
+    return 'இந்த அளவுகோலை நீக்க விரும்புகிறீர்களா? இந்த செயலை திரும்பப் பெற முடியாது.';
+  }
 
   @override
   String criterionUsedInTasks(int count) {
@@ -134,19 +136,19 @@ class AppLocalizationsTa extends AppLocalizations {
   String get charts => 'விளக்கப்படங்கள்';
 
   @override
-  String get noSessions => 'இன்னும் அமர்வுகள் இல்லை';
+  String get noSessions => 'அமர்வுகள் இல்லை';
 
   @override
-  String get noSessionsDescription => 'உங்கள் அமர்வுகளை இங்கே பார்க்க நேரத்தை கண்காணிக்கத் தொடங்கவும்';
+  String get noSessionsDescription => 'அமர்வுகளை பார்க்க நேரத்தை பின்பற்றவும்';
 
   @override
-  String get noSessionsForPeriod => 'தேர்ந்தெடுக்கப்பட்ட காலத்திற்கு அமர்வுகள் கிடைக்கவில்லை';
+  String get noSessionsForPeriod => 'தேர்ந்தெடுக்கப்பட்ட காலாவதியில் அமர்வுகள் இல்லை';
 
   @override
-  String get noActiveTask => 'செயலில் உள்ள பணி இல்லை';
+  String get noActiveTask => 'செயலில் உள்ள பணியை இல்லை';
 
   @override
-  String get startTaskFromList => 'கண்காணிப்பைத் தொடங்க பட்டியலிலிருந்து ஒரு பணியைத் தொடங்கவும்';
+  String get startTaskFromList => 'பணிகள் பட்டியலிலிருந்து பணியை தொடங்கவும்';
 
   @override
   String get startTime => 'தொடக்க நேரம்';
@@ -155,7 +157,7 @@ class AppLocalizationsTa extends AppLocalizations {
   String get endTime => 'முடிவு நேரம்';
 
   @override
-  String get stop => 'நிறுத்து';
+  String get stop => 'நிறுத்தவும்';
 
   @override
   String get endTimeAfterStart => 'முடிவு நேரம் தொடக்க நேரத்திற்குப் பிறகு இருக்க வேண்டும்';
@@ -170,7 +172,7 @@ class AppLocalizationsTa extends AppLocalizations {
   String get cancel => 'ரத்துசெய்';
 
   @override
-  String get swipeToStop => 'நிறுத்த ஸ்வைப் செய்யவும்';
+  String get swipeToStop => 'நிறுத்தவும்';
 
   @override
   String get filterByTask => 'பணியால் வடிகட்டு';
@@ -185,10 +187,10 @@ class AppLocalizationsTa extends AppLocalizations {
   String get allCriteria => 'அனைத்து அளவுகோல்கள்';
 
   @override
-  String get timeSpentPerTask => 'ஒவ்வொரு பணிக்கும் செலவழித்த நேரம்';
+  String get timeSpentPerTask => 'பணிக்கு செலவிடப்பட்ட நேரம்';
 
   @override
-  String get taskFrequencyOverTime => 'காலப்போக்கில் பணி அதிர்வெண்';
+  String get taskFrequencyOverTime => 'நேரத்தில் பணிகளின் அடிப்படையில் அமர்வுகள்';
 
   @override
   String get averageCriterionRatings => 'சராசரி அளவுகோல் மதிப்பீடுகள்';
@@ -212,283 +214,289 @@ class AppLocalizationsTa extends AppLocalizations {
   String get all => 'அனைத்தும்';
 
   @override
-  String get listening => 'Listening...';
+  String get listening => 'செவிக்குறிப்பாக்கு';
 
   @override
-  String get taskName => 'Task Name';
+  String get taskName => 'பணிப்பட்டது';
 
   @override
-  String get mottoOptional => 'Motto (optional)';
+  String get mottoOptional => 'முக்கியம் (ஒப்பீட்டு)';
 
   @override
-  String get criteria => 'Criteria';
+  String get criteria => 'அளவுகோல்கள்';
 
   @override
-  String get noCriteriaAvailable => 'No criteria available. Create criteria first.';
+  String get noCriteriaAvailable => 'அளவுகோல்கள் இல்லை';
 
   @override
-  String get updateTask => 'Update Task';
+  String get updateTask => 'பணியை புதுப்பிக்கவும்';
 
   @override
-  String get nameTooLong => 'Task name must be 32 characters or less';
+  String get nameTooLong => 'பெயர் 32 எழுத்துக்களுக்கு மிகவும் நீளமாக இருக்க வேண்டும்';
 
   @override
-  String get mottoTooLong => 'Motto must be 128 characters or less';
+  String get mottoTooLong => 'முக்கியம் 128 எழுத்துக்களுக்கு மிகவும் நீளமாக இருக்க வேண்டும்';
 
   @override
-  String get editTask => 'Edit Task';
+  String get editTask => 'பணியை திருத்து';
 
   @override
-  String get enable => 'Enable';
+  String get enable => 'செயலில் உள்ளது';
 
   @override
-  String get disable => 'Disable';
+  String get disable => 'நிறுத்து';
 
   @override
-  String get enableTask => 'Enable Task';
+  String get enableTask => 'பணியை செயலில் உள்ளது';
 
   @override
-  String get disableTask => 'Disable Task';
+  String get disableTask => 'பணியை நிறுத்து';
 
   @override
-  String get enableTaskMessage => 'This will enable the task and make it available again.';
+  String get enableTaskMessage => 'இந்த பணியை செயலில் உள்ளது விரும்புகிறீர்களா? இந்த செயலை திரும்பப் பெற முடியாது.';
 
   @override
-  String get disableTaskMessage => 'This will disable the task. It will be moved to the bottom of the list. You can enable it again later.';
+  String get disableTaskMessage => 'இந்த பணியை நிறுத்த விரும்புகிறீர்களா? இந்த செயலை திரும்பப் பெற முடியாது.';
 
   @override
-  String get taskEnabled => 'Task enabled';
-
-  @override
-  String get taskDisabled => 'Task disabled';
-
-  @override
-  String get deleteTask => 'Delete Task';
-
-  @override
-  String get deleteTaskMessage => 'This will permanently delete the task and all associated sessions. This action cannot be undone.\n\nConsider disabling the task instead if you\'re not sure.';
-
-  @override
-  String get taskDeleted => 'Task deleted';
-
-  @override
-  String get anotherTaskActive => 'Another task is already active. Stop it first.';
-
-  @override
-  String errorActivatingTask(String error) {
-    return 'Error activating task: $error';
+  String taskEnabled(Object name) {
+    return 'பணியை செயலில் உள்ளது';
   }
 
   @override
-  String get delete => 'Delete';
+  String taskDisabled(Object name) {
+    return 'பணியை அகரியாத்தாக்கப்பட்டது';
+  }
+
+  @override
+  String get deleteTask => 'பணியை நீக்கு';
+
+  @override
+  String get deleteTaskMessage => 'இந்த பணியை நீக்க விரும்புகிறீர்களா? இந்த செயலை திரும்பப் பெற முடியாது.';
+
+  @override
+  String taskDeleted(Object name) {
+    return 'பணியை நீக்கப்பட்டது';
+  }
+
+  @override
+  String get anotherTaskActive => 'மற்றொரு பணி செயலில் உள்ளது. முதலில் அதை நிறுத்தவும்.';
+
+  @override
+  String errorActivatingTask(String error) {
+    return 'பணியை செயலில் உள்ளது விழும்புகிறீர்களா? இந்த செயலை திரும்பப் பெற முடியாது: $error';
+  }
+
+  @override
+  String get delete => 'நீக்கு';
 
   @override
   String error(String error) {
-    return 'Error: $error';
+    return 'பிழை: $error';
   }
 
   @override
   String errorStoppingSession(String error) {
-    return 'Error stopping session: $error';
+    return 'அமர்வை நிறுத்த விழும்புகிறீர்களா? இந்த செயலை திரும்பப் பெற முடியாது: $error';
   }
 
   @override
   String errorDiscardingSession(String error) {
-    return 'Error discarding session: $error';
+    return 'அமர்வை நிராகரிக்க விழும்புகிறீர்களா? இந்த செயலை திரும்பப் பெற முடியாது: $error';
   }
 
   @override
-  String get noActiveTaskMessage => 'Start a task from the List of Tasks to track your time.';
+  String get noActiveTaskMessage => 'செயலில் உள்ள பணியை இல்லை';
 
   @override
-  String get dateFormat => 'MMMM d • HH:mm';
+  String get dateFormat => 'MMM d, HH:mm';
 
   @override
-  String get unknownTask => 'Unknown Task';
+  String get unknownTask => 'அறியப்படாத பணி';
 
   @override
   String get dateFormatInSessionHistory => 'MMM d, HH:mm';
 
   @override
   String errorLoadingTasks(String error) {
-    return 'Error loading tasks: $error';
+    return 'பணிகளை ஏற்ற விழும்புகிறீர்களா? இந்த செயலை திரும்பப் பெற முடியாது: $error';
   }
 
   @override
   String errorLoadingCriteria(String error) {
-    return 'Error loading criteria: $error';
+    return 'அளவுகோல்களை ஏற்ற விழும்புகிறீர்களா? இந்த செயலை திரும்பப் பெற முடியாது: $error';
   }
 
   @override
   String errorLoadingSessions(String error) {
-    return 'Error loading sessions: $error';
+    return 'அமர்வுகளை ஏற்ற விழும்புகிறீர்களா? இந்த செயலை திரும்பப் பெற முடியாது: $error';
   }
 
   @override
   String errorLoadingAllSessions(String error) {
-    return 'Error loading all sessions: $error';
+    return 'அனைத்து அமர்வுகளை ஏற்ற விழும்புகிறீர்களா? இந்த செயலை திரும்பப் பெற முடியாது: $error';
   }
 
   @override
-  String get unknown => 'Unknown';
+  String get unknown => 'அறியப்படாத';
 
   @override
-  String get exportData => 'Export Data';
+  String get exportData => 'தரவு வெளியேற்று';
 
   @override
-  String get exportAllAppDataToFile => 'Export all app data to a file';
+  String get exportAllAppDataToFile => 'அனைத்து தரவுகளை ஒரு கோப்பில் வெளியேற்றவும்';
 
   @override
-  String get importData => 'Import Data';
+  String get importData => 'தரவு செய்திருத்தப்பட்டது';
 
   @override
-  String get importDataFromFile => 'Import data from a file';
+  String get importDataFromFile => 'கோப்பிலிருந்து தரவு செய்திருத்தப்பட்டது';
 
   @override
-  String get chooseHowToExportData => 'Choose how you want to export the data:';
+  String get chooseHowToExportData => 'தரவுத் துவக்க வழியைத் தேர்ந்தெடுக்கவும்';
 
   @override
-  String get saveToDevice => 'Save to Device';
+  String get saveToDevice => 'சாதனத்திற்கு சேமிக்கவும்';
 
   @override
-  String get share => 'Share';
+  String get share => 'பகிர்வு';
 
   @override
-  String get saveExportFile => 'Save Export File';
+  String get saveExportFile => 'வெளியேற்றும் கோப்பை சேமிக்கவும்';
 
   @override
   String dataSavedTo(String path) {
-    return 'Data saved to: $path';
+    return 'தரவு சேமிக்கப்பட்டது';
   }
 
   @override
-  String get dataExportedSuccessfully => 'Data exported successfully';
+  String get dataExportedSuccessfully => 'தரவு வெளியேற்றப்பட்டது';
 
   @override
   String errorExportingData(String error) {
-    return 'Error exporting data: $error';
+    return 'தரவு வெளியேற்ற விழும்புகிறீர்களா? இந்த செயலை திரும்பப் பெற முடியாது: $error';
   }
 
   @override
-  String get dataImportedSuccessfully => 'Data imported successfully';
+  String get dataImportedSuccessfully => 'தரவு செய்திருத்தப்பட்டது';
 
   @override
   String errorImportingData(String error) {
-    return 'Error importing data: $error';
+    return 'தரவு செய்திருத்தப்பட்டது: $error';
   }
 
   @override
-  String get allExistingDataWillBePermanentlyDeleted => 'All existing data will be permanently deleted.';
+  String get allExistingDataWillBePermanentlyDeleted => 'அனைத்து உள்ள தரவு மாறாததாக நீக்கப்படும்.';
 
   @override
-  String get import => 'Import';
+  String get import => 'செய்திருத்தப்பட்டது';
 
   @override
-  String get language => 'Language';
+  String get language => 'மொழி';
 
   @override
-  String get selectLanguage => 'Select Language';
+  String get selectLanguage => 'மொழியை தேர்ந்தெடுக்கவும்';
 
   @override
-  String get english => 'English';
+  String get english => 'ஆங்கிலம்';
 
   @override
-  String get spanish => 'Spanish';
+  String get spanish => 'ஸ்பானிஷ்';
 
   @override
-  String get chinese => 'Chinese';
+  String get chinese => 'சீனி';
 
   @override
-  String get hindi => 'Hindi';
+  String get hindi => 'ஹிந்தி';
 
   @override
-  String get arabic => 'Arabic';
+  String get arabic => 'அரபிக்';
 
   @override
-  String get portuguese => 'Portuguese';
+  String get portuguese => 'போர்டுகுஜிஸ்';
 
   @override
-  String get bengali => 'Bengali';
+  String get bengali => 'பெங்காலி';
 
   @override
-  String get japanese => 'Japanese';
+  String get japanese => 'ஜப்பானியம்';
 
   @override
-  String get punjabi => 'Punjabi';
+  String get punjabi => 'பங்கலி';
 
   @override
-  String get german => 'German';
+  String get german => 'ஜெர்மன்';
 
   @override
-  String get javanese => 'Javanese';
+  String get javanese => 'ஜவானிஸ்';
 
   @override
-  String get korean => 'Korean';
+  String get korean => 'கோரியன்';
 
   @override
-  String get french => 'French';
+  String get french => 'பிரெஞ்சு';
 
   @override
-  String get telugu => 'Telugu';
+  String get telugu => 'தேலுகு';
 
   @override
-  String get marathi => 'Marathi';
+  String get marathi => 'மராத்தி';
 
   @override
-  String get turkish => 'Turkish';
+  String get turkish => 'துருக்கி';
 
   @override
-  String get tamil => 'Tamil';
+  String get tamil => 'தமிழ்';
 
   @override
-  String get vietnamese => 'Vietnamese';
+  String get vietnamese => 'வியட்நாமீஸ்';
 
   @override
-  String get urdu => 'Urdu';
+  String get urdu => 'உருது';
 
   @override
-  String get ukrainian => 'Ukrainian';
+  String get ukrainian => 'உக்ரைனியன்';
 
   @override
-  String get italian => 'Italian';
+  String get italian => 'இத்தாலியன்';
 
   @override
-  String get russian => 'Russian';
+  String get russian => 'ரஷியன்';
 
   @override
-  String get darkMode => 'Dark Mode';
+  String get darkMode => 'இருண்ட பயன்பாட்டு முறை';
 
   @override
-  String get light => 'Light';
+  String get light => 'ஒளியான';
 
   @override
-  String get dark => 'Dark';
+  String get dark => 'இருண்ட';
 
   @override
-  String get automatic => 'Automatic';
+  String get automatic => 'தானியங்கி';
 
   @override
-  String get followSystemSetting => 'Follow system setting';
+  String get followSystemSetting => 'அமைப்புகளை பின்பற்று';
 
   @override
-  String get dataManagement => 'Data Management';
+  String get dataManagement => 'தரவு நிர்வகிப்பு';
 
   @override
-  String get version => 'Version';
+  String get version => 'பதிப்பு';
 
   @override
   String errorSavingTask(String error) {
-    return 'Error saving task: $error';
+    return 'பணியை சேமிக்க விழும்புகிறீர்களா? இந்த செயலை திரும்பப் பெற முடியாது: $error';
   }
 
   @override
   String errorDeletingCriterion(String error) {
-    return 'Error deleting criterion: $error';
+    return 'அளவுகோலை நீக்க விழும்புகிறீர்களா? இந்த செயலை திரும்பப் பெற முடியாது: $error';
   }
 
   @override
   String criterionDeleted(String name) {
-    return 'Criterion \"$name\" deleted';
+    return 'அளவுகோல் \"$name\" நீக்கப்பட்டது';
   }
 
   @override
@@ -496,160 +504,160 @@ class AppLocalizationsTa extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       selectionLimit,
       locale: localeName,
-      other: '$selectionLimit selections',
-      one: '1 selection',
+      other: '$selectionLimit மதிப்பு',
+      one: '1 மதிப்பு',
     );
     String _temp1 = intl.Intl.pluralLogic(
       values,
       locale: localeName,
-      other: '$values values',
-      one: '1 value',
+      other: '$values மதிப்பு',
+      one: '1 மதிப்பு',
     );
-    return 'Discrete: $_temp0, $_temp1';
+    return 'தனித்த: $_temp0, $_temp1';
   }
 
   @override
   String continuousCriterion(double minValue, double maxValue, double stepValue) {
-    return 'Continuous: $minValue-$maxValue, step $stepValue';
+    return 'தொடர்ச்சியான: $minValue - $maxValue, படி $stepValue';
   }
 
   @override
   String deleteCriterionWarningWithName(String name) {
-    return 'Are you sure you want to delete this criterion \"$name\"? This action cannot be undone.';
+    return 'அளவுகோல் \"$name\" நீக்க விரும்புகிறீர்களா? இந்த செயலை திரும்பப் பெற முடியாது.';
   }
 
   @override
   String valueX(int index) {
-    return 'Value $index';
+    return 'மதிப்பு $index';
   }
 
   @override
-  String get minValueRequired => 'Min value is required';
+  String get minValueRequired => 'குறைந்தபட்ச மதிப்பு தேவை';
 
   @override
-  String get maxValueRequired => 'Max value is required';
+  String get maxValueRequired => 'அதிகபட்ச மதிப்பு தேவை';
 
   @override
-  String get stepValueRequired => 'Step value is required';
+  String get stepValueRequired => 'படி மதிப்பு தேவை';
 
   @override
-  String get minValueMustBeANumber => 'Min value must be a number';
+  String get minValueMustBeANumber => 'குறைந்தபட்ச மதிப்பு ஒரு எண்ணாக இருக்க வேண்டும்';
 
   @override
-  String get maxValueMustBeANumber => 'Max value must be a number';
+  String get maxValueMustBeANumber => 'அதிகபட்ச மதிப்பு ஒரு எண்ணாக இருக்க வேண்டும்';
 
   @override
-  String get stepValueMustBeAPositiveNumber => 'Step value must be a positive number';
+  String get stepValueMustBeAPositiveNumber => 'படி மதிப்பு ஒரு நேர்மறை எண்ணாக இருக்க வேண்டும்';
 
   @override
-  String get minValueMustBeLessThanMaxValue => 'Min value must be less than max value';
+  String get minValueMustBeLessThanMaxValue => 'குறைந்தபட்ச மதிப்பு அதிகபட்ச மதிப்பை விட குறைந்ததாக இருக்க வேண்டும்';
 
   @override
-  String get maxValueMustBeGreaterThanMinValue => 'Max value must be greater than min value';
+  String get maxValueMustBeGreaterThanMinValue => 'அதிகபட்ச மதிப்பு குறைந்தபட்ச மதிப்பை விட அதிகமாக இருக்க வேண்டும்';
 
   @override
-  String get stepValueMustBeGreaterThanZero => 'Step value must be greater than 0';
+  String get stepValueMustBeGreaterThanZero => 'படி மதிப்பு 0 ஐ விட அதிகமாக இருக்க வேண்டும்';
 
   @override
-  String get valueCannotBeEmpty => 'Value cannot be empty';
+  String get valueCannotBeEmpty => 'மதிப்பு இல்லை';
 
   @override
-  String get selectionLimitMustBeGreaterThanZero => 'Selection limit must be greater than 0';
+  String get selectionLimitMustBeGreaterThanZero => 'தேர்ந்தெடுக்கப்பட்ட அளவு 0 ஐ விட அதிகமாக இருக்க வேண்டும்';
 
   @override
-  String get selectionLimitMustBeAPositiveNumber => 'Selection limit must be a positive number';
+  String get selectionLimitMustBeAPositiveNumber => 'தேர்ந்தெடுக்கப்பட்ட அளவு ஒரு நேர்மறை எண்ணாக இருக்க வேண்டும்';
 
   @override
-  String get atLeastOneValueForDiscreteCriteria => 'At least one value is required for discrete criteria';
+  String get atLeastOneValueForDiscreteCriteria => 'தனித்த அளவுகோல்களுக்கு குறைந்தபட்சம் ஒரு மதிப்பு தேவை';
 
   @override
-  String get selectIconType => 'Select Icon Type';
+  String get selectIconType => 'ஐகோன் வகையை தேர்ந்தெடுக்கவும்';
 
   @override
-  String get icon => 'Icon';
+  String get icon => 'ஐகோன்';
 
   @override
-  String get emoji => 'Emoji';
+  String get emoji => 'இமோஜி';
 
   @override
-  String get enterCriterionName => 'Enter criterion name';
+  String get enterCriterionName => 'அளவுகோல் பெயரை உள்ளிடவும்';
 
   @override
-  String get type => 'Type';
+  String get type => 'வகை';
 
   @override
-  String get discreteConfiguration => 'Discrete Configuration';
+  String get discreteConfiguration => 'தனித்த அமைப்பு';
 
   @override
-  String get howManyValuesCanBeSelected => 'How many values can be selected';
+  String get howManyValuesCanBeSelected => 'எத்தனை மதிப்புகளை தேர்ந்தெடுக்க முடியும்';
 
   @override
-  String get continuousConfiguration => 'Continuous Configuration';
+  String get continuousConfiguration => 'தொடர்ச்சியான அமைப்பு';
 
   @override
-  String get minimumAllowedValue => 'Minimum allowed value';
+  String get minimumAllowedValue => 'அனுமதிக்கப்பட்ட மதிப்பு';
 
   @override
-  String get maximumAllowedValue => 'Maximum allowed value';
+  String get maximumAllowedValue => 'அனுமதிக்கப்பட்ட மதிப்பு';
 
   @override
-  String get incrementDecrementStep => 'Increment/decrement step';
+  String get incrementDecrementStep => 'அதிகரித்தல்/குறைத்தல் படி';
 
   @override
   String errorSavingCriterion(String error) {
-    return 'Error saving criterion: $error';
+    return 'அளவுகோலை சேமிக்க விழும்புகிறீர்களா? இந்த செயலை திரும்பப் பெற முடியாது: $error';
   }
 
   @override
-  String get editCriterion => 'Edit Criterion';
+  String get editCriterion => 'அளவுகோலை திருத்து';
 
   @override
-  String get selectIcon => 'Select Icon';
+  String get selectIcon => 'ஐகோன்தேர்ந்தெடுக்கவும்';
 
   @override
-  String get selectEmoji => 'Select Emoji';
+  String get selectEmoji => 'இமோஜியை தேர்ந்தெடுக்கவும்';
 
   @override
-  String get icons => 'Icons';
+  String get icons => 'ஐகோன்கள்';
 
   @override
-  String get emojis => 'Emojis';
+  String get emojis => 'இமோஜி';
 
   @override
-  String get selectColor => 'Select Color';
+  String get selectColor => 'வண்ணத்தை தேர்ந்தெடுக்கவும்';
 
   @override
-  String get noCriteriaToRate => 'No criteria to rate';
+  String get noCriteriaToRate => 'அளவுகோல்களை மதிப்பீடு செய்ய அளவுகோல்கள் இல்லை';
 
   @override
-  String get thisTaskHasNoCriteriaAssigned => 'This task has no criteria assigned.';
+  String get thisTaskHasNoCriteriaAssigned => 'இந்த பணிக்கு அளவுகோல்கள் இல்லை';
 
   @override
   String errorSavingRatings(String error) {
-    return 'Error saving ratings: $error';
+    return 'மதிப்பீடுகளை சேமிக்க விழும்புகிறீர்களா? இந்த செயலை திரும்பப் பெற முடியாது: $error';
   }
 
   @override
-  String get skip => 'Skip';
+  String get skip => 'தவிர்க்கவும்';
 
   @override
-  String get save => 'Save';
+  String get save => 'சேமிக்கவும்';
 
   @override
   String rangeXToXStepY(double minValue, double maxValue, double stepValue) {
-    return 'Range: $minValue - $maxValue (step: $stepValue)';
+    return 'இடைவிட்டம்: $minValue - $maxValue (படி: $stepValue)';
   }
 
   @override
   String rateTask(String taskName) {
-    return 'Rate Task: $taskName';
+    return 'பணியை மதிப்பீடு செய்யவும்: $taskName';
   }
 
   @override
   String selectUpToXValues(int selectionLimit) {
-    return 'Select up to $selectionLimit value(s)';
+    return 'அதிகபட்ச $selectionLimit மதிப்புகளை தேர்ந்தெடுக்கவும்';
   }
 
   @override
-  String get swipeToStart => 'Swipe to start';
+  String get swipeToStart => 'தொடங்கவும்';
 }

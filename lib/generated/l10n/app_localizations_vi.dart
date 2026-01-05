@@ -9,7 +9,7 @@ class AppLocalizationsVi extends AppLocalizations {
   AppLocalizationsVi([String locale = 'vi']) : super(locale);
 
   @override
-  String get appName => 'YuDi Time Tracker';
+  String get appName => 'YuDi\nTime Tracker';
 
   @override
   String get welcomeTitle => 'Chào mừng đến với YuDi Time Tracker';
@@ -42,7 +42,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get generalMotto => 'Khẩu hiệu chung';
 
   @override
-  String get noTasks => 'Chưa có nhiệm vụ nào';
+  String get noTasks => 'Không có nhiệm vụ nào';
 
   @override
   String get createFirstTask => 'Tạo nhiệm vụ đầu tiên của bạn để bắt đầu';
@@ -51,7 +51,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get addCriterion => 'Thêm tiêu chí';
 
   @override
-  String get noCriteria => 'Chưa có tiêu chí nào';
+  String get noCriteria => 'Không có tiêu chí nào';
 
   @override
   String get createFirstCriterion => 'Tạo tiêu chí đầu tiên của bạn để bắt đầu';
@@ -66,10 +66,10 @@ class AppLocalizationsVi extends AppLocalizations {
   String get selections => 'lựa chọn';
 
   @override
-  String get values => 'giá trị';
+  String get values => 'Giá trị';
 
   @override
-  String get step => 'bước';
+  String get step => 'Bước';
 
   @override
   String get criterionName => 'Tên tiêu chí';
@@ -108,7 +108,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get atLeastOneValue => 'Cần ít nhất một giá trị';
 
   @override
-  String get selectionLimitRequired => 'Giới hạn lựa chọn phải lớn hơn 0';
+  String get selectionLimitRequired => 'Giới hạn lựa chọn là bắt buộc';
 
   @override
   String get minMustBeLessThanMax => 'Giá trị tối thiểu phải nhỏ hơn giá trị tối đa';
@@ -120,7 +120,9 @@ class AppLocalizationsVi extends AppLocalizations {
   String get deleteCriterion => 'Xóa tiêu chí';
 
   @override
-  String get deleteCriterionWarning => 'Bạn có chắc chắn muốn xóa tiêu chí này không? Hành động này không thể hoàn tác.';
+  String deleteCriterionWarning(Object name) {
+    return 'Bạn có chắc chắn muốn xóa tiêu chí này không? Hành động này không thể hoàn tác.';
+  }
 
   @override
   String criterionUsedInTasks(int count) {
@@ -134,7 +136,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get charts => 'Biểu đồ';
 
   @override
-  String get noSessions => 'Chưa có phiên nào';
+  String get noSessions => 'Không có phiên nào';
 
   @override
   String get noSessionsDescription => 'Bắt đầu theo dõi thời gian để xem các phiên của bạn ở đây';
@@ -173,16 +175,16 @@ class AppLocalizationsVi extends AppLocalizations {
   String get swipeToStop => 'Vuốt để dừng';
 
   @override
-  String get filterByTask => 'Lọc theo Nhiệm vụ';
+  String get filterByTask => 'Lọc theo nhiệm vụ';
 
   @override
-  String get allTasks => 'Tất cả Nhiệm vụ';
+  String get allTasks => 'Tất cả nhiệm vụ';
 
   @override
-  String get filterByCriterion => 'Lọc theo Tiêu chí';
+  String get filterByCriterion => 'Lọc theo tiêu chí';
 
   @override
-  String get allCriteria => 'Tất cả Tiêu chí';
+  String get allCriteria => 'Tất cả tiêu chí';
 
   @override
   String get timeSpentPerTask => 'Thời gian Dành cho Mỗi Nhiệm vụ';
@@ -191,7 +193,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get taskFrequencyOverTime => 'Tần suất Nhiệm vụ Theo Thời gian';
 
   @override
-  String get averageCriterionRatings => 'Đánh giá Tiêu chí Trung bình';
+  String get averageCriterionRatings => 'Đánh giá tiêu chí trung bình';
 
   @override
   String get activityChart => 'Biểu đồ Hoạt động';
@@ -212,221 +214,227 @@ class AppLocalizationsVi extends AppLocalizations {
   String get all => 'Tất cả';
 
   @override
-  String get listening => 'Listening...';
+  String get listening => 'Nghe';
 
   @override
-  String get taskName => 'Task Name';
+  String get taskName => 'Tên nhiệm vụ';
 
   @override
-  String get mottoOptional => 'Motto (optional)';
+  String get mottoOptional => 'Motto (Tùy chọn)';
 
   @override
-  String get criteria => 'Criteria';
+  String get criteria => 'Tiêu chí';
 
   @override
-  String get noCriteriaAvailable => 'No criteria available. Create criteria first.';
+  String get noCriteriaAvailable => 'Không có tiêu chí nào';
 
   @override
-  String get updateTask => 'Update Task';
+  String get updateTask => 'Cập nhật nhiệm vụ';
 
   @override
-  String get nameTooLong => 'Task name must be 32 characters or less';
+  String get nameTooLong => 'Tên phải ít hơn 128 ký tự';
 
   @override
-  String get mottoTooLong => 'Motto must be 128 characters or less';
+  String get mottoTooLong => 'Motto phải ít hơn 128 ký tự';
 
   @override
-  String get editTask => 'Edit Task';
+  String get editTask => 'Sửa nhiệm vụ';
 
   @override
-  String get enable => 'Enable';
+  String get enable => 'Kích hoạt';
 
   @override
-  String get disable => 'Disable';
+  String get disable => 'Vô hiệu hóa';
 
   @override
-  String get enableTask => 'Enable Task';
+  String get enableTask => 'Kích hoạt nhiệm vụ';
 
   @override
-  String get disableTask => 'Disable Task';
+  String get disableTask => 'Vô hiệu hóa nhiệm vụ';
 
   @override
-  String get enableTaskMessage => 'This will enable the task and make it available again.';
+  String get enableTaskMessage => 'Bạn có chắc chắn muốn kích hoạt nhiệm vụ này không? Hành động này không thể hoàn tác.';
 
   @override
-  String get disableTaskMessage => 'This will disable the task. It will be moved to the bottom of the list. You can enable it again later.';
+  String get disableTaskMessage => 'Bạn có chắc chắn muốn vô hiệu hóa nhiệm vụ này không? Hành động này không thể hoàn tác.';
 
   @override
-  String get taskEnabled => 'Task enabled';
-
-  @override
-  String get taskDisabled => 'Task disabled';
-
-  @override
-  String get deleteTask => 'Delete Task';
-
-  @override
-  String get deleteTaskMessage => 'This will permanently delete the task and all associated sessions. This action cannot be undone.\n\nConsider disabling the task instead if you\'re not sure.';
-
-  @override
-  String get taskDeleted => 'Task deleted';
-
-  @override
-  String get anotherTaskActive => 'Another task is already active. Stop it first.';
-
-  @override
-  String errorActivatingTask(String error) {
-    return 'Error activating task: $error';
+  String taskEnabled(Object name) {
+    return 'Nhiệm vụ đã được kích hoạt';
   }
 
   @override
-  String get delete => 'Delete';
+  String taskDisabled(Object name) {
+    return 'Nhiệm vụ đã bị vô hiệu hóa';
+  }
+
+  @override
+  String get deleteTask => 'Xóa nhiệm vụ';
+
+  @override
+  String get deleteTaskMessage => 'Bạn có chắc chắn muốn xóa nhiệm vụ này không? Hành động này không thể hoàn tác.';
+
+  @override
+  String taskDeleted(Object name) {
+    return 'Nhiệm vụ đã bị xóa';
+  }
+
+  @override
+  String get anotherTaskActive => 'Một nhiệm vụ khác đang hoạt động. Hãy dừng nó trước khi bắt đầu.';
+
+  @override
+  String errorActivatingTask(String error) {
+    return 'Lỗi khi kích hoạt nhiệm vụ: $error';
+  }
+
+  @override
+  String get delete => 'Xóa';
 
   @override
   String error(String error) {
-    return 'Error: $error';
+    return 'Lỗi: $error';
   }
 
   @override
   String errorStoppingSession(String error) {
-    return 'Error stopping session: $error';
+    return 'Lỗi khi dừng phiên: $error';
   }
 
   @override
   String errorDiscardingSession(String error) {
-    return 'Error discarding session: $error';
+    return 'Lỗi khi hủy phiên: $error';
   }
 
   @override
-  String get noActiveTaskMessage => 'Start a task from the List of Tasks to track your time.';
+  String get noActiveTaskMessage => 'Không có nhiệm vụ đang hoạt động';
 
   @override
-  String get dateFormat => 'MMMM d • HH:mm';
+  String get dateFormat => 'MMM d, HH:mm';
 
   @override
-  String get unknownTask => 'Unknown Task';
+  String get unknownTask => 'Không xác định nhiệm vụ';
 
   @override
   String get dateFormatInSessionHistory => 'MMM d, HH:mm';
 
   @override
   String errorLoadingTasks(String error) {
-    return 'Error loading tasks: $error';
+    return 'Lỗi khi tải nhiệm vụ: $error';
   }
 
   @override
   String errorLoadingCriteria(String error) {
-    return 'Error loading criteria: $error';
+    return 'Lỗi khi tải tiêu chí: $error';
   }
 
   @override
   String errorLoadingSessions(String error) {
-    return 'Error loading sessions: $error';
+    return 'Lỗi khi tải phiên: $error';
   }
 
   @override
   String errorLoadingAllSessions(String error) {
-    return 'Error loading all sessions: $error';
+    return 'Lỗi khi tải tất cả phiên: $error';
   }
 
   @override
-  String get unknown => 'Unknown';
+  String get unknown => 'Không xác định';
 
   @override
-  String get exportData => 'Export Data';
+  String get exportData => 'Xuất dữ liệu';
 
   @override
-  String get exportAllAppDataToFile => 'Export all app data to a file';
+  String get exportAllAppDataToFile => 'Xuất tất cả dữ liệu ứng dụng vào tệp';
 
   @override
-  String get importData => 'Import Data';
+  String get importData => 'Nhập dữ liệu';
 
   @override
-  String get importDataFromFile => 'Import data from a file';
+  String get importDataFromFile => 'Nhập dữ liệu từ tệp';
 
   @override
-  String get chooseHowToExportData => 'Choose how you want to export the data:';
+  String get chooseHowToExportData => 'Chọn cách xuất dữ liệu';
 
   @override
-  String get saveToDevice => 'Save to Device';
+  String get saveToDevice => 'Lưu vào thiết bị';
 
   @override
-  String get share => 'Share';
+  String get share => 'Chia sẻ';
 
   @override
-  String get saveExportFile => 'Save Export File';
+  String get saveExportFile => 'Lưu dữ liệu xuất ra file';
 
   @override
   String dataSavedTo(String path) {
-    return 'Data saved to: $path';
+    return 'Dữ liệu đã được lưu thành công';
   }
 
   @override
-  String get dataExportedSuccessfully => 'Data exported successfully';
+  String get dataExportedSuccessfully => 'Dữ liệu đã được xuất thành công';
 
   @override
   String errorExportingData(String error) {
-    return 'Error exporting data: $error';
+    return 'Lỗi khi xuất dữ liệu: $error';
   }
 
   @override
-  String get dataImportedSuccessfully => 'Data imported successfully';
+  String get dataImportedSuccessfully => 'Dữ liệu đã được nhập thành công';
 
   @override
   String errorImportingData(String error) {
-    return 'Error importing data: $error';
+    return 'Lỗi khi nhập dữ liệu: $error';
   }
 
   @override
-  String get allExistingDataWillBePermanentlyDeleted => 'All existing data will be permanently deleted.';
+  String get allExistingDataWillBePermanentlyDeleted => 'Tất cả dữ liệu hiện có sẽ bị xóa vĩnh viễn.';
 
   @override
-  String get import => 'Import';
+  String get import => 'Nhập';
 
   @override
-  String get language => 'Language';
+  String get language => 'Ngôn ngữ';
 
   @override
-  String get selectLanguage => 'Select Language';
+  String get selectLanguage => 'Chọn ngôn ngữ';
 
   @override
-  String get english => 'English';
+  String get english => 'Tiếng Anh';
 
   @override
-  String get spanish => 'Spanish';
+  String get spanish => 'Tây Ban Nha';
 
   @override
-  String get chinese => 'Chinese';
+  String get chinese => 'Trung Quốc';
 
   @override
   String get hindi => 'Hindi';
 
   @override
-  String get arabic => 'Arabic';
+  String get arabic => 'Tiếng Ả Rập';
 
   @override
-  String get portuguese => 'Portuguese';
+  String get portuguese => 'Bồ Đào Nha';
 
   @override
   String get bengali => 'Bengali';
 
   @override
-  String get japanese => 'Japanese';
+  String get japanese => 'Nhật';
 
   @override
   String get punjabi => 'Punjabi';
 
   @override
-  String get german => 'German';
+  String get german => 'Đức';
 
   @override
   String get javanese => 'Javanese';
 
   @override
-  String get korean => 'Korean';
+  String get korean => 'Hàn';
 
   @override
-  String get french => 'French';
+  String get french => 'Pháp';
 
   @override
   String get telugu => 'Telugu';
@@ -435,60 +443,60 @@ class AppLocalizationsVi extends AppLocalizations {
   String get marathi => 'Marathi';
 
   @override
-  String get turkish => 'Turkish';
+  String get turkish => 'Thổ Nhĩ Kỳ';
 
   @override
   String get tamil => 'Tamil';
 
   @override
-  String get vietnamese => 'Vietnamese';
+  String get vietnamese => 'Việt Nam';
 
   @override
   String get urdu => 'Urdu';
 
   @override
-  String get ukrainian => 'Ukrainian';
+  String get ukrainian => 'Ucrai';
 
   @override
-  String get italian => 'Italian';
+  String get italian => 'Ýtali';
 
   @override
-  String get russian => 'Russian';
+  String get russian => 'Nga';
 
   @override
-  String get darkMode => 'Dark Mode';
+  String get darkMode => 'Chế độ tối';
 
   @override
-  String get light => 'Light';
+  String get light => 'Sáng';
 
   @override
-  String get dark => 'Dark';
+  String get dark => 'Tối';
 
   @override
-  String get automatic => 'Automatic';
+  String get automatic => 'Tự động';
 
   @override
-  String get followSystemSetting => 'Follow system setting';
+  String get followSystemSetting => 'Theo cài đặt hệ thống';
 
   @override
-  String get dataManagement => 'Data Management';
+  String get dataManagement => 'Quản lý dữ liệu';
 
   @override
-  String get version => 'Version';
+  String get version => 'Phiên bản';
 
   @override
   String errorSavingTask(String error) {
-    return 'Error saving task: $error';
+    return 'Lỗi khi lưu nhiệm vụ: $error';
   }
 
   @override
   String errorDeletingCriterion(String error) {
-    return 'Error deleting criterion: $error';
+    return 'Lỗi khi xóa tiêu chí: $error';
   }
 
   @override
   String criterionDeleted(String name) {
-    return 'Criterion \"$name\" deleted';
+    return 'Tiêu chí \"$name\" đã bị xóa';
   }
 
   @override
@@ -496,160 +504,160 @@ class AppLocalizationsVi extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       selectionLimit,
       locale: localeName,
-      other: '$selectionLimit selections',
-      one: '1 selection',
+      other: '$selectionLimit giá trị',
+      one: '1 giá trị',
     );
     String _temp1 = intl.Intl.pluralLogic(
       values,
       locale: localeName,
-      other: '$values values',
-      one: '1 value',
+      other: '$values giá trị',
+      one: '1 giá trị',
     );
-    return 'Discrete: $_temp0, $_temp1';
+    return 'Rời rạc: $_temp0, $_temp1';
   }
 
   @override
   String continuousCriterion(double minValue, double maxValue, double stepValue) {
-    return 'Continuous: $minValue-$maxValue, step $stepValue';
+    return 'Liên tục';
   }
 
   @override
   String deleteCriterionWarningWithName(String name) {
-    return 'Are you sure you want to delete this criterion \"$name\"? This action cannot be undone.';
+    return 'Bạn có chắc chắn muốn xóa tiêu chí \"$name\" không? Hành động này không thể hoàn tác.';
   }
 
   @override
   String valueX(int index) {
-    return 'Value $index';
+    return 'Giá trị $index';
   }
 
   @override
-  String get minValueRequired => 'Min value is required';
+  String get minValueRequired => 'Giá trị tối thiểu là bắt buộc';
 
   @override
-  String get maxValueRequired => 'Max value is required';
+  String get maxValueRequired => 'Giá trị tối đa là bắt buộc';
 
   @override
-  String get stepValueRequired => 'Step value is required';
+  String get stepValueRequired => 'Giá trị bước là bắt buộc';
 
   @override
-  String get minValueMustBeANumber => 'Min value must be a number';
+  String get minValueMustBeANumber => 'Giá trị tối thiểu phải là một số';
 
   @override
-  String get maxValueMustBeANumber => 'Max value must be a number';
+  String get maxValueMustBeANumber => 'Giá trị tối đa phải là một số';
 
   @override
-  String get stepValueMustBeAPositiveNumber => 'Step value must be a positive number';
+  String get stepValueMustBeAPositiveNumber => 'Giá trị bước phải là một số dương';
 
   @override
-  String get minValueMustBeLessThanMaxValue => 'Min value must be less than max value';
+  String get minValueMustBeLessThanMaxValue => 'Giá trị tối thiểu phải nhỏ hơn giá trị tối đa';
 
   @override
-  String get maxValueMustBeGreaterThanMinValue => 'Max value must be greater than min value';
+  String get maxValueMustBeGreaterThanMinValue => 'Giá trị tối đa phải lớn hơn giá trị tối thiểu';
 
   @override
-  String get stepValueMustBeGreaterThanZero => 'Step value must be greater than 0';
+  String get stepValueMustBeGreaterThanZero => 'Giá trị bước phải lớn hơn 0';
 
   @override
-  String get valueCannotBeEmpty => 'Value cannot be empty';
+  String get valueCannotBeEmpty => 'Giá trị không được để trống';
 
   @override
-  String get selectionLimitMustBeGreaterThanZero => 'Selection limit must be greater than 0';
+  String get selectionLimitMustBeGreaterThanZero => 'Giới hạn lựa chọn phải lớn hơn 0';
 
   @override
-  String get selectionLimitMustBeAPositiveNumber => 'Selection limit must be a positive number';
+  String get selectionLimitMustBeAPositiveNumber => 'Giới hạn lựa chọn phải là một số dương';
 
   @override
-  String get atLeastOneValueForDiscreteCriteria => 'At least one value is required for discrete criteria';
+  String get atLeastOneValueForDiscreteCriteria => 'Cần ít nhất một giá trị cho tiêu chí rời rạc';
 
   @override
-  String get selectIconType => 'Select Icon Type';
+  String get selectIconType => 'Chọn loại biểu tượng';
 
   @override
-  String get icon => 'Icon';
+  String get icon => 'Biểu tượng';
 
   @override
   String get emoji => 'Emoji';
 
   @override
-  String get enterCriterionName => 'Enter criterion name';
+  String get enterCriterionName => 'Nhập tên tiêu chí';
 
   @override
-  String get type => 'Type';
+  String get type => 'Loại';
 
   @override
-  String get discreteConfiguration => 'Discrete Configuration';
+  String get discreteConfiguration => 'Cấu hình rời rạc';
 
   @override
-  String get howManyValuesCanBeSelected => 'How many values can be selected';
+  String get howManyValuesCanBeSelected => 'Có thể chọn bao nhiêu giá trị?';
 
   @override
-  String get continuousConfiguration => 'Continuous Configuration';
+  String get continuousConfiguration => 'Cấu hình liên tục';
 
   @override
-  String get minimumAllowedValue => 'Minimum allowed value';
+  String get minimumAllowedValue => 'Giá trị tối thiểu cho phép';
 
   @override
-  String get maximumAllowedValue => 'Maximum allowed value';
+  String get maximumAllowedValue => 'Giá trị tối đa cho phép';
 
   @override
-  String get incrementDecrementStep => 'Increment/decrement step';
+  String get incrementDecrementStep => 'Tăng giảm bước';
 
   @override
   String errorSavingCriterion(String error) {
-    return 'Error saving criterion: $error';
+    return 'Lỗi khi lưu tiêu chí: $error';
   }
 
   @override
-  String get editCriterion => 'Edit Criterion';
+  String get editCriterion => 'Sửa tiêu chí';
 
   @override
-  String get selectIcon => 'Select Icon';
+  String get selectIcon => 'Chọn biểu tượng';
 
   @override
-  String get selectEmoji => 'Select Emoji';
+  String get selectEmoji => 'Chọn Emoji';
 
   @override
-  String get icons => 'Icons';
+  String get icons => 'Biểu tượng';
 
   @override
   String get emojis => 'Emojis';
 
   @override
-  String get selectColor => 'Select Color';
+  String get selectColor => 'Chọn màu';
 
   @override
-  String get noCriteriaToRate => 'No criteria to rate';
+  String get noCriteriaToRate => 'Không có tiêu chí để đánh giá';
 
   @override
-  String get thisTaskHasNoCriteriaAssigned => 'This task has no criteria assigned.';
+  String get thisTaskHasNoCriteriaAssigned => 'Nhiệm vụ này không có tiêu chí nào';
 
   @override
   String errorSavingRatings(String error) {
-    return 'Error saving ratings: $error';
+    return 'Lỗi khi lưu đánh giá: $error';
   }
 
   @override
-  String get skip => 'Skip';
+  String get skip => 'Bỏ qua';
 
   @override
-  String get save => 'Save';
+  String get save => 'Lưu';
 
   @override
   String rangeXToXStepY(double minValue, double maxValue, double stepValue) {
-    return 'Range: $minValue - $maxValue (step: $stepValue)';
+    return 'Khoảng: $minValue - $maxValue (Bước: $stepValue)';
   }
 
   @override
   String rateTask(String taskName) {
-    return 'Rate Task: $taskName';
+    return 'Đánh giá nhiệm vụ: $taskName';
   }
 
   @override
   String selectUpToXValues(int selectionLimit) {
-    return 'Select up to $selectionLimit value(s)';
+    return 'Chọn tối đa $selectionLimit giá trị';
   }
 
   @override
-  String get swipeToStart => 'Swipe to start';
+  String get swipeToStart => 'Vuốt để bắt đầu';
 }

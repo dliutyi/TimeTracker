@@ -120,7 +120,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get deleteCriterion => 'Удалить критерий';
 
   @override
-  String get deleteCriterionWarning => 'Вы уверены, что хотите удалить этот критерий? Это действие нельзя отменить.';
+  String deleteCriterionWarning(Object name) {
+    return 'Вы уверены, что хотите удалить этот критерий? Это действие нельзя отменить.';
+  }
 
   @override
   String criterionUsedInTasks(int count) {
@@ -257,10 +259,14 @@ class AppLocalizationsRu extends AppLocalizations {
   String get disableTaskMessage => 'Это выключит задачу. Она будет перемещена вниз списка. Вы можете включить ее снова позже.';
 
   @override
-  String get taskEnabled => 'Задача включена';
+  String taskEnabled(Object name) {
+    return 'Задача включена';
+  }
 
   @override
-  String get taskDisabled => 'Задача выключена';
+  String taskDisabled(Object name) {
+    return 'Задача выключена';
+  }
 
   @override
   String get deleteTask => 'Удалить задачу';
@@ -269,7 +275,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get deleteTaskMessage => 'Это удалит задачу и все связанные сессии. Это действие нельзя отменить.\n\nРассмотрите возможность выключения задачи, если вы не уверены.';
 
   @override
-  String get taskDeleted => 'Задача удалена';
+  String taskDeleted(Object name) {
+    return 'Задача удалена';
+  }
 
   @override
   String get anotherTaskActive => 'Другая задача уже активна. Остановите ее сначала.';

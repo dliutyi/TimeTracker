@@ -9,7 +9,7 @@ class AppLocalizationsTr extends AppLocalizations {
   AppLocalizationsTr([String locale = 'tr']) : super(locale);
 
   @override
-  String get appName => 'YuDi Time Tracker';
+  String get appName => 'YuDi\nTime Tracker';
 
   @override
   String get welcomeTitle => 'YuDi Time Tracker\'a Hoş Geldiniz';
@@ -42,7 +42,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get generalMotto => 'Genel Slogan';
 
   @override
-  String get noTasks => 'Henüz görev yok';
+  String get noTasks => 'Görev yok';
 
   @override
   String get createFirstTask => 'Başlamak için ilk görevinizi oluşturun';
@@ -51,7 +51,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get addCriterion => 'Kriter Ekle';
 
   @override
-  String get noCriteria => 'Henüz kriter yok';
+  String get noCriteria => 'Kriter yok';
 
   @override
   String get createFirstCriterion => 'Başlamak için ilk kriterinizi oluşturun';
@@ -66,10 +66,10 @@ class AppLocalizationsTr extends AppLocalizations {
   String get selections => 'seçimler';
 
   @override
-  String get values => 'değerler';
+  String get values => 'Değerler';
 
   @override
-  String get step => 'adım';
+  String get step => 'Adım';
 
   @override
   String get criterionName => 'Kriter Adı';
@@ -81,13 +81,13 @@ class AppLocalizationsTr extends AppLocalizations {
   String get addValue => 'Değer Ekle';
 
   @override
-  String get selectionLimit => 'Seçim Limiti';
+  String get selectionLimit => 'Seçim limiti';
 
   @override
-  String get minValue => 'Min Değer';
+  String get minValue => 'Minimum Değer';
 
   @override
-  String get maxValue => 'Max Değer';
+  String get maxValue => 'Maksimum Değer';
 
   @override
   String get stepValue => 'Adım Değeri';
@@ -108,19 +108,21 @@ class AppLocalizationsTr extends AppLocalizations {
   String get atLeastOneValue => 'En az bir değer gereklidir';
 
   @override
-  String get selectionLimitRequired => 'Seçim limiti 0\'dan büyük olmalıdır';
+  String get selectionLimitRequired => 'Seçim limiti gereklidir';
 
   @override
-  String get minMustBeLessThanMax => 'Min değer max değerden küçük olmalıdır';
+  String get minMustBeLessThanMax => 'Minimum değer maksimum değerden küçük olmalıdır';
 
   @override
   String get stepMustBeGreaterThanZero => 'Adım değeri 0\'dan büyük olmalıdır';
 
   @override
-  String get deleteCriterion => 'Kriteri Sil';
+  String get deleteCriterion => 'Kriter Sil';
 
   @override
-  String get deleteCriterionWarning => 'Bu kriteri silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.';
+  String deleteCriterionWarning(Object name) {
+    return 'Bu kriteri silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.';
+  }
 
   @override
   String criterionUsedInTasks(int count) {
@@ -134,7 +136,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get charts => 'Grafikler';
 
   @override
-  String get noSessions => 'Henüz oturum yok';
+  String get noSessions => 'Oturum yok';
 
   @override
   String get noSessionsDescription => 'Oturumlarınızı burada görmek için zaman takibine başlayın';
@@ -188,7 +190,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get timeSpentPerTask => 'Görev Başına Harcanan Zaman';
 
   @override
-  String get taskFrequencyOverTime => 'Zaman İçinde Görev Sıklığı';
+  String get taskFrequencyOverTime => 'Zaman içinde görev sıklığı';
 
   @override
   String get averageCriterionRatings => 'Ortalama Kriter Değerlendirmeleri';
@@ -212,221 +214,227 @@ class AppLocalizationsTr extends AppLocalizations {
   String get all => 'Tümü';
 
   @override
-  String get listening => 'Listening...';
+  String get listening => 'Dinleme';
 
   @override
-  String get taskName => 'Task Name';
+  String get taskName => 'Görev Adı';
 
   @override
-  String get mottoOptional => 'Motto (optional)';
+  String get mottoOptional => 'Motto (İsteğe Bağlı)';
 
   @override
-  String get criteria => 'Criteria';
+  String get criteria => 'Kriterler';
 
   @override
-  String get noCriteriaAvailable => 'No criteria available. Create criteria first.';
+  String get noCriteriaAvailable => 'Kriterler mevcut değil';
 
   @override
-  String get updateTask => 'Update Task';
+  String get updateTask => 'Görevi Güncelle';
 
   @override
-  String get nameTooLong => 'Task name must be 32 characters or less';
+  String get nameTooLong => 'Ad 32 karakterden fazla olamaz';
 
   @override
-  String get mottoTooLong => 'Motto must be 128 characters or less';
+  String get mottoTooLong => 'Motto 128 karakterden fazla olamaz';
 
   @override
-  String get editTask => 'Edit Task';
+  String get editTask => 'Görevi Düzenle';
 
   @override
-  String get enable => 'Enable';
+  String get enable => 'Etkinleştir';
 
   @override
-  String get disable => 'Disable';
+  String get disable => 'Devre Dışı Bırak';
 
   @override
-  String get enableTask => 'Enable Task';
+  String get enableTask => 'Görevi Etkinleştir';
 
   @override
-  String get disableTask => 'Disable Task';
+  String get disableTask => 'Görevi Devre Dışı Bırak';
 
   @override
-  String get enableTaskMessage => 'This will enable the task and make it available again.';
+  String get enableTaskMessage => 'Bu görevi etkinleştirmek istediğinizden emin misiniz? Bu işlem geri alınamaz.';
 
   @override
-  String get disableTaskMessage => 'This will disable the task. It will be moved to the bottom of the list. You can enable it again later.';
+  String get disableTaskMessage => 'Bu görevi devre dışı bırakmak istediğinizden emin misiniz? Bu işlem geri alınamaz.';
 
   @override
-  String get taskEnabled => 'Task enabled';
-
-  @override
-  String get taskDisabled => 'Task disabled';
-
-  @override
-  String get deleteTask => 'Delete Task';
-
-  @override
-  String get deleteTaskMessage => 'This will permanently delete the task and all associated sessions. This action cannot be undone.\n\nConsider disabling the task instead if you\'re not sure.';
-
-  @override
-  String get taskDeleted => 'Task deleted';
-
-  @override
-  String get anotherTaskActive => 'Another task is already active. Stop it first.';
-
-  @override
-  String errorActivatingTask(String error) {
-    return 'Error activating task: $error';
+  String taskEnabled(Object name) {
+    return 'Görevi etkinleştirdi';
   }
 
   @override
-  String get delete => 'Delete';
+  String taskDisabled(Object name) {
+    return 'Görevi devre dışı bıraktı';
+  }
+
+  @override
+  String get deleteTask => 'Görev Sil';
+
+  @override
+  String get deleteTaskMessage => 'Bu görevi silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.';
+
+  @override
+  String taskDeleted(Object name) {
+    return 'Görevi silindi';
+  }
+
+  @override
+  String get anotherTaskActive => 'Başka bir görev aktif.';
+
+  @override
+  String errorActivatingTask(String error) {
+    return 'Görevi etkinleştirmek için hata oluştu: $error';
+  }
+
+  @override
+  String get delete => 'Sil';
 
   @override
   String error(String error) {
-    return 'Error: $error';
+    return 'Hata: $error';
   }
 
   @override
   String errorStoppingSession(String error) {
-    return 'Error stopping session: $error';
+    return 'Oturumu durdurma hatası: $error';
   }
 
   @override
   String errorDiscardingSession(String error) {
-    return 'Error discarding session: $error';
+    return 'Oturumu iptal etmek için hata oluştu: $error';
   }
 
   @override
-  String get noActiveTaskMessage => 'Start a task from the List of Tasks to track your time.';
+  String get noActiveTaskMessage => 'Aktif görev yok';
 
   @override
-  String get dateFormat => 'MMMM d • HH:mm';
+  String get dateFormat => 'MMM d, HH:mm';
 
   @override
-  String get unknownTask => 'Unknown Task';
+  String get unknownTask => 'Bilinmeyen Görev';
 
   @override
   String get dateFormatInSessionHistory => 'MMM d, HH:mm';
 
   @override
   String errorLoadingTasks(String error) {
-    return 'Error loading tasks: $error';
+    return 'Görevleri yükleme hatası: $error';
   }
 
   @override
   String errorLoadingCriteria(String error) {
-    return 'Error loading criteria: $error';
+    return 'Kriterleri yükleme hatası: $error';
   }
 
   @override
   String errorLoadingSessions(String error) {
-    return 'Error loading sessions: $error';
+    return 'Oturumları yükleme hatası: $error';
   }
 
   @override
   String errorLoadingAllSessions(String error) {
-    return 'Error loading all sessions: $error';
+    return 'Tüm oturumları yükleme hatası: $error';
   }
 
   @override
-  String get unknown => 'Unknown';
+  String get unknown => 'Bilinmeyen';
 
   @override
-  String get exportData => 'Export Data';
+  String get exportData => 'Verileri dışa aktar';
 
   @override
-  String get exportAllAppDataToFile => 'Export all app data to a file';
+  String get exportAllAppDataToFile => 'Tüm uygulama verilerini dosyaya dışa aktar';
 
   @override
-  String get importData => 'Import Data';
+  String get importData => 'Verileri içe aktar';
 
   @override
-  String get importDataFromFile => 'Import data from a file';
+  String get importDataFromFile => 'Dosyadan verileri içe aktar';
 
   @override
-  String get chooseHowToExportData => 'Choose how you want to export the data:';
+  String get chooseHowToExportData => 'Verileri nasıl dışa aktaracağınızı seçin';
 
   @override
-  String get saveToDevice => 'Save to Device';
+  String get saveToDevice => 'Cihaza kaydet';
 
   @override
-  String get share => 'Share';
+  String get share => 'Paylaş';
 
   @override
-  String get saveExportFile => 'Save Export File';
+  String get saveExportFile => 'Dışa aktarma dosyasını kaydet';
 
   @override
   String dataSavedTo(String path) {
-    return 'Data saved to: $path';
+    return 'Veriler başarıyla kaydedildi';
   }
 
   @override
-  String get dataExportedSuccessfully => 'Data exported successfully';
+  String get dataExportedSuccessfully => 'Veriler başarıyla dışa aktarıldı';
 
   @override
   String errorExportingData(String error) {
-    return 'Error exporting data: $error';
+    return 'Verileri dışa aktarma hatası: $error';
   }
 
   @override
-  String get dataImportedSuccessfully => 'Data imported successfully';
+  String get dataImportedSuccessfully => 'Veriler başarıyla içe aktarıldı';
 
   @override
   String errorImportingData(String error) {
-    return 'Error importing data: $error';
+    return 'Verileri içe aktarma hatası: $error';
   }
 
   @override
-  String get allExistingDataWillBePermanentlyDeleted => 'All existing data will be permanently deleted.';
+  String get allExistingDataWillBePermanentlyDeleted => 'Tüm veriler kalıcı olarak silinecek.';
 
   @override
-  String get import => 'Import';
+  String get import => 'İçe Aktar';
 
   @override
-  String get language => 'Language';
+  String get language => 'Dil';
 
   @override
-  String get selectLanguage => 'Select Language';
+  String get selectLanguage => 'Dil seç';
 
   @override
-  String get english => 'English';
+  String get english => 'İngilizce';
 
   @override
-  String get spanish => 'Spanish';
+  String get spanish => 'İspanyolca';
 
   @override
-  String get chinese => 'Chinese';
+  String get chinese => 'Çince';
 
   @override
-  String get hindi => 'Hindi';
+  String get hindi => 'Hindu';
 
   @override
-  String get arabic => 'Arabic';
+  String get arabic => 'Arapça';
 
   @override
-  String get portuguese => 'Portuguese';
+  String get portuguese => 'Portekizce';
 
   @override
-  String get bengali => 'Bengali';
+  String get bengali => 'Bengalca';
 
   @override
-  String get japanese => 'Japanese';
+  String get japanese => 'Japonca';
 
   @override
   String get punjabi => 'Punjabi';
 
   @override
-  String get german => 'German';
+  String get german => 'Almanca';
 
   @override
-  String get javanese => 'Javanese';
+  String get javanese => 'Java';
 
   @override
-  String get korean => 'Korean';
+  String get korean => 'Korece';
 
   @override
-  String get french => 'French';
+  String get french => 'Fransızca';
 
   @override
   String get telugu => 'Telugu';
@@ -435,60 +443,60 @@ class AppLocalizationsTr extends AppLocalizations {
   String get marathi => 'Marathi';
 
   @override
-  String get turkish => 'Turkish';
+  String get turkish => 'Türkçe';
 
   @override
   String get tamil => 'Tamil';
 
   @override
-  String get vietnamese => 'Vietnamese';
+  String get vietnamese => 'Vietnamca';
 
   @override
   String get urdu => 'Urdu';
 
   @override
-  String get ukrainian => 'Ukrainian';
+  String get ukrainian => 'Ukraynaca';
 
   @override
-  String get italian => 'Italian';
+  String get italian => 'İtalyanca';
 
   @override
-  String get russian => 'Russian';
+  String get russian => 'Rusça';
 
   @override
-  String get darkMode => 'Dark Mode';
+  String get darkMode => 'Koyu Mod';
 
   @override
-  String get light => 'Light';
+  String get light => 'Açık';
 
   @override
-  String get dark => 'Dark';
+  String get dark => 'Koyu';
 
   @override
-  String get automatic => 'Automatic';
+  String get automatic => 'Otomatik';
 
   @override
-  String get followSystemSetting => 'Follow system setting';
+  String get followSystemSetting => 'Sistem ayarlarına göre';
 
   @override
-  String get dataManagement => 'Data Management';
+  String get dataManagement => 'Veri Yönetimi';
 
   @override
-  String get version => 'Version';
+  String get version => 'Versiyon';
 
   @override
   String errorSavingTask(String error) {
-    return 'Error saving task: $error';
+    return 'Görevi kaydetme hatası: $error';
   }
 
   @override
   String errorDeletingCriterion(String error) {
-    return 'Error deleting criterion: $error';
+    return 'Kriteri silmek için hata oluştu: $error';
   }
 
   @override
   String criterionDeleted(String name) {
-    return 'Criterion \"$name\" deleted';
+    return 'Kriter \"$name\" silindi';
   }
 
   @override
@@ -496,160 +504,160 @@ class AppLocalizationsTr extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       selectionLimit,
       locale: localeName,
-      other: '$selectionLimit selections',
-      one: '1 selection',
+      other: '$selectionLimit değer',
+      one: '1 değer',
     );
     String _temp1 = intl.Intl.pluralLogic(
       values,
       locale: localeName,
-      other: '$values values',
-      one: '1 value',
+      other: '$values değer',
+      one: '1 değer',
     );
-    return 'Discrete: $_temp0, $_temp1';
+    return 'Ayrık Kriter: $_temp0, $_temp1';
   }
 
   @override
   String continuousCriterion(double minValue, double maxValue, double stepValue) {
-    return 'Continuous: $minValue-$maxValue, step $stepValue';
+    return 'Sürekli Kriter';
   }
 
   @override
   String deleteCriterionWarningWithName(String name) {
-    return 'Are you sure you want to delete this criterion \"$name\"? This action cannot be undone.';
+    return 'Bu kriteri silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.';
   }
 
   @override
   String valueX(int index) {
-    return 'Value $index';
+    return 'Değer $index';
   }
 
   @override
-  String get minValueRequired => 'Min value is required';
+  String get minValueRequired => 'Minimum değer gereklidir';
 
   @override
-  String get maxValueRequired => 'Max value is required';
+  String get maxValueRequired => 'Maksimum değer gereklidir';
 
   @override
-  String get stepValueRequired => 'Step value is required';
+  String get stepValueRequired => 'Adım değeri gereklidir';
 
   @override
-  String get minValueMustBeANumber => 'Min value must be a number';
+  String get minValueMustBeANumber => 'Minimum değer bir sayı olmalıdır';
 
   @override
-  String get maxValueMustBeANumber => 'Max value must be a number';
+  String get maxValueMustBeANumber => 'Maksimum değer bir sayı olmalıdır';
 
   @override
-  String get stepValueMustBeAPositiveNumber => 'Step value must be a positive number';
+  String get stepValueMustBeAPositiveNumber => 'Adım değeri pozitif bir sayı olmalıdır';
 
   @override
-  String get minValueMustBeLessThanMaxValue => 'Min value must be less than max value';
+  String get minValueMustBeLessThanMaxValue => 'Minimum değer maksimum değerden küçük olmalıdır';
 
   @override
-  String get maxValueMustBeGreaterThanMinValue => 'Max value must be greater than min value';
+  String get maxValueMustBeGreaterThanMinValue => 'Maksimum değer minimum değerden büyük olmalıdır';
 
   @override
-  String get stepValueMustBeGreaterThanZero => 'Step value must be greater than 0';
+  String get stepValueMustBeGreaterThanZero => 'Adım değeri 0\'dan büyük olmalıdır';
 
   @override
-  String get valueCannotBeEmpty => 'Value cannot be empty';
+  String get valueCannotBeEmpty => 'Değer boş olamaz';
 
   @override
-  String get selectionLimitMustBeGreaterThanZero => 'Selection limit must be greater than 0';
+  String get selectionLimitMustBeGreaterThanZero => 'Seçim limiti 0\'dan büyük olmalıdır';
 
   @override
-  String get selectionLimitMustBeAPositiveNumber => 'Selection limit must be a positive number';
+  String get selectionLimitMustBeAPositiveNumber => 'Seçim limiti pozitif bir sayı olmalıdır';
 
   @override
-  String get atLeastOneValueForDiscreteCriteria => 'At least one value is required for discrete criteria';
+  String get atLeastOneValueForDiscreteCriteria => 'Ayrık kriterler için en az bir değer gereklidir';
 
   @override
-  String get selectIconType => 'Select Icon Type';
+  String get selectIconType => 'İkon tipi seç';
 
   @override
-  String get icon => 'Icon';
+  String get icon => 'İkon';
 
   @override
   String get emoji => 'Emoji';
 
   @override
-  String get enterCriterionName => 'Enter criterion name';
+  String get enterCriterionName => 'Kriter adı girin';
 
   @override
-  String get type => 'Type';
+  String get type => 'Tip';
 
   @override
-  String get discreteConfiguration => 'Discrete Configuration';
+  String get discreteConfiguration => 'Ayrık Yapılandırma';
 
   @override
-  String get howManyValuesCanBeSelected => 'How many values can be selected';
+  String get howManyValuesCanBeSelected => 'Kaç değer seçilebilir?';
 
   @override
-  String get continuousConfiguration => 'Continuous Configuration';
+  String get continuousConfiguration => 'Sürekli Yapılandırma';
 
   @override
-  String get minimumAllowedValue => 'Minimum allowed value';
+  String get minimumAllowedValue => 'Minimum Değer';
 
   @override
-  String get maximumAllowedValue => 'Maximum allowed value';
+  String get maximumAllowedValue => 'Maksimum Değer';
 
   @override
-  String get incrementDecrementStep => 'Increment/decrement step';
+  String get incrementDecrementStep => 'Artır/Azalt Adım';
 
   @override
   String errorSavingCriterion(String error) {
-    return 'Error saving criterion: $error';
+    return 'Kriteri kaydetme hatası: $error';
   }
 
   @override
-  String get editCriterion => 'Edit Criterion';
+  String get editCriterion => 'Kriteri Düzenle';
 
   @override
-  String get selectIcon => 'Select Icon';
+  String get selectIcon => 'İkon seç';
 
   @override
-  String get selectEmoji => 'Select Emoji';
+  String get selectEmoji => 'Emoji seç';
 
   @override
-  String get icons => 'Icons';
+  String get icons => 'İkonlar';
 
   @override
-  String get emojis => 'Emojis';
+  String get emojis => 'Emojiler';
 
   @override
-  String get selectColor => 'Select Color';
+  String get selectColor => 'Renk seç';
 
   @override
-  String get noCriteriaToRate => 'No criteria to rate';
+  String get noCriteriaToRate => 'Kriterleri değerlendirmek için kriter yok';
 
   @override
-  String get thisTaskHasNoCriteriaAssigned => 'This task has no criteria assigned.';
+  String get thisTaskHasNoCriteriaAssigned => 'Bu görev için kriter atanmamış';
 
   @override
   String errorSavingRatings(String error) {
-    return 'Error saving ratings: $error';
+    return 'Değerlendirmeleri kaydetme hatası: $error';
   }
 
   @override
-  String get skip => 'Skip';
+  String get skip => 'Atla';
 
   @override
-  String get save => 'Save';
+  String get save => 'Kaydet';
 
   @override
   String rangeXToXStepY(double minValue, double maxValue, double stepValue) {
-    return 'Range: $minValue - $maxValue (step: $stepValue)';
+    return 'Aralık: $minValue - $maxValue (adım: $stepValue)';
   }
 
   @override
   String rateTask(String taskName) {
-    return 'Rate Task: $taskName';
+    return 'Görevi değerlendir: $taskName';
   }
 
   @override
   String selectUpToXValues(int selectionLimit) {
-    return 'Select up to $selectionLimit value(s)';
+    return 'En fazla $selectionLimit değer seçin';
   }
 
   @override
-  String get swipeToStart => 'Swipe to start';
+  String get swipeToStart => 'Başlamak için kaydırın';
 }

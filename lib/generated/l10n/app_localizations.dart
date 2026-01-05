@@ -14,7 +14,6 @@ import 'app_localizations_fr.dart';
 import 'app_localizations_hi.dart';
 import 'app_localizations_it.dart';
 import 'app_localizations_ja.dart';
-import 'app_localizations_jv.dart';
 import 'app_localizations_ko.dart';
 import 'app_localizations_mr.dart';
 import 'app_localizations_pa.dart';
@@ -120,7 +119,6 @@ abstract class AppLocalizations {
     Locale('hi'),
     Locale('it'),
     Locale('ja'),
-    Locale('jv'),
     Locale('ko'),
     Locale('mr'),
     Locale('pa'),
@@ -361,7 +359,7 @@ abstract class AppLocalizations {
   ///
   /// In en, this message translates to:
   /// **'Are you sure you want to delete this criterion? This action cannot be undone.'**
-  String get deleteCriterionWarning;
+  String deleteCriterionWarning(Object name);
 
   /// Message about criterion being used in tasks
   ///
@@ -631,13 +629,13 @@ abstract class AppLocalizations {
   ///
   /// In en, this message translates to:
   /// **'Task enabled'**
-  String get taskEnabled;
+  String taskEnabled(Object name);
 
   /// Message for task disabled
   ///
   /// In en, this message translates to:
   /// **'Task disabled'**
-  String get taskDisabled;
+  String taskDisabled(Object name);
 
   /// Delete task button label
   ///
@@ -655,7 +653,7 @@ abstract class AppLocalizations {
   ///
   /// In en, this message translates to:
   /// **'Task deleted'**
-  String get taskDeleted;
+  String taskDeleted(Object name);
 
   /// Message when another task is active
   ///
@@ -1315,7 +1313,7 @@ class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> 
   }
 
   @override
-  bool isSupported(Locale locale) => <String>['ar', 'bn', 'de', 'en', 'es', 'fr', 'hi', 'it', 'ja', 'jv', 'ko', 'mr', 'pa', 'pt', 'ru', 'ta', 'te', 'tr', 'uk', 'ur', 'vi', 'zh'].contains(locale.languageCode);
+  bool isSupported(Locale locale) => <String>['ar', 'bn', 'de', 'en', 'es', 'fr', 'hi', 'it', 'ja', 'ko', 'mr', 'pa', 'pt', 'ru', 'ta', 'te', 'tr', 'uk', 'ur', 'vi', 'zh'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
@@ -1335,7 +1333,6 @@ AppLocalizations lookupAppLocalizations(Locale locale) {
     case 'hi': return AppLocalizationsHi();
     case 'it': return AppLocalizationsIt();
     case 'ja': return AppLocalizationsJa();
-    case 'jv': return AppLocalizationsJv();
     case 'ko': return AppLocalizationsKo();
     case 'mr': return AppLocalizationsMr();
     case 'pa': return AppLocalizationsPa();

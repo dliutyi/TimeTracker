@@ -120,7 +120,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get deleteCriterion => '删除标准';
 
   @override
-  String get deleteCriterionWarning => '你确定要删除这个标准吗？这个操作无法撤销。';
+  String deleteCriterionWarning(Object name) {
+    return '你确定要删除这个标准吗？这个操作无法撤销。';
+  }
 
   @override
   String criterionUsedInTasks(int count) {
@@ -257,10 +259,14 @@ class AppLocalizationsZh extends AppLocalizations {
   String get disableTaskMessage => '这将禁用任务。它将被移动到列表底部。你可以在以后再次启用它。';
 
   @override
-  String get taskEnabled => '任务已启用';
+  String taskEnabled(Object name) {
+    return '任务已启用';
+  }
 
   @override
-  String get taskDisabled => '任务已禁用';
+  String taskDisabled(Object name) {
+    return '任务已禁用';
+  }
 
   @override
   String get deleteTask => '删除任务';
@@ -269,7 +275,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get deleteTaskMessage => '这将删除任务及其所有关联的会话。这个操作无法撤销。\n\n请考虑禁用任务，如果你不确定。';
 
   @override
-  String get taskDeleted => '任务已删除';
+  String taskDeleted(Object name) {
+    return '任务已删除';
+  }
 
   @override
   String get anotherTaskActive => '另一个任务活动';
@@ -301,13 +309,13 @@ class AppLocalizationsZh extends AppLocalizations {
   String get noActiveTaskMessage => '从任务列表开始任务以开始跟踪';
 
   @override
-  String get dateFormat => '日期格式';
+  String get dateFormat => 'MMM d, HH:mm';
 
   @override
   String get unknownTask => '未知任务';
 
   @override
-  String get dateFormatInSessionHistory => '会话历史日期格式';
+  String get dateFormatInSessionHistory => 'MMM d, HH:mm';
 
   @override
   String errorLoadingTasks(String error) {
@@ -493,7 +501,19 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String discreteCriterion(int selectionLimit, int values) {
-    return '离散标准';
+    String _temp0 = intl.Intl.pluralLogic(
+      selectionLimit,
+      locale: localeName,
+      other: '$selectionLimit 值',
+      one: '1 值',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      values,
+      locale: localeName,
+      other: '$values 值',
+      one: '1 值',
+    );
+    return '离散标准: $_temp0, $_temp1';
   }
 
   @override

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:yudi_time_tracker/generated/l10n/app_localizations.dart';
 import '../../core/repositories/repository_providers.dart';
 import '../../core/repositories/settings_repository.dart';
 
@@ -25,13 +26,19 @@ class LocaleNotifier extends StateNotifier<Locale?> {
   Future<void> _loadLocale() async {
     final localeString = await _settingsRepository.getSetting(_localeKey);
     if (localeString != null) {
-      state = Locale(localeString);
+      state = AppLocalizations.supportedLocales.firstWhere(
+        (locale) => locale.languageCode == localeString,
+        orElse: () => Locale('en'),
+      );
     } else {
       // Default to system locale
       final systemLocale = Intl.systemLocale;
       final localeParts = systemLocale.split('_');
       if (localeParts.isNotEmpty) {
-        state = Locale(localeParts[0]);
+        state = AppLocalizations.supportedLocales.firstWhere(
+          (locale) => locale.languageCode == localeParts[0],
+          orElse: () => Locale('en'),
+        );
       }
     }
   }
@@ -53,4 +60,3 @@ class LocaleNotifier extends StateNotifier<Locale?> {
     }
   }
 }
-

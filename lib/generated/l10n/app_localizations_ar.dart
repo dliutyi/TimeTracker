@@ -120,7 +120,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get deleteCriterion => 'حذف المعيار';
 
   @override
-  String get deleteCriterionWarning => 'هل أنت متأكد من أنك تريد حذف هذا المعيار؟ لا يمكن التراجع عن هذا الإجراء.';
+  String deleteCriterionWarning(Object name) {
+    return 'هل أنت متأكد من أنك تريد حذف هذا المعيار؟ لا يمكن التراجع عن هذا الإجراء.';
+  }
 
   @override
   String criterionUsedInTasks(int count) {
@@ -257,10 +259,14 @@ class AppLocalizationsAr extends AppLocalizations {
   String get disableTaskMessage => 'هل أنت متأكد من أنك تريد تعطيل هذه المهمة؟ لا يمكن التراجع عن هذا الإجراء.';
 
   @override
-  String get taskEnabled => 'تم تمكين المهمة';
+  String taskEnabled(Object name) {
+    return 'تم تمكين المهمة';
+  }
 
   @override
-  String get taskDisabled => 'تم تعطيل المهمة';
+  String taskDisabled(Object name) {
+    return 'تم تعطيل المهمة';
+  }
 
   @override
   String get deleteTask => 'حذف المهمة';
@@ -269,7 +275,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get deleteTaskMessage => 'هل أنت متأكد من أنك تريد حذف هذه المهمة؟ لا يمكن التراجع عن هذا الإجراء.';
 
   @override
-  String get taskDeleted => 'تم حذف المهمة';
+  String taskDeleted(Object name) {
+    return 'تم حذف المهمة';
+  }
 
   @override
   String get anotherTaskActive => 'مهمة اخرى مفعلة. قم بإيقافها أولاً.';

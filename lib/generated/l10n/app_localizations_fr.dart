@@ -9,13 +9,13 @@ class AppLocalizationsFr extends AppLocalizations {
   AppLocalizationsFr([String locale = 'fr']) : super(locale);
 
   @override
-  String get appName => 'YuDi Time Tracker';
+  String get appName => 'YuDi\nTime Tracker';
 
   @override
   String get welcomeTitle => 'Bienvenue dans YuDi Time Tracker';
 
   @override
-  String get welcomeDescription => 'Suivez votre temps, gérez les tâches et analysez votre productivité en toute simplicité.';
+  String get welcomeDescription => 'Bienvenue dans YuDi Time Tracker';
 
   @override
   String get continueButton => 'Continuer';
@@ -24,13 +24,13 @@ class AppLocalizationsFr extends AppLocalizations {
   String get activeTask => 'Tâche active';
 
   @override
-  String get listOfTasks => 'Liste des tâches';
+  String get listOfTasks => 'Liste des Tâches';
 
   @override
   String get statistics => 'Statistiques';
 
   @override
-  String get listOfCriteria => 'Liste des critères';
+  String get listOfCriteria => 'Liste des Critères';
 
   @override
   String get settings => 'Paramètres';
@@ -84,10 +84,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get selectionLimit => 'Limite de sélection';
 
   @override
-  String get minValue => 'Valeur minimale';
+  String get minValue => 'Valeur Minimale';
 
   @override
-  String get maxValue => 'Valeur maximale';
+  String get maxValue => 'Valeur Maximale';
 
   @override
   String get stepValue => 'Valeur du pas';
@@ -108,10 +108,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get atLeastOneValue => 'Au moins une valeur est requise';
 
   @override
-  String get selectionLimitRequired => 'La limite de sélection doit être supérieure à 0';
+  String get selectionLimitRequired => 'La limite de sélection est requise';
 
   @override
-  String get minMustBeLessThanMax => 'La valeur minimale doit être inférieure à la valeur maximale';
+  String get minMustBeLessThanMax => 'Valeur minimale doit être inférieure à la valeur maximale';
 
   @override
   String get stepMustBeGreaterThanZero => 'La valeur du pas doit être supérieure à 0';
@@ -120,7 +120,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get deleteCriterion => 'Supprimer le critère';
 
   @override
-  String get deleteCriterionWarning => 'Êtes-vous sûr de vouloir supprimer ce critère ? Cette action ne peut pas être annulée.';
+  String deleteCriterionWarning(Object name) {
+    return 'Êtes-vous sûr de vouloir supprimer ce critère ? Cette action ne peut pas être annulée.';
+  }
 
   @override
   String criterionUsedInTasks(int count) {
@@ -146,7 +148,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get noActiveTask => 'Aucune tâche active';
 
   @override
-  String get startTaskFromList => 'Démarrez une tâche de la liste pour commencer le suivi';
+  String get startTaskFromList => 'Démarrer une tâche de la liste pour commencer le suivi';
 
   @override
   String get startTime => 'Heure de début';
@@ -212,221 +214,227 @@ class AppLocalizationsFr extends AppLocalizations {
   String get all => 'Tout';
 
   @override
-  String get listening => 'Listening...';
+  String get listening => 'Écoute';
 
   @override
-  String get taskName => 'Task Name';
+  String get taskName => 'Nom de la tâche';
 
   @override
-  String get mottoOptional => 'Motto (optional)';
+  String get mottoOptional => 'Motto (optionnel)';
 
   @override
-  String get criteria => 'Criteria';
+  String get criteria => 'Critères';
 
   @override
-  String get noCriteriaAvailable => 'No criteria available. Create criteria first.';
+  String get noCriteriaAvailable => 'Aucun critère disponible';
 
   @override
-  String get updateTask => 'Update Task';
+  String get updateTask => 'Mettre à jour la tâche';
 
   @override
-  String get nameTooLong => 'Task name must be 32 characters or less';
+  String get nameTooLong => 'Le nom doit contenir moins de 32 caractères';
 
   @override
-  String get mottoTooLong => 'Motto must be 128 characters or less';
+  String get mottoTooLong => 'Le motto doit contenir moins de 128 caractères';
 
   @override
-  String get editTask => 'Edit Task';
+  String get editTask => 'Modifier la tâche';
 
   @override
-  String get enable => 'Enable';
+  String get enable => 'Activer';
 
   @override
-  String get disable => 'Disable';
+  String get disable => 'Désactiver';
 
   @override
-  String get enableTask => 'Enable Task';
+  String get enableTask => 'Activer la tâche';
 
   @override
-  String get disableTask => 'Disable Task';
+  String get disableTask => 'Désactiver la tâche';
 
   @override
-  String get enableTaskMessage => 'This will enable the task and make it available again.';
+  String get enableTaskMessage => 'Êtes-vous sûr de vouloir activer cette tâche ? Cette action ne peut pas être annulée.';
 
   @override
-  String get disableTaskMessage => 'This will disable the task. It will be moved to the bottom of the list. You can enable it again later.';
+  String get disableTaskMessage => 'Êtes-vous sûr de vouloir désactiver cette tâche ? Cette action ne peut pas être annulée.';
 
   @override
-  String get taskEnabled => 'Task enabled';
-
-  @override
-  String get taskDisabled => 'Task disabled';
-
-  @override
-  String get deleteTask => 'Delete Task';
-
-  @override
-  String get deleteTaskMessage => 'This will permanently delete the task and all associated sessions. This action cannot be undone.\n\nConsider disabling the task instead if you\'re not sure.';
-
-  @override
-  String get taskDeleted => 'Task deleted';
-
-  @override
-  String get anotherTaskActive => 'Another task is already active. Stop it first.';
-
-  @override
-  String errorActivatingTask(String error) {
-    return 'Error activating task: $error';
+  String taskEnabled(Object name) {
+    return 'Tâche activée';
   }
 
   @override
-  String get delete => 'Delete';
+  String taskDisabled(Object name) {
+    return 'Tâche désactivée';
+  }
+
+  @override
+  String get deleteTask => 'Supprimer la tâche';
+
+  @override
+  String get deleteTaskMessage => 'Êtes-vous sûr de vouloir supprimer cette tâche ? Cette action ne peut pas être annulée.';
+
+  @override
+  String taskDeleted(Object name) {
+    return 'Tâche supprimée';
+  }
+
+  @override
+  String get anotherTaskActive => 'Une autre tâche est active. Veuillez la stopper d\'abord.';
+
+  @override
+  String errorActivatingTask(String error) {
+    return 'Erreur lors de l\'activation de la tâche: $error';
+  }
+
+  @override
+  String get delete => 'Supprimer';
 
   @override
   String error(String error) {
-    return 'Error: $error';
+    return 'Erreur: $error';
   }
 
   @override
   String errorStoppingSession(String error) {
-    return 'Error stopping session: $error';
+    return 'Erreur lors de l\'arrêt de la session: $error';
   }
 
   @override
   String errorDiscardingSession(String error) {
-    return 'Error discarding session: $error';
+    return 'Erreur lors de l\'abandon de la session: $error';
   }
 
   @override
-  String get noActiveTaskMessage => 'Start a task from the List of Tasks to track your time.';
+  String get noActiveTaskMessage => 'Aucune tâche active';
 
   @override
-  String get dateFormat => 'MMMM d • HH:mm';
+  String get dateFormat => 'MMM d, HH:mm';
 
   @override
-  String get unknownTask => 'Unknown Task';
+  String get unknownTask => 'Tâche inconnue';
 
   @override
   String get dateFormatInSessionHistory => 'MMM d, HH:mm';
 
   @override
   String errorLoadingTasks(String error) {
-    return 'Error loading tasks: $error';
+    return 'Erreur lors du chargement des tâches: $error';
   }
 
   @override
   String errorLoadingCriteria(String error) {
-    return 'Error loading criteria: $error';
+    return 'Erreur lors du chargement des critères: $error';
   }
 
   @override
   String errorLoadingSessions(String error) {
-    return 'Error loading sessions: $error';
+    return 'Erreur lors du chargement des sessions: $error';
   }
 
   @override
   String errorLoadingAllSessions(String error) {
-    return 'Error loading all sessions: $error';
+    return 'Erreur lors du chargement de toutes les sessions: $error';
   }
 
   @override
-  String get unknown => 'Unknown';
+  String get unknown => 'Inconnu';
 
   @override
-  String get exportData => 'Export Data';
+  String get exportData => 'Exporter les données';
 
   @override
-  String get exportAllAppDataToFile => 'Export all app data to a file';
+  String get exportAllAppDataToFile => 'Exporter toutes les données de l\'application dans un fichier';
 
   @override
-  String get importData => 'Import Data';
+  String get importData => 'Importer les données';
 
   @override
-  String get importDataFromFile => 'Import data from a file';
+  String get importDataFromFile => 'Importer les données d\'un fichier';
 
   @override
-  String get chooseHowToExportData => 'Choose how you want to export the data:';
+  String get chooseHowToExportData => 'Choisissez comment vous souhaitez exporter les données';
 
   @override
-  String get saveToDevice => 'Save to Device';
+  String get saveToDevice => 'Enregistrer sur le dispositif';
 
   @override
-  String get share => 'Share';
+  String get share => 'Partager';
 
   @override
-  String get saveExportFile => 'Save Export File';
+  String get saveExportFile => 'Enregistrer le fichier d\'exportation';
 
   @override
   String dataSavedTo(String path) {
-    return 'Data saved to: $path';
+    return 'Données sauvegardées avec succès';
   }
 
   @override
-  String get dataExportedSuccessfully => 'Data exported successfully';
+  String get dataExportedSuccessfully => 'Données exportées avec succès';
 
   @override
   String errorExportingData(String error) {
-    return 'Error exporting data: $error';
+    return 'Erreur lors de l\'exportation des données: $error';
   }
 
   @override
-  String get dataImportedSuccessfully => 'Data imported successfully';
+  String get dataImportedSuccessfully => 'Données importées avec succès';
 
   @override
   String errorImportingData(String error) {
-    return 'Error importing data: $error';
+    return 'Erreur lors de l\'importation des données: $error';
   }
 
   @override
-  String get allExistingDataWillBePermanentlyDeleted => 'All existing data will be permanently deleted.';
+  String get allExistingDataWillBePermanentlyDeleted => 'Tous les données existantes seront supprimées de manière permanente.';
 
   @override
-  String get import => 'Import';
+  String get import => 'Importer';
 
   @override
-  String get language => 'Language';
+  String get language => 'Langue';
 
   @override
-  String get selectLanguage => 'Select Language';
+  String get selectLanguage => 'Sélectionner une langue';
 
   @override
-  String get english => 'English';
+  String get english => 'Anglais';
 
   @override
-  String get spanish => 'Spanish';
+  String get spanish => 'Espagnol';
 
   @override
-  String get chinese => 'Chinese';
+  String get chinese => 'Chinois';
 
   @override
   String get hindi => 'Hindi';
 
   @override
-  String get arabic => 'Arabic';
+  String get arabic => 'Arabe';
 
   @override
-  String get portuguese => 'Portuguese';
+  String get portuguese => 'Portugais';
 
   @override
   String get bengali => 'Bengali';
 
   @override
-  String get japanese => 'Japanese';
+  String get japanese => 'Japonais';
 
   @override
   String get punjabi => 'Punjabi';
 
   @override
-  String get german => 'German';
+  String get german => 'Allemand';
 
   @override
-  String get javanese => 'Javanese';
+  String get javanese => 'Javanais';
 
   @override
-  String get korean => 'Korean';
+  String get korean => 'Coréen';
 
   @override
-  String get french => 'French';
+  String get french => 'Français';
 
   @override
   String get telugu => 'Telugu';
@@ -435,60 +443,60 @@ class AppLocalizationsFr extends AppLocalizations {
   String get marathi => 'Marathi';
 
   @override
-  String get turkish => 'Turkish';
+  String get turkish => 'Turque';
 
   @override
   String get tamil => 'Tamil';
 
   @override
-  String get vietnamese => 'Vietnamese';
+  String get vietnamese => 'Vietnamien';
 
   @override
   String get urdu => 'Urdu';
 
   @override
-  String get ukrainian => 'Ukrainian';
+  String get ukrainian => 'Ukrainien';
 
   @override
-  String get italian => 'Italian';
+  String get italian => 'Italien';
 
   @override
-  String get russian => 'Russian';
+  String get russian => 'Russe';
 
   @override
-  String get darkMode => 'Dark Mode';
+  String get darkMode => 'Mode Sombre';
 
   @override
-  String get light => 'Light';
+  String get light => 'Clair';
 
   @override
-  String get dark => 'Dark';
+  String get dark => 'Sombre';
 
   @override
-  String get automatic => 'Automatic';
+  String get automatic => 'Automatique';
 
   @override
-  String get followSystemSetting => 'Follow system setting';
+  String get followSystemSetting => 'Suivre les paramètres du système';
 
   @override
-  String get dataManagement => 'Data Management';
+  String get dataManagement => 'Gestion des Données';
 
   @override
   String get version => 'Version';
 
   @override
   String errorSavingTask(String error) {
-    return 'Error saving task: $error';
+    return 'Erreur lors de la sauvegarde de la tâche: $error';
   }
 
   @override
   String errorDeletingCriterion(String error) {
-    return 'Error deleting criterion: $error';
+    return 'Erreur lors de la suppression du critère: $error';
   }
 
   @override
   String criterionDeleted(String name) {
-    return 'Criterion \"$name\" deleted';
+    return 'Critère \"$name\" supprimé';
   }
 
   @override
@@ -496,160 +504,160 @@ class AppLocalizationsFr extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       selectionLimit,
       locale: localeName,
-      other: '$selectionLimit selections',
-      one: '1 selection',
+      other: '$selectionLimit sélections',
+      one: '1 sélection',
     );
     String _temp1 = intl.Intl.pluralLogic(
       values,
       locale: localeName,
-      other: '$values values',
-      one: '1 value',
+      other: '$values valeurs',
+      one: '1 valeur',
     );
-    return 'Discrete: $_temp0, $_temp1';
+    return 'Discret: $_temp0, $_temp1';
   }
 
   @override
   String continuousCriterion(double minValue, double maxValue, double stepValue) {
-    return 'Continuous: $minValue-$maxValue, step $stepValue';
+    return 'Continu: $minValue - $maxValue, Pas $stepValue';
   }
 
   @override
   String deleteCriterionWarningWithName(String name) {
-    return 'Are you sure you want to delete this criterion \"$name\"? This action cannot be undone.';
+    return 'Êtes-vous sûr de vouloir supprimer le critère \"$name\"? Cette action ne peut pas être annulée.';
   }
 
   @override
   String valueX(int index) {
-    return 'Value $index';
+    return 'Valeur $index';
   }
 
   @override
-  String get minValueRequired => 'Min value is required';
+  String get minValueRequired => 'Valeur minimale requise';
 
   @override
-  String get maxValueRequired => 'Max value is required';
+  String get maxValueRequired => 'Valeur maximale requise';
 
   @override
-  String get stepValueRequired => 'Step value is required';
+  String get stepValueRequired => 'La valeur du pas est requise';
 
   @override
-  String get minValueMustBeANumber => 'Min value must be a number';
+  String get minValueMustBeANumber => 'Valeur minimale doit être un nombre';
 
   @override
-  String get maxValueMustBeANumber => 'Max value must be a number';
+  String get maxValueMustBeANumber => 'Valeur maximale doit être un nombre';
 
   @override
-  String get stepValueMustBeAPositiveNumber => 'Step value must be a positive number';
+  String get stepValueMustBeAPositiveNumber => 'La valeur du pas doit être un nombre positif';
 
   @override
-  String get minValueMustBeLessThanMaxValue => 'Min value must be less than max value';
+  String get minValueMustBeLessThanMaxValue => 'Valeur minimale doit être inférieure à la valeur maximale';
 
   @override
-  String get maxValueMustBeGreaterThanMinValue => 'Max value must be greater than min value';
+  String get maxValueMustBeGreaterThanMinValue => 'Valeur maximale doit être supérieure à la valeur minimale';
 
   @override
-  String get stepValueMustBeGreaterThanZero => 'Step value must be greater than 0';
+  String get stepValueMustBeGreaterThanZero => 'La valeur du pas doit être supérieure à 0';
 
   @override
-  String get valueCannotBeEmpty => 'Value cannot be empty';
+  String get valueCannotBeEmpty => 'La valeur ne peut pas être vide';
 
   @override
-  String get selectionLimitMustBeGreaterThanZero => 'Selection limit must be greater than 0';
+  String get selectionLimitMustBeGreaterThanZero => 'La limite de sélection doit être supérieure à 0';
 
   @override
-  String get selectionLimitMustBeAPositiveNumber => 'Selection limit must be a positive number';
+  String get selectionLimitMustBeAPositiveNumber => 'La limite de sélection doit être un nombre positif';
 
   @override
-  String get atLeastOneValueForDiscreteCriteria => 'At least one value is required for discrete criteria';
+  String get atLeastOneValueForDiscreteCriteria => 'Au moins une valeur est requise pour les critères discrets';
 
   @override
-  String get selectIconType => 'Select Icon Type';
+  String get selectIconType => 'Sélectionner un type d\'icône';
 
   @override
-  String get icon => 'Icon';
+  String get icon => 'Icône';
 
   @override
   String get emoji => 'Emoji';
 
   @override
-  String get enterCriterionName => 'Enter criterion name';
+  String get enterCriterionName => 'Entrer le nom du critère';
 
   @override
   String get type => 'Type';
 
   @override
-  String get discreteConfiguration => 'Discrete Configuration';
+  String get discreteConfiguration => 'Configuration Discrete';
 
   @override
-  String get howManyValuesCanBeSelected => 'How many values can be selected';
+  String get howManyValuesCanBeSelected => 'Combien de valeurs peuvent être sélectionnées';
 
   @override
-  String get continuousConfiguration => 'Continuous Configuration';
+  String get continuousConfiguration => 'Configuration Continu';
 
   @override
-  String get minimumAllowedValue => 'Minimum allowed value';
+  String get minimumAllowedValue => 'Valeur minimale autorisée';
 
   @override
-  String get maximumAllowedValue => 'Maximum allowed value';
+  String get maximumAllowedValue => 'Valeur maximale autorisée';
 
   @override
-  String get incrementDecrementStep => 'Increment/decrement step';
+  String get incrementDecrementStep => 'Augmenter/diminuer le pas';
 
   @override
   String errorSavingCriterion(String error) {
-    return 'Error saving criterion: $error';
+    return 'Erreur lors de la sauvegarde du critère: $error';
   }
 
   @override
-  String get editCriterion => 'Edit Criterion';
+  String get editCriterion => 'Modifier le critère';
 
   @override
-  String get selectIcon => 'Select Icon';
+  String get selectIcon => 'Sélectionner une icône';
 
   @override
-  String get selectEmoji => 'Select Emoji';
+  String get selectEmoji => 'Sélectionner un emoji';
 
   @override
-  String get icons => 'Icons';
+  String get icons => 'Icônes';
 
   @override
   String get emojis => 'Emojis';
 
   @override
-  String get selectColor => 'Select Color';
+  String get selectColor => 'Sélectionner une couleur';
 
   @override
-  String get noCriteriaToRate => 'No criteria to rate';
+  String get noCriteriaToRate => 'Aucun critère à évaluer';
 
   @override
-  String get thisTaskHasNoCriteriaAssigned => 'This task has no criteria assigned.';
+  String get thisTaskHasNoCriteriaAssigned => 'Cette tâche n\'a pas de critères assignés.';
 
   @override
   String errorSavingRatings(String error) {
-    return 'Error saving ratings: $error';
+    return 'Erreur lors de la sauvegarde des notes: $error';
   }
 
   @override
-  String get skip => 'Skip';
+  String get skip => 'Passer';
 
   @override
-  String get save => 'Save';
+  String get save => 'Enregistrer';
 
   @override
   String rangeXToXStepY(double minValue, double maxValue, double stepValue) {
-    return 'Range: $minValue - $maxValue (step: $stepValue)';
+    return 'Plage: $minValue - $maxValue (Pas: $stepValue)';
   }
 
   @override
   String rateTask(String taskName) {
-    return 'Rate Task: $taskName';
+    return 'Évaluer la tâche: $taskName';
   }
 
   @override
   String selectUpToXValues(int selectionLimit) {
-    return 'Select up to $selectionLimit value(s)';
+    return 'Sélectionner jusqu\'à $selectionLimit valeurs';
   }
 
   @override
-  String get swipeToStart => 'Swipe to start';
+  String get swipeToStart => 'Glisser pour démarrer';
 }
