@@ -59,7 +59,7 @@ class _AddEditCriterionWidgetState
   List<String> _discreteValues = [];
   double _minValue = 0.0;
   double _maxValue = 10.0;
-  double _stepValue = 0.5;
+  double _stepValue = 1.0;
 
   @override
   void initState() {
@@ -70,7 +70,7 @@ class _AddEditCriterionWidgetState
     _selectionLimitController = TextEditingController(text: '1');
     _minValueController = TextEditingController(text: '0.0');
     _maxValueController = TextEditingController(text: '10.0');
-    _stepValueController = TextEditingController(text: '0.5');
+    _stepValueController = TextEditingController(text: '1.0');
 
     if (widget.criterion != null) {
       // Edit mode - populate fields
