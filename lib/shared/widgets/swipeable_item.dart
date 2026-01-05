@@ -182,110 +182,113 @@ class _SwipeableItemState extends State<SwipeableItem>
             ? rightActions.length * 60.0
             : 0.0;
 
-    return Stack(
-      children: [
-        // Right action buttons (behind, revealed on left swipe)
-        if (rightActions != null && rightActions.isNotEmpty)
-          Positioned.fill(
-            child: IgnorePointer(
-              // Ignore pointer events only when actions are not revealed
-              ignoring: !_actionsRevealed,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children:
-                    rightActions.map((action) {
-                      return Container(
-                        width: 60,
-                        margin: const EdgeInsets.only(
-                          right: AppTheme.spacingXS,
-                          top: AppTheme.spacingXS,
-                          bottom: AppTheme.spacingXS,
-                        ),
-                        child: Material(
-                          color: Colors.transparent,
-                          child: InkWell(
-                            onTap: () => _handleActionTap(action),
-                            borderRadius: BorderRadius.zero,
-                            child: Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.zero,
-                              ),
-                              child: Center(
-                                child: Icon(
-                                  action.icon,
-                                  color: action.color,
-                                  size: 24,
+    return Directionality(
+      textDirection: TextDirection.ltr,
+      child: Stack(
+        children: [
+          // Right action buttons (behind, revealed on left swipe)
+          if (rightActions != null && rightActions.isNotEmpty)
+            Positioned.fill(
+              child: IgnorePointer(
+                // Ignore pointer events only when actions are not revealed
+                ignoring: !_actionsRevealed,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children:
+                      rightActions.map((action) {
+                        return Container(
+                          width: 60,
+                          margin: const EdgeInsets.only(
+                            right: AppTheme.spacingXS,
+                            top: AppTheme.spacingXS,
+                            bottom: AppTheme.spacingXS,
+                          ),
+                          child: Material(
+                            color: Colors.transparent,
+                            child: InkWell(
+                              onTap: () => _handleActionTap(action),
+                              borderRadius: BorderRadius.zero,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.zero,
+                                ),
+                                child: Center(
+                                  child: Icon(
+                                    action.icon,
+                                    color: action.color,
+                                    size: 24,
+                                  ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                      );
-                    }).toList(),
-              ),
-            ),
-          ),
-        // Main content (on top)
-        AnimatedBuilder(
-          animation: _controller,
-          builder: (context, child) {
-            double offset;
-            if (_isDragging) {
-              // Use actual drag offset during dragging
-              offset = _dragOffset;
-            } else {
-              // When not dragging, use animation for smooth transitions
-              if (_actionsRevealed) {
-                // Actions are revealed - maintain position at full offset
-                offset = -maxRightDrag;
-              } else {
-                // Use animation for snap back
-                offset = _animation.value * _dragOffset;
-              }
-            }
-
-            // Calculate color interpolation for gradual change
-            Color? itemColor;
-            final currentHasRightSwipe =
-                widget.onSwipeRight != null && _dragOffset > 0;
-            if (currentHasRightSwipe &&
-                widget.baseColor != null &&
-                widget.activationColor != null) {
-              final progress = (_dragOffset / _activationThreshold).clamp(
-                0.0,
-                1.0,
-              );
-              itemColor = Color.lerp(
-                widget.baseColor,
-                widget.activationColor,
-                progress,
-              );
-            } else if (widget.baseColor != null) {
-              // When not swiping, use baseColor as background
-              itemColor = widget.baseColor;
-            }
-
-            return Transform.translate(
-              offset: Offset(offset, 0),
-              child: GestureDetector(
-                onTap: () {
-                  // Tap on main content to close revealed actions
-                  if (_actionsRevealed) {
-                    _resetPosition();
-                  }
-                },
-                onHorizontalDragStart: _handleDragStart,
-                onHorizontalDragUpdate: _handleDragUpdate,
-                onHorizontalDragEnd: _handleDragEnd,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(widget.radius),
-                  child: Container(color: itemColor, child: widget.child),
+                        );
+                      }).toList(),
                 ),
               ),
-            );
-          },
-        ),
-      ],
+            ),
+          // Main content (on top)
+          AnimatedBuilder(
+            animation: _controller,
+            builder: (context, child) {
+              double offset;
+              if (_isDragging) {
+                // Use actual drag offset during dragging
+                offset = _dragOffset;
+              } else {
+                // When not dragging, use animation for smooth transitions
+                if (_actionsRevealed) {
+                  // Actions are revealed - maintain position at full offset
+                  offset = -maxRightDrag;
+                } else {
+                  // Use animation for snap back
+                  offset = _animation.value * _dragOffset;
+                }
+              }
+
+              // Calculate color interpolation for gradual change
+              Color? itemColor;
+              final currentHasRightSwipe =
+                  widget.onSwipeRight != null && _dragOffset > 0;
+              if (currentHasRightSwipe &&
+                  widget.baseColor != null &&
+                  widget.activationColor != null) {
+                final progress = (_dragOffset / _activationThreshold).clamp(
+                  0.0,
+                  1.0,
+                );
+                itemColor = Color.lerp(
+                  widget.baseColor,
+                  widget.activationColor,
+                  progress,
+                );
+              } else if (widget.baseColor != null) {
+                // When not swiping, use baseColor as background
+                itemColor = widget.baseColor;
+              }
+
+              return Transform.translate(
+                offset: Offset(offset, 0),
+                child: GestureDetector(
+                  onTap: () {
+                    // Tap on main content to close revealed actions
+                    if (_actionsRevealed) {
+                      _resetPosition();
+                    }
+                  },
+                  onHorizontalDragStart: _handleDragStart,
+                  onHorizontalDragUpdate: _handleDragUpdate,
+                  onHorizontalDragEnd: _handleDragEnd,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(widget.radius),
+                    child: Container(color: itemColor, child: widget.child),
+                  ),
+                ),
+              );
+            },
+          ),
+        ],
+      ),
     );
   }
 }

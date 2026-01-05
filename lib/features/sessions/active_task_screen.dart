@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:yudi_time_tracker/generated/l10n/app_localizations.dart';
@@ -232,41 +233,44 @@ class _ActiveTaskScreenState extends ConsumerState<ActiveTaskScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         // Task duration (centered)
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(Icons.timer, size: 36, color: contrastColor),
-                            const SizedBox(width: AppTheme.spacingS),
-                            Text(
-                              durationString,
-                              style: TextStyle(
-                                fontSize: 48,
-                                fontWeight: FontWeight.bold,
-                                color: contrastColor,
+                        Directionality(
+                          textDirection: ui.TextDirection.ltr,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.timer, size: 36, color: contrastColor),
+                              const SizedBox(width: AppTheme.spacingS),
+                              Text(
+                                durationString,
+                                style: TextStyle(
+                                  fontSize: 48,
+                                  fontWeight: FontWeight.bold,
+                                  color: contrastColor,
+                                ),
                               ),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.only(top: 15),
-                              child: Row(
-                                children: [
-                                  Text(
-                                    ":",
-                                    style: TextStyle(
-                                      fontSize: 24,
-                                      color: contrastColor.withOpacity(0.7),
+                              Padding(
+                                padding: EdgeInsets.only(top: 15),
+                                child: Row(
+                                  children: [
+                                    Text(
+                                      ":",
+                                      style: TextStyle(
+                                        fontSize: 24,
+                                        color: contrastColor.withOpacity(0.7),
+                                      ),
                                     ),
-                                  ),
-                                  Text(
-                                    secondsDurationString,
-                                    style: TextStyle(
-                                      fontSize: 24,
-                                      color: contrastColor.withOpacity(0.7),
+                                    Text(
+                                      secondsDurationString,
+                                      style: TextStyle(
+                                        fontSize: 24,
+                                        color: contrastColor.withOpacity(0.7),
+                                      ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                         const SizedBox(height: AppTheme.spacingXL),
 
