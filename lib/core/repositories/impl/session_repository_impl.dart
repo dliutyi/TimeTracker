@@ -12,7 +12,9 @@ class SessionRepositoryImpl implements SessionRepository {
 
   @override
   Future<Session> createSession(Session session) async {
-    await _database.into(_database.sessions).insert(
+    await _database
+        .into(_database.sessions)
+        .insert(
           db.SessionsCompanion(
             id: Value(session.id),
             taskId: Value(session.taskId),
@@ -33,14 +35,13 @@ class SessionRepositoryImpl implements SessionRepository {
   @override
   Future<Session> updateSession(Session session) async {
     await (_database.update(_database.sessions)
-          ..where((s) => s.id.equals(session.id)))
-        .write(
-          db.SessionsCompanion(
-            taskId: Value(session.taskId),
-            startDateTime: Value(session.startDateTime),
-            endDateTime: Value(session.endDateTime),
-          ),
-        );
+      ..where((s) => s.id.equals(session.id))).write(
+      db.SessionsCompanion(
+        taskId: Value(session.taskId),
+        startDateTime: Value(session.startDateTime),
+        endDateTime: Value(session.endDateTime),
+      ),
+    );
 
     // Update ratings
     if (session.ratings.isNotEmpty) {
@@ -54,20 +55,18 @@ class SessionRepositoryImpl implements SessionRepository {
   Future<void> deleteSession(String sessionId) async {
     // Delete ratings first
     await (_database.delete(_database.ratings)
-          ..where((r) => r.sessionId.equals(sessionId)))
-        .go();
+      ..where((r) => r.sessionId.equals(sessionId))).go();
 
     // Delete the session
     await (_database.delete(_database.sessions)
-          ..where((s) => s.id.equals(sessionId)))
-        .go();
+      ..where((s) => s.id.equals(sessionId))).go();
   }
 
   @override
   Future<Session?> getSessionById(String sessionId) async {
-    final row = await (_database.select(_database.sessions)
-          ..where((s) => s.id.equals(sessionId)))
-        .getSingleOrNull();
+    final row =
+        await (_database.select(_database.sessions)
+          ..where((s) => s.id.equals(sessionId))).getSingleOrNull();
 
     if (row == null) return null;
 
@@ -77,10 +76,11 @@ class SessionRepositoryImpl implements SessionRepository {
 
   @override
   Future<List<Session>> getSessionsByTask(String taskId) async {
-    final rows = await (_database.select(_database.sessions)
-          ..where((s) => s.taskId.equals(taskId))
-          ..orderBy([(s) => OrderingTerm.desc(s.startDateTime)]))
-        .get();
+    final rows =
+        await (_database.select(_database.sessions)
+              ..where((s) => s.taskId.equals(taskId))
+              ..orderBy([(s) => OrderingTerm.desc(s.startDateTime)]))
+            .get();
 
     final sessions = <Session>[];
     for (final row in rows) {
@@ -96,12 +96,15 @@ class SessionRepositoryImpl implements SessionRepository {
     DateTime startDate,
     DateTime endDate,
   ) async {
-    final rows = await (_database.select(_database.sessions)
-          ..where((s) =>
-              s.startDateTime.isBiggerOrEqualValue(startDate) &
-              s.startDateTime.isSmallerOrEqualValue(endDate))
-          ..orderBy([(s) => OrderingTerm.desc(s.startDateTime)]))
-        .get();
+    final rows =
+        await (_database.select(_database.sessions)
+              ..where(
+                (s) =>
+                    s.endDateTime.isBiggerOrEqualValue(startDate) &
+                    s.endDateTime.isSmallerOrEqualValue(endDate),
+              )
+              ..orderBy([(s) => OrderingTerm.desc(s.endDateTime)]))
+            .get();
 
     final sessions = <Session>[];
     for (final row in rows) {
@@ -114,9 +117,9 @@ class SessionRepositoryImpl implements SessionRepository {
 
   @override
   Future<List<Session>> getAllSessions() async {
-    final rows = await (_database.select(_database.sessions)
-          ..orderBy([(s) => OrderingTerm.desc(s.startDateTime)]))
-        .get();
+    final rows =
+        await (_database.select(_database.sessions)
+          ..orderBy([(s) => OrderingTerm.desc(s.endDateTime)])).get();
 
     final sessions = <Session>[];
     for (final row in rows) {
@@ -133,7 +136,7 @@ class SessionRepositoryImpl implements SessionRepository {
     // (meaning it hasn't been stopped yet)
     // Use a small tolerance (1 second) to account for any precision issues
     final allSessions = await getAllSessions();
-    
+
     // Find the most recent session where endDateTime equals startDateTime
     for (final session in allSessions) {
       final diff = session.endDateTime.difference(session.startDateTime).abs();
@@ -142,16 +145,18 @@ class SessionRepositoryImpl implements SessionRepository {
         return session;
       }
     }
-    
+
     return null;
   }
 
   @override
-  Future<void> saveRatings(String sessionId, Map<String, RatingValue> ratings) async {
+  Future<void> saveRatings(
+    String sessionId,
+    Map<String, RatingValue> ratings,
+  ) async {
     // Delete existing ratings for this session
     await (_database.delete(_database.ratings)
-          ..where((r) => r.sessionId.equals(sessionId)))
-        .go();
+      ..where((r) => r.sessionId.equals(sessionId))).go();
 
     // Insert new ratings
     if (ratings.isNotEmpty) {
@@ -181,9 +186,9 @@ class SessionRepositoryImpl implements SessionRepository {
 
   /// Loads ratings for a session.
   Future<Map<String, RatingValue>> _loadRatings(String sessionId) async {
-    final rows = await (_database.select(_database.ratings)
-          ..where((r) => r.sessionId.equals(sessionId)))
-        .get();
+    final rows =
+        await (_database.select(_database.ratings)
+          ..where((r) => r.sessionId.equals(sessionId))).get();
 
     final ratings = <String, RatingValue>{};
     for (final row in rows) {
@@ -226,4 +231,3 @@ class SessionRepositoryImpl implements SessionRepository {
     return 'rating_${timestamp.millisecondsSinceEpoch}_${timestamp.microsecondsSinceEpoch}_$counter';
   }
 }
-

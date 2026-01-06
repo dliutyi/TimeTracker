@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:yudi_time_tracker/core/services/session_service.dart';
+import 'package:yudi_time_tracker/features/statistics/widgets/history_view.dart';
 import 'package:yudi_time_tracker/generated/l10n/app_localizations.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:path_provider/path_provider.dart';
@@ -447,6 +449,10 @@ class SettingsScreen extends ConsumerWidget {
       // Invalidate providers to refresh UI
       ref.invalidate(tasksProvider);
       ref.invalidate(criteriaProvider);
+      ref.invalidate(allSessionsProvider);
+      ref.invalidate(allTasksProvider);
+      ref.invalidate(allCriteriaProvider);
+      ref.invalidate(activeSessionProvider);
 
       // Close loading indicator
       if (context.mounted) {
