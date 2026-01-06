@@ -194,5 +194,10 @@
   "week": "Hafta",
   "welcomeDescription": "Zamanınızı takip edin, görevleri yönetin ve verimliliğinizi kolayca analiz edin.",
   "welcomeTitle": "YuDi Time Tracker'a Hoş Geldiniz", 
-  "year": "Yıl"
+  "year": "Yıl",
+  "resumeSession": "Oturumu Devam Et",
+  "resumeSessionMessage": "Bu oturumu devam ettirmek istediğinizden emin misiniz? Bu işlem geri alınamaz.",
+  "deleteSession": "Oturumu Sil",
+  "deleteSessionMessage": "Bu oturumu silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.",
+  "resume": "Devam Et"
 }

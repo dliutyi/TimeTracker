@@ -194,5 +194,10 @@
   "week": "주",
   "welcomeDescription": "시간을 추적하고, 작업을 관리하며, 생산성을 쉽게 분석하세요.",
   "welcomeTitle": "YuDi Time Tracker에 오신 것을 환영합니다",
-  "year": "년"
+  "year": "년",
+  "resumeSession": "세션 다시 시작",
+  "resumeSessionMessage": "이 세션을 다시 시작하시겠습니까? 이 작업은 취소할 수 없습니다.",
+  "deleteSession": "세션 삭제",
+  "deleteSessionMessage": "이 세션을 삭제하시겠습니까? 이 작업은 취소할 수 없습니다.",
+  "resume": "다시 시작"
 }

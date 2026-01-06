@@ -66,7 +66,7 @@ class AppLocalizationsUk extends AppLocalizations {
   String get selections => 'вибори';
 
   @override
-  String get values => 'значення';
+  String get values => 'Значення';
 
   @override
   String get step => 'крок';
@@ -660,4 +660,19 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get swipeToStart => 'Проведіть, щоб почати';
+
+  @override
+  String get resumeSession => 'Продовжити сесію';
+
+  @override
+  String get resumeSessionMessage => 'Ви впевнені, що хочете продовжити цю сесію? Цю дію неможливо скасувати.';
+
+  @override
+  String get deleteSession => 'Видалити сесію';
+
+  @override
+  String get deleteSessionMessage => 'Ви впевнені, що хочете видалити цю сесію? Цю дію неможливо скасувати.';
+
+  @override
+  String get resume => 'Продовжити';
 }

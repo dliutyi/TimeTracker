@@ -660,4 +660,19 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get swipeToStart => 'スワイプして開始';
+
+  @override
+  String get resumeSession => 'セッションを再開';
+
+  @override
+  String get resumeSessionMessage => 'このセッションを再開してもよろしいですか？この操作は元に戻せません。';
+
+  @override
+  String get deleteSession => 'セッションを削除';
+
+  @override
+  String get deleteSessionMessage => 'このセッションを削除してもよろしいですか？この操作は元に戻せません。';
+
+  @override
+  String get resume => '再開';
 }

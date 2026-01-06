@@ -660,4 +660,19 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get swipeToStart => '스와이프하여 시작';
+
+  @override
+  String get resumeSession => '세션 다시 시작';
+
+  @override
+  String get resumeSessionMessage => '이 세션을 다시 시작하시겠습니까? 이 작업은 취소할 수 없습니다.';
+
+  @override
+  String get deleteSession => '세션 삭제';
+
+  @override
+  String get deleteSessionMessage => '이 세션을 삭제하시겠습니까? 이 작업은 취소할 수 없습니다.';
+
+  @override
+  String get resume => '다시 시작';
 }

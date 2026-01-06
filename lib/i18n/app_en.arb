@@ -76,7 +76,7 @@
   "@selections": {
     "description": "Selections label for discrete criteria"
   },
-  "values": "values",
+  "values": "Values",
   "@values": {
     "description": "Values label for discrete criteria"
   },
@@ -935,5 +935,26 @@
   "swipeToStart": "Swipe to start",
   "@swipeToStart": {
     "description": "Swipe to start label"
+  },
+
+  "resumeSession": "Resume Session",
+  "@resumeSession": {
+    "description": "Resume session dialog title"
+  },
+  "resumeSessionMessage": "Are you sure you want to resume this session?",
+  "@resumeSessionMessage": {
+    "description": "Resume session confirmation message"
+  },
+  "deleteSession": "Delete Session",
+  "@deleteSession": {
+    "description": "Delete session dialog title"
+  },
+  "deleteSessionMessage": "Are you sure you want to delete this session? This action cannot be undone.",
+  "@deleteSessionMessage": {
+    "description": "Delete session confirmation message"
+  },
+  "resume": "Resume",
+  "@resume": {
+    "description": "Resume button label"
   }
 }

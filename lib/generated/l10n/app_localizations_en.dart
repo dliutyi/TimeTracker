@@ -66,7 +66,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get selections => 'selections';
 
   @override
-  String get values => 'values';
+  String get values => 'Values';
 
   @override
   String get step => 'step';
@@ -660,4 +660,19 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get swipeToStart => 'Swipe to start';
+
+  @override
+  String get resumeSession => 'Resume Session';
+
+  @override
+  String get resumeSessionMessage => 'Are you sure you want to resume this session?';
+
+  @override
+  String get deleteSession => 'Delete Session';
+
+  @override
+  String get deleteSessionMessage => 'Are you sure you want to delete this session? This action cannot be undone.';
+
+  @override
+  String get resume => 'Resume';
 }

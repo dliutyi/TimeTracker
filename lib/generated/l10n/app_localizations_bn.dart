@@ -660,4 +660,19 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get swipeToStart => 'স্টার্ট করতে সোয়াইপ করুন';
+
+  @override
+  String get resumeSession => 'সেশন পুনরায় শুরু করুন';
+
+  @override
+  String get resumeSessionMessage => 'আপনি কি নিশ্চিত যে আপনি এই সেশনটি পুনরায় শুরু করতে চান? এই কাজটি পূর্বাবস্থায় ফেরানো যাবে না।';
+
+  @override
+  String get deleteSession => 'সেশন মুছে ফেলুন';
+
+  @override
+  String get deleteSessionMessage => 'আপনি কি নিশ্চিত যে আপনি এই সেশনটি মুছতে চান? এই কাজটি পূর্বাবস্থায় ফেরানো যাবে না।';
+
+  @override
+  String get resume => 'পুনরায় শুরু করুন';
 }

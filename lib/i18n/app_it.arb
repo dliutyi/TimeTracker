@@ -194,5 +194,10 @@
   "week": "Settimana",
   "welcomeDescription": "Traccia il tuo tempo, gestisci le attività e analizza la tua produttività con facilità.",
   "welcomeTitle": "Benvenuto in YuDi Time Tracker",
-  "year": "Anno"
+  "year": "Anno",
+  "resumeSession": "Riprendi sessione",
+  "resumeSessionMessage": "Sei sicuro di voler riprendere questa sessione? Questa azione non può essere annullata.",
+  "deleteSession": "Elimina sessione",
+  "deleteSessionMessage": "Sei sicuro di voler eliminare questa sessione? Questa azione non può essere annullata.",
+  "resume": "Riprendi"
 }

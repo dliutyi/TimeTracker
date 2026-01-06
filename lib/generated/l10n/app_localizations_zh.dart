@@ -660,4 +660,19 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get swipeToStart => '滑动开始';
+
+  @override
+  String get resumeSession => '继续会话';
+
+  @override
+  String get resumeSessionMessage => '你确定要继续这个会话吗？这个操作无法撤销。';
+
+  @override
+  String get deleteSession => '删除会话';
+
+  @override
+  String get deleteSessionMessage => '你确定要删除这个会话吗？这个操作无法撤销。';
+
+  @override
+  String get resume => '继续';
 }

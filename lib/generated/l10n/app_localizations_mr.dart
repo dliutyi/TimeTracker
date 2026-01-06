@@ -660,4 +660,19 @@ class AppLocalizationsMr extends AppLocalizations {
 
   @override
   String get swipeToStart => 'सुरू करण्यासाठी स्वाइप करा';
+
+  @override
+  String get resumeSession => 'सत्र पुनरारंभ करा';
+
+  @override
+  String get resumeSessionMessage => 'क्या आपण वाकई इस सत्र को पुनरारंभ करना चाहते हैं? इस क्रिया को पूर्ववत नहीं किया जा सकता।';
+
+  @override
+  String get deleteSession => 'सत्र हटाएं';
+
+  @override
+  String get deleteSessionMessage => 'क्या आपण वाकई इस सत्र को हटाना चाहते हैं? इस क्रिया को पूर्ववत नहीं किया जा सकता।';
+
+  @override
+  String get resume => 'पुनरारंभ करा';
 }

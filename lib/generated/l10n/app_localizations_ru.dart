@@ -662,4 +662,19 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get swipeToStart => 'Свайпните, чтобы начать';
+
+  @override
+  String get resumeSession => 'Возобновить сессию';
+
+  @override
+  String get resumeSessionMessage => 'Вы уверены, что хотите возобновить эту сессию? Это действие нельзя отменить.';
+
+  @override
+  String get deleteSession => 'Удалить сессию';
+
+  @override
+  String get deleteSessionMessage => 'Вы уверены, что хотите удалить эту сессию? Это действие нельзя отменить.';
+
+  @override
+  String get resume => 'Возобновить';
 }

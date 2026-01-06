@@ -660,4 +660,19 @@ class AppLocalizationsTe extends AppLocalizations {
 
   @override
   String get swipeToStart => 'ప్రారంభంచేసినప్పుడు స్వైప్ చేయండి';
+
+  @override
+  String get resumeSession => 'సెషన్ తిరిగి ప్రారంభంచేయండి';
+
+  @override
+  String get resumeSessionMessage => 'మీరు ఖచ్చితంగా ఈ సెషన్ తిరిగి ప్రారంభంచేయాలనుకుంటున్నారా? ఈ చర్యను రద్దు చేయలేరు.';
+
+  @override
+  String get deleteSession => 'సెషన్ తొలగించండి';
+
+  @override
+  String get deleteSessionMessage => 'మీరు ఖచ్చితంగా ఈ సెషన్ తొలగించాలనుకుంటున్నారా? ఈ చర్యను రద్దు చేయలేరు.';
+
+  @override
+  String get resume => 'తిరిగి ప్రారంభంచేయండి';
 }

@@ -660,4 +660,19 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get swipeToStart => 'سوائپ کریں تاکہ شروع ہو سکے';
+
+  @override
+  String get resumeSession => 'سیشن کو پھر آغاز کریں';
+
+  @override
+  String get resumeSessionMessage => 'کیا آپ واقعی اس سیشن کو پھر آغاز کرنا چاہتے ہیں؟ اس عمل کو واپس نہیں کیا جا سکتا۔';
+
+  @override
+  String get deleteSession => 'سیشن کو حذف کریں';
+
+  @override
+  String get deleteSessionMessage => 'کیا آپ واقعی اس سیشن کو حذف کرنا چاہتے ہیں؟ اس عمل کو واپس نہیں کیا جا سکتا۔';
+
+  @override
+  String get resume => 'پھر آغاز کریں';
 }

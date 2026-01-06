@@ -660,4 +660,19 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get swipeToStart => 'Vuốt để bắt đầu';
+
+  @override
+  String get resumeSession => 'Tiếp tục phiên';
+
+  @override
+  String get resumeSessionMessage => 'Bạn có chắc chắn muốn tiếp tục phiên này không? Hành động này không thể hoàn tác.';
+
+  @override
+  String get deleteSession => 'Xóa phiên';
+
+  @override
+  String get deleteSessionMessage => 'Bạn có chắc chắn muốn xóa phiên này không? Hành động này không thể hoàn tác.';
+
+  @override
+  String get resume => 'Tiếp tục';
 }

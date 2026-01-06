@@ -194,6 +194,11 @@
   "week": "周",
   "welcomeDescription": "轻松跟踪您的时间、管理任务并分析您的生产力。",
   "welcomeTitle": "欢迎使用 YuDi Time Tracker",
-  "year": "年"
+  "year": "年",
+  "resumeSession": "继续会话",
+  "resumeSessionMessage": "你确定要继续这个会话吗？这个操作无法撤销。",
+  "deleteSession": "删除会话",
+  "deleteSessionMessage": "你确定要删除这个会话吗？这个操作无法撤销。",
+  "resume": "继续"
 }
 

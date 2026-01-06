@@ -660,4 +660,19 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get swipeToStart => 'Scorri per iniziare';
+
+  @override
+  String get resumeSession => 'Riprendi sessione';
+
+  @override
+  String get resumeSessionMessage => 'Sei sicuro di voler riprendere questa sessione? Questa azione non può essere annullata.';
+
+  @override
+  String get deleteSession => 'Elimina sessione';
+
+  @override
+  String get deleteSessionMessage => 'Sei sicuro di voler eliminare questa sessione? Questa azione non può essere annullata.';
+
+  @override
+  String get resume => 'Riprendi';
 }

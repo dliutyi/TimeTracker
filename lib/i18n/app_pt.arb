@@ -194,5 +194,10 @@
   "week": "Semana",
   "welcomeDescription": "Rastreie seu tempo, gerencie tarefas e analise sua produtividade com facilidade.",
   "welcomeTitle": "Bem-vindo ao YuDi Time Tracker",
-  "year": "Ano"
+  "year": "Ano",
+  "resumeSession": "Reiniciar Sessão",
+  "resumeSessionMessage": "Tem certeza de que deseja reiniciar esta sessão? Esta ação não pode ser desfeita.",
+  "deleteSession": "Excluir Sessão",
+  "deleteSessionMessage": "Tem certeza de que deseja excluir esta sessão? Esta ação não pode ser desfeita.",
+  "resume": "Reiniciar"
 }

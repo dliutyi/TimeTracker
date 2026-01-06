@@ -194,5 +194,10 @@
   "week": "الأسبوع",
   "welcomeDescription": "تتبع وقتك، وإدارة المهام، وتحليل إنتاجيتك بسهولة.",
   "welcomeTitle": "مرحباً بك في YuDi Time Tracker",
-  "year": "السنة"
+  "year": "السنة",
+  "resumeSession": "استأناف الجلسة",
+  "resumeSessionMessage": "هل أنت متأكد من أنك تريد استأناف هذه الجلسة؟",
+  "deleteSession": "حذف الجلسة",
+  "deleteSessionMessage": "هل أنت متأكد من أنك تريد حذف هذه الجلسة؟ لا يمكن التراجع عن هذا الإجراء.",
+  "resume": "استأناف"
 }

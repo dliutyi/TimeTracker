@@ -660,4 +660,19 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get swipeToStart => 'Zum Starten wischen';
+
+  @override
+  String get resumeSession => 'Sitzung wiederholen';
+
+  @override
+  String get resumeSessionMessage => 'Sind Sie sicher, dass Sie diese Sitzung wiederholen möchten? Diese Aktion kann nicht rückgängig gemacht werden.';
+
+  @override
+  String get deleteSession => 'Sitzung löschen';
+
+  @override
+  String get deleteSessionMessage => 'Sind Sie sicher, dass Sie diese Sitzung löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden.';
+
+  @override
+  String get resume => 'Wiederholen';
 }

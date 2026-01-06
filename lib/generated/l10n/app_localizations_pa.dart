@@ -660,4 +660,19 @@ class AppLocalizationsPa extends AppLocalizations {
 
   @override
   String get swipeToStart => 'ਸਵਾਇਪ ਕਰੋ ਸ਼ੁਰੂ ਕਰੋ';
+
+  @override
+  String get resumeSession => 'ਸਤਰ ਪੁਨਰਾਰਂਭ ਕਰੋ';
+
+  @override
+  String get resumeSessionMessage => 'ਕੀ ਤੁਸੀਂ ਵਾਕੀ ਇਸ ਸਤਰ ਨੂੰ ਪੁਨਰਾਰਂਭ ਕਰਨਾ ਚਾਹੁੰਦੇ ਹੋ? ਇਸ ਕਾਰਵਾਈ ਨੂੰ ਪੂਰਵਵਤ ਨਹੀਂ ਕਿਆ ਜਾ ਸਕਦਾ।';
+
+  @override
+  String get deleteSession => 'ਸਤਰ ਹਟਾਓ';
+
+  @override
+  String get deleteSessionMessage => 'ਕੀ ਤੁਸੀਂ ਵਾਕੀ ਇਸ ਸਤਰ ਨੂੰ ਹਟਾਓ? ਇਸ ਕਾਰਵਾਈ ਨੂੰ ਪੂਰਵਵਤ ਨਹੀਂ ਕਿਆ ਜਾ ਸਕਦਾ।';
+
+  @override
+  String get resume => 'ਪੁਨਰਾਰਂਭ ਕਰੋ';
 }

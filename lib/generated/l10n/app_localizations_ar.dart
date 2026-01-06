@@ -660,4 +660,19 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get swipeToStart => 'اسحب للبدء';
+
+  @override
+  String get resumeSession => 'استأناف الجلسة';
+
+  @override
+  String get resumeSessionMessage => 'هل أنت متأكد من أنك تريد استأناف هذه الجلسة؟';
+
+  @override
+  String get deleteSession => 'حذف الجلسة';
+
+  @override
+  String get deleteSessionMessage => 'هل أنت متأكد من أنك تريد حذف هذه الجلسة؟ لا يمكن التراجع عن هذا الإجراء.';
+
+  @override
+  String get resume => 'استأناف';
 }

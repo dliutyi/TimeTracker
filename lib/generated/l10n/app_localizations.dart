@@ -250,7 +250,7 @@ abstract class AppLocalizations {
   /// Values label for discrete criteria
   ///
   /// In en, this message translates to:
-  /// **'values'**
+  /// **'Values'**
   String get values;
 
   /// Step label for continuous criteria
@@ -1302,6 +1302,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Swipe to start'**
   String get swipeToStart;
+
+  /// Resume session dialog title
+  ///
+  /// In en, this message translates to:
+  /// **'Resume Session'**
+  String get resumeSession;
+
+  /// Resume session confirmation message
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to resume this session?'**
+  String get resumeSessionMessage;
+
+  /// Delete session dialog title
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Session'**
+  String get deleteSession;
+
+  /// Delete session confirmation message
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this session? This action cannot be undone.'**
+  String get deleteSessionMessage;
+
+  /// Resume button label
+  ///
+  /// In en, this message translates to:
+  /// **'Resume'**
+  String get resume;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -660,4 +660,19 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get swipeToStart => 'Başlamak için kaydırın';
+
+  @override
+  String get resumeSession => 'Oturumu Devam Et';
+
+  @override
+  String get resumeSessionMessage => 'Bu oturumu devam ettirmek istediğinizden emin misiniz? Bu işlem geri alınamaz.';
+
+  @override
+  String get deleteSession => 'Oturumu Sil';
+
+  @override
+  String get deleteSessionMessage => 'Bu oturumu silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.';
+
+  @override
+  String get resume => 'Devam Et';
 }

@@ -660,4 +660,19 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get swipeToStart => 'தொடங்கவும்';
+
+  @override
+  String get resumeSession => 'அமர்வை தொடங்கவும்';
+
+  @override
+  String get resumeSessionMessage => 'இந்த அமர்வை தொடங்கவும்? இந்த செயலை திரும்பப் பெற முடியாது.';
+
+  @override
+  String get deleteSession => 'அமர்வை நீக்கவும்';
+
+  @override
+  String get deleteSessionMessage => 'இந்த அமர்வை நீக்கவும்? இந்த செயலை திரும்பப் பெற முடியாது.';
+
+  @override
+  String get resume => 'தொடங்கவும்';
 }

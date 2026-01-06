@@ -194,6 +194,11 @@
   "week": "週",
   "welcomeDescription": "時間を追跡し、タスクを管理し、生産性を簡単に分析できます。",
   "welcomeTitle": "YuDi Time Trackerへようこそ",
-  "year": "年"
+  "year": "年",
+  "resumeSession": "セッションを再開",
+  "resumeSessionMessage": "このセッションを再開してもよろしいですか？この操作は元に戻せません。",
+  "deleteSession": "セッションを削除",
+  "deleteSessionMessage": "このセッションを削除してもよろしいですか？この操作は元に戻せません。",
+  "resume": "再開"
 }
 

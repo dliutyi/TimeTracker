@@ -194,5 +194,10 @@
   "week": "Minggu",
   "welcomeDescription": "Lacak wektu sampeyan, ngatur tugas, lan nganalisis produktivitas sampeyan kanthi gampang.",
   "welcomeTitle": "Sugeng rawuh ing YuDi Time Tracker",
-  "year": "Taun"
+  "year": "Taun",
+  "resumeSession": "Mungkasi Sesi",
+  "resumeSessionMessage": "Apa Anda yakin ingin mungkasi sesi ini? Tindakan ini tidak dapat dibatalkan.",
+  "deleteSession": "Hapus Sesi",
+  "deleteSessionMessage": "Apa Anda yakin ingin menghapus sesi ini? Tindakan ini tidak dapat dibatalkan.",
+  "resume": "Mungkasi"
 }

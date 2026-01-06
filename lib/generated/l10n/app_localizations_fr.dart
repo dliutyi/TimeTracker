@@ -66,7 +66,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get selections => 'sélections';
 
   @override
-  String get values => 'valeurs';
+  String get values => 'Valeurs';
 
   @override
   String get step => 'pas';
@@ -660,4 +660,19 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get swipeToStart => 'Glisser pour démarrer';
+
+  @override
+  String get resumeSession => 'Reanudar Sesión';
+
+  @override
+  String get resumeSessionMessage => '¿Estás seguro de que deseas reanudar esta sesión? Esta acción no se puede deshacer.';
+
+  @override
+  String get deleteSession => 'Eliminar Sesión';
+
+  @override
+  String get deleteSessionMessage => '¿Estás seguro de que deseas eliminar esta sesión? Esta acción no se puede deshacer.';
+
+  @override
+  String get resume => 'Reanudar';
 }

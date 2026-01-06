@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:yudi_time_tracker/features/navigation/main_navigation_screen.dart';
 import 'package:yudi_time_tracker/generated/l10n/app_localizations.dart';
+import 'package:yudi_time_tracker/shared/widgets/confirmation_dialog.dart';
+import 'package:yudi_time_tracker/shared/widgets/swipeable_item.dart';
 import '../../../app/theme/app_theme.dart';
 import '../../../core/repositories/repository_providers.dart';
 import '../../../core/models/models.dart';
@@ -76,6 +79,7 @@ class _HistoryViewState extends ConsumerState<HistoryView> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
     final tasksAsync = ref.watch(allTasksProvider);
     final criteriaAsync = ref.watch(allCriteriaProvider);
 
@@ -97,7 +101,10 @@ class _HistoryViewState extends ConsumerState<HistoryView> {
                   session.endDateTime.difference(session.startDateTime).abs();
               return diff.inSeconds >= 1; // Only include stopped sessions
             }).toList();
-
+        final mostRecentSessionIfNoActive =
+            sessions.isNotEmpty && filteredSessions.length == sessions.length
+                ? sessions.firstOrNull
+                : null;
         // Filter by selected task
         if (_selectedTaskId != null) {
           filteredSessions =
@@ -132,7 +139,9 @@ class _HistoryViewState extends ConsumerState<HistoryView> {
                       ? _buildEmptyState(context, l10n)
                       : _buildSessionsList(
                         context,
+                        theme,
                         filteredSessions,
+                        mostRecentSessionIfNoActive,
                         tasksAsync,
                         criteriaAsync,
                         l10n,
@@ -156,7 +165,9 @@ class _HistoryViewState extends ConsumerState<HistoryView> {
 
   Widget _buildSessionsList(
     BuildContext context,
+    ThemeData theme,
     List<Session> sessions,
+    Session? mostRecentSessionIfNoActive,
     AsyncValue<List<Task>> tasksAsync,
     AsyncValue<List<Criterion>> criteriaAsync,
     AppLocalizations l10n,
@@ -178,11 +189,38 @@ class _HistoryViewState extends ConsumerState<HistoryView> {
               itemBuilder: (context, index) {
                 final session = sessions[index];
                 final task = tasksMap[session.taskId];
-
-                return SessionItem(
-                  session: session,
-                  task: task,
-                  criteria: criteriaMap,
+                final isMostRecentSession =
+                    session == mostRecentSessionIfNoActive;
+                return SwipeableItem(
+                  rightActions: [
+                    if (isMostRecentSession) ...[
+                      SwipeAction(
+                        label: l10n.resume,
+                        icon: Icons.replay,
+                        color: theme.colorScheme.primary,
+                        onTap:
+                            () => _handleResumeSession(
+                              context,
+                              ref,
+                              l10n,
+                              session,
+                            ),
+                      ),
+                    ],
+                    SwipeAction(
+                      label: l10n.delete,
+                      icon: Icons.delete,
+                      color: theme.colorScheme.error,
+                      onTap:
+                          () =>
+                              _handleDeleteSession(context, ref, l10n, session),
+                    ),
+                  ],
+                  child: SessionItem(
+                    session: session,
+                    task: task,
+                    criteria: criteriaMap,
+                  ),
                 );
               },
             );
@@ -302,6 +340,85 @@ class _HistoryViewState extends ConsumerState<HistoryView> {
         ],
       ),
     );
+  }
+
+  Future<void> _handleDeleteSession(
+    BuildContext context,
+    WidgetRef ref,
+    AppLocalizations l10n,
+    Session session,
+  ) async {
+    final result = await ConfirmationDialog.show(
+      context,
+      title: l10n.deleteSession,
+      message: l10n.deleteSessionMessage,
+      type: DialogType.error,
+      primaryButtonText: l10n.delete,
+      cancelButtonText: l10n.cancel,
+    );
+    if (result != null) {
+      final sessionRepository = ref.read(sessionRepositoryProvider);
+      await sessionRepository.deleteSession(session.id);
+      if (context.mounted) {
+        ref.invalidate(sessionRepositoryProvider);
+      }
+    }
+  }
+
+  Future<void> _handleResumeSession(
+    BuildContext context,
+    WidgetRef ref,
+    AppLocalizations l10n,
+    Session session,
+  ) async {
+    final result = await ConfirmationDialog.show(
+      context,
+      title: l10n.resumeSession,
+      message: l10n.resumeSessionMessage,
+      type: DialogType.warning,
+      primaryButtonText: l10n.resume,
+      cancelButtonText: l10n.cancel,
+    );
+    if (result != null) {
+      // Check if there's already an active session
+      final activeSession = ref.read(activeSessionProvider);
+      if (activeSession != null) {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(l10n.anotherTaskActive),
+              duration: Duration(seconds: 2),
+            ),
+          );
+        }
+        return;
+      }
+
+      try {
+        final activeSessionNotifier = ref.read(activeSessionProvider.notifier);
+        await activeSessionNotifier.updateSession(
+          session.copyWith(endDateTime: session.startDateTime, ratings: {}),
+        );
+
+        // Navigate to Active Task tab
+        if (context.mounted) {
+          final mainNavState = MainNavigationScreenState.of(context);
+          if (mainNavState != null) {
+            mainNavState.switchToTab(0); // Active Task tab
+          }
+        }
+      } catch (e) {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(l10n.errorActivatingTask(e.toString())),
+              backgroundColor: Theme.of(context).colorScheme.error,
+              duration: const Duration(seconds: 2),
+            ),
+          );
+        }
+      }
+    }
   }
 
   ({DateTime start, DateTime end})? _getDateRange(TimePeriod period) {

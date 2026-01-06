@@ -187,13 +187,18 @@
   "urdu": "Urdu",
   "value": "Valeur",
   "valueCannotBeEmpty": "La valeur ne peut pas être vide",
-  "values": "valeurs",
+  "values": "Valeurs",
   "valueX": "Valeur {index}",
   "version": "Version",
   "vietnamese": "Vietnamien",
   "week": "Semaine",
   "welcomeDescription": "Bienvenue dans YuDi Time Tracker",
   "welcomeTitle": "Bienvenue dans YuDi Time Tracker",
-  "year": "Année"
+  "year": "Année",
+  "resumeSession": "Reanudar Sesión",
+  "resumeSessionMessage": "¿Estás seguro de que deseas reanudar esta sesión? Esta acción no se puede deshacer.",
+  "deleteSession": "Eliminar Sesión",
+  "deleteSessionMessage": "¿Estás seguro de que deseas eliminar esta sesión? Esta acción no se puede deshacer.",
+  "resume": "Reanudar"
 }
 

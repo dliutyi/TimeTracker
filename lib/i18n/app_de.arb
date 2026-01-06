@@ -194,6 +194,11 @@
   "week": "Woche",
   "welcomeDescription": "Willkommen bei YuDi Time Tracker",
   "welcomeTitle": "Willkommen bei YuDi Time Tracker",
-  "year": "Jahr"
+  "year": "Jahr",
+  "resumeSession": "Sitzung wiederholen",
+  "resumeSessionMessage": "Sind Sie sicher, dass Sie diese Sitzung wiederholen möchten? Diese Aktion kann nicht rückgängig gemacht werden.",
+  "deleteSession": "Sitzung löschen",
+  "deleteSessionMessage": "Sind Sie sicher, dass Sie diese Sitzung löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden.",
+  "resume": "Wiederholen"
 }
 

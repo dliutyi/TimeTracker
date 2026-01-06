@@ -660,4 +660,19 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get swipeToStart => 'Deslize para iniciar';
+
+  @override
+  String get resumeSession => 'Reiniciar Sessão';
+
+  @override
+  String get resumeSessionMessage => 'Tem certeza de que deseja reiniciar esta sessão? Esta ação não pode ser desfeita.';
+
+  @override
+  String get deleteSession => 'Excluir Sessão';
+
+  @override
+  String get deleteSessionMessage => 'Tem certeza de que deseja excluir esta sessão? Esta ação não pode ser desfeita.';
+
+  @override
+  String get resume => 'Reiniciar';
 }

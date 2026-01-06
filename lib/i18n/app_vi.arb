@@ -194,5 +194,10 @@
   "week": "Tuần",
   "welcomeDescription": "Theo dõi thời gian của bạn, quản lý nhiệm vụ và phân tích năng suất của bạn một cách dễ dàng.",
   "welcomeTitle": "Chào mừng đến với YuDi Time Tracker",
-  "year": "Năm"
+  "year": "Năm",
+  "resumeSession": "Tiếp tục phiên",
+  "resumeSessionMessage": "Bạn có chắc chắn muốn tiếp tục phiên này không? Hành động này không thể hoàn tác.",
+  "deleteSession": "Xóa phiên",
+  "deleteSessionMessage": "Bạn có chắc chắn muốn xóa phiên này không? Hành động này không thể hoàn tác.",
+  "resume": "Tiếp tục"
 }
